@@ -1,0 +1,34 @@
+ #mytable{
+    display:none; 
+    }
+    .dataTables_length {
+      width: 10%;
+    }
+    .dataTables_info {
+      width: 40%;
+    }
+  table thead tr:first-child{
+      background: #186DA2;
+      color: #FFF;
+    }
+  table a{
+      color:#1ABB9C;
+  }
+  table.display {
+    width: 100% !important;
+  }    
+  tfoot input {
+    margin: 0; 
+  }
+  tfoot .form-control{
+    font-size:13px;
+  }
+  .dt-buttons{
+    margin-right:15px;
+  }
+  .dataTables_filter input{
+    font-weight:bold;
+  }
+  div.dataTables_filter input {
+    margin-left: 0 !important;
+  }
