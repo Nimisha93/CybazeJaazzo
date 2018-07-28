@@ -1,4 +1,3 @@
-
 <?php echo $default_assets ?>
 
     <link rel="shortcut icon" href="<?= base_url();?>assets/public/favicon/favicon.png">
@@ -19,7 +18,7 @@
 <style type="text/css">
      .row{margin-left:0 !important; margin-right:0 !important;}
 
-        .goToTop{position:fixed ;border-bottom:1px solid #000}
+        .goToTop{position:fixed ;border-bottom:1px solid #ccc;background-color: #000}
 		
         @media (max-width:1000px){
 
@@ -111,11 +110,13 @@
      <?php  foreach($pro['product'] as $key => $products) { ?>z
     <div>
 
-        <div class="deal"> <img src="<?php echo base_url();?>assets/admin/products/<?php echo $products['image'];?>" class="indxprct">
+        <div class="deal"> 
+        <a href="<?php echo base_url();?>home/product_details/<?php echo $products['p_id'];?>">
+ <div class="indxprct">
+<img src="<?php echo base_url();?>assets/admin/products/<?php echo $products['image'];?>" class="">
 
-                            <a href="<?php echo base_url();?>home/product_details/<?php echo $products['p_id'];?>">
-                                <div class="redmr2">Get this deal</div>
-                            </a>
+                          
+</div>
                             <div class="su_box100 dealbg1">
                                 <h4><img src="<?php echo base_url();?>assets/admin/products/<?php echo $products['par_img'];?>" class="logoleft">Deal with <?php echo $products['partner_name'];?> </h4>
                             </div>
@@ -126,18 +127,22 @@
                                 <div class="su3bx">
                                  <div class="oldrate1"><span class="rupee">RS</span><?php echo $products['cost'];?> </div>
                                 </div>
+                                 <div class="su3bx ofrright">
+                                    <div class="offferrate3">- 69% </div>
+                                </div>
+                                <br>
+
                                 <div class="su3bx">
                                     <div class="offferrate1"><span class="rupee">RS</span> <?php echo $products['actual_cost'];?> </div>
                                 </div>
 
-                                <div class="su3bx ofrright">
-                                    <div class="offferrate3">- 69% </div>
-                                </div>
+                               
 
                             </div>
-
+                             </a>
                             <div class="clear"></div>
                         </div>
+                        
 
     </div>
 <?php }?>
@@ -238,16 +243,16 @@
                     }
                 },
                 {
-                    breakpoint: 800,
+                    breakpoint: 700,
                     settings: {
-                        slidesToShow: 2,
+                        slidesToShow: 3,
                         slidesToScroll: 2
                     }
                 },
                 {
                     breakpoint: 580,
                     settings: {
-                        slidesToShow: 1,
+                        slidesToShow: 2,
                         slidesToScroll: 1
                     }
                 }
@@ -281,16 +286,16 @@
                     }
                 },
                 {
-                    breakpoint: 800,
+                    breakpoint: 700,
                     settings: {
-                        slidesToShow: 2,
+                        slidesToShow: 3,
                         slidesToScroll: 2
                     }
                 },
                 {
                     breakpoint: 580,
                     settings: {
-                        slidesToShow: 1,
+                        slidesToShow: 2,
                         slidesToScroll: 1
                     }
                 }

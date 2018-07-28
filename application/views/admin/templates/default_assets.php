@@ -7,8 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Greeenindia </title>
-    <link href="<?php echo base_url(); ?>assets/admin/images/fav.png" rel="shortcut icon">
+    <title>Jaazzo | rewards unlimitted</title>
+    <link rel="shortcut icon" href="<?= base_url();?>assets/public/favicon/favicon.png">
 
     <!-- Bootstrap -->
     <link href="<?php echo base_url(); ?>assets/admin/css/bootstrap/bootstrap.min.css" rel="stylesheet">
@@ -22,14 +22,10 @@
 
     <!-- Custom styling plus plugins -->
     <link href="<?php echo base_url(); ?>assets/admin/css/custom.min.css" rel="stylesheet">
-
-    <script src="<?php echo base_url(); ?>assets/admin/js/jquery.min.js"></script>
+ 
     <!-- Bootstrap -->
-    <script src="<?php echo base_url(); ?>assets/admin/js/bootstrap/bootstrap.min.js"></script>
+    
 
-    <link rel="stylesheet" href="<?php echo base_url();?>assets/public/validation/css/validationEngine.jquery.css" type="text/css"/>
-
-    <link rel="stylesheet" href="<?php echo base_url();?>assets/public/validation/css/template.css" type="text/css"/>
 
 
     <style>

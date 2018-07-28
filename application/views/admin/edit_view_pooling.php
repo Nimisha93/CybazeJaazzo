@@ -39,8 +39,9 @@
                                 <thead>
                                 <tr class="tablbg">
                                     <th>Channel Partner Type</th>
+                                    <th>Direct Commmission</th>
                                     <th>Company Commission</th>
-                                    <th>Pooling Commmission</th>
+
                                     <th></th>
 
 
@@ -49,8 +50,9 @@
                                 <tfoot>
                                 <tr>
                                     <th>Channel Partner Type</th>
+                                    <th>Direct Commmission</th>
                                     <th>Company Commission</th>
-                                    <th>Pooling Commmission</th>
+
                                     <th></th>
 
                                 </tr>
@@ -78,9 +80,7 @@
                                             <div class="modal-body">
                                                 <div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
                                                     <div class="panel">
-                                                        <!--                            <a class="panel-heading collapsed" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">-->
-                                                        <!--                                <h4 class="panel-title"></h4>-->
-                                                        <!--                            </a>-->
+
 
                                                     </div>
                                                     <form method="post" id="commission_forms" class="commission_forms" name="commission_forms">
@@ -133,6 +133,7 @@
                                             if(str==true){
 
                                                 var data=$("#commission_forms").serializeArray();
+                                                console.log(data);
                                                 $('.body_blur').show();
                                                 $.post("<?php echo base_url();?>admin/pooling/edit_pooling_byid", data, function(data){
                                                     $('.body_blur').hide();
@@ -239,7 +240,7 @@
 <div class="modal-content">
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">X</button>
-    <h4 class="modal-title">New Cutomer</h4>
+    <h4 class="modal-title">New Customer</h4>
 </div>
 <div class="modal-body">
 <div id="testmodal" style="padding: 5px 20px;">
@@ -460,32 +461,3 @@
 </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

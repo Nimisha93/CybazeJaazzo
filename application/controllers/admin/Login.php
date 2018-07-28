@@ -19,10 +19,27 @@ class Login extends CI_Controller
         if(!isset($session_array)){        
           $this->load->view('admin/edit_login');
         }else{
-          redirect('admin/Login');
+          redirect('admin/dashboard/main_admin');
         }
 		
 	}
+  function test()
+  {
+     
+          $this->load->view('admin/test');
+      
+    
+  }
+  function cp_login()
+  {
+     $session_array = $this->session->userdata('logged_in_cp');
+        if(!isset($session_array)){        
+          $this->load->view('admin/edit_login_cp');
+        }else{
+          redirect('my_dashboard');
+        }
+    
+  }
 	function login_process()
 	{
 		$this->form_validation->set_rules('username', 'Username', 'required');
@@ -32,7 +49,7 @@ class Login extends CI_Controller
 		{
 			
 			$result = $this->login_model->validate_login();
-			
+		  
 			if($result['status'] == true)
 			{
 				$type = $result['data']['type'];
@@ -42,30 +59,44 @@ class Login extends CI_Controller
 						'id' => $result['data']['id'],
 						'type' => $result['data']['type'],
 						'user_id' => $result['data']['user_id'],
+            'desig' => $result['data']['desig'],
+          
 						'login' =>true);
-					$this->session->set_userdata('logged_in_admin', $session_array);
+             //var_dump($type);exit(); 
                 if($type=='super_admin')
                 {
+                    $this->session->set_userdata('logged_in_admin', $session_array);
                     redirect('admin/dashboard/main_admin');
-                } else if($type == 'executive')
-                {
-                  redirect('admin/Executives/exec_dashboard');
-                } else if($type=='business_associate')
-                {
-                  redirect('admin/dashboard/ba_dashboard');
                 }
+                else if($type=='Employee')
+                {
+                  $this->session->set_userdata('logged_in_admin', $session_array);
+                  redirect('admin/dashboard/main_admin');
+                }
+
+
+
+                 else if($type == 'executive')
+                {
+
+                  $this->session->set_userdata('logged_in_exec', $session_array);
+                  redirect('admin/Executives/exec_dashboard');
+                } 
                 else if($type=='module')
                 {
                     redirect('module_dashboard');
                 }
-                else
+                else if($type == 'Channel_partner')
                 {
+                    $this->session->set_userdata('logged_in_cp', $session_array);
                     redirect('my_dashboard');
                 }
-//					redirect('my_dashboard');
+                else if($type=='ba')
+                {
+                 $this->session->set_userdata('logged_in_ba', $session_array);
+                 redirect('admin/dashboard/ba_dashboard');
+                }
 
-	 			
-				
 			} else{
 				$this->session->set_flashdata('errormsg', 'Invalid Username or Password');
 				redirect('admin/login');
@@ -73,12 +104,66 @@ class Login extends CI_Controller
 
 		} else
 		{
-			$this->session->set_flashdata('errormsg', validation_errors());
+			/*$this->session->set_flashdata('errormsg', validation_errors());*/
+			$this->session->set_flashdata('errormsg', strip_tags(validation_errors()));
 			redirect('admin/login');
 		}
 
 	}
+  function login_process_cp()
+  {
+    $this->form_validation->set_rules('username', 'Username', 'required');
+    $this->form_validation->set_rules('password', 'Password', 'required');
 
+    if($this->form_validation->run() == TRUE)
+    {
+      
+      $result = $this->login_model->validate_login();
+    
+      if($result['status'] == true)
+      {
+        $type = $result['data']['type'];
+          $session_array = array();
+          $session_array = array(
+            'username'=> $result['data']['email'],
+            'id' => $result['data']['id'],
+            'type' => $result['data']['type'],
+            'user_id' => $result['data']['user_id'],
+            'login' =>true);
+          if($type=='ba'){
+            $this->session->set_userdata('logged_in_ba', $session_array);
+            redirect('admin/dashboard/ba_dashboard');
+          }else{
+          $this->session->set_userdata('logged_in_admin', $session_array);
+                if($type=='super_admin')
+                {
+                    redirect('admin/dashboard/main_admin');
+                } else if($type == 'executive')
+                {
+                  redirect('admin/Executives/exec_dashboard');
+                } 
+                else if($type=='module')
+                {
+                    redirect('module_dashboard');
+                }
+                else if($type == 'Channel_partner')
+                {
+                    redirect('my_dashboard');
+                }
+        }        
+
+      } else{
+        $this->session->set_flashdata('errormsg', 'Invalid Username or Password');
+        redirect('admin/login');
+      }
+
+    } else
+    {
+      $this->session->set_flashdata('errormsg', validation_errors());
+      redirect('admin/login');
+    }
+
+  }
 	function forgot_password()
 	{
 			
@@ -211,7 +296,9 @@ class Login extends CI_Controller
 	public function loged_out()
 	{
 		$this->session->unset_userdata('logged_in_admin');
-   		
+   	$this->session->unset_userdata('logged_in_cp');
+    $this->session->unset_userdata('logged_in_exec');	
+    $this->session->sess_destroy();
    	   	redirect("admin");
 	}
 }

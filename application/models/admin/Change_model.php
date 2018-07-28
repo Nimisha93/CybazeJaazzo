@@ -14,6 +14,7 @@ class Change_model extends CI_Model
 	 function get_current_pass($id)
     {
         $qry = $this->db->query("SELECT password from gp_login_table where id = '$id'");
+       
         if($qry->num_rows()>0){
             return $qry->row_array();
         } else{

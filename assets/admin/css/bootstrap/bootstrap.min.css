@@ -1037,7 +1037,7 @@ button, input, select, textarea {
 	line-height: inherit
 }
 a {
-	color: #4c4f52;
+	color: #f1f1f1;
 	text-decoration: none
 }
 a:focus, a:hover {
@@ -2167,8 +2167,8 @@ table td[class*=col-], table th[class*=col-] {
 	background-color: #ebcccc
 }
 .table-responsive {
-	min-height: .01%;
-	overflow-x: auto
+/*	min-height: .01%;
+	overflow-x: auto*/
 }
 @media screen and (max-width:767px) {
 .table-responsive {
@@ -2258,9 +2258,9 @@ output {
 	font-size: 12px;
 	line-height: 1.42857143;
 	color: #666;
-	background-color: #fff;
-	background-image: none;
-	border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    background-image: none;
+    border: 1px solid #c7c7c7;
 	border-radius: 4px;
 	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
@@ -2703,7 +2703,7 @@ a.btn.disabled, fieldset[disabled] a.btn {
 }
 .btn-primary {
 	color: #fff;
-	background-color: #337ab7;
+	background-color: #6b88a5;
 	border-color: #2e6da4
 }
 .btn-primary.focus, .btn-primary:focus {
@@ -2857,8 +2857,8 @@ a.btn.disabled, fieldset[disabled] a.btn {
 }
 .btn-danger:hover {
 	color: #fff;
-	background-color: #c9302c;
-	border-color: #ac2925
+	background-color: #c9302c !important;
+	border-color: #ac2925 !important;
 }
 .btn-danger.active, .btn-danger:active, .open>.dropdown-toggle.btn-danger {
 	color: #fff;
@@ -2905,7 +2905,7 @@ a.btn.disabled, fieldset[disabled] a.btn {
 }
 .btn-group-lg>.btn, .btn-lg {
 	padding: 10px 16px;
-	font-size: 18px;
+	font-size: 14px;
 	line-height: 1.3333333;
 	border-radius: 6px
 }
@@ -5038,7 +5038,7 @@ button.close {
 	margin-top: -2px
 }
 .modal-title{
-	color:#666;
+	color:#1d2231;
 	font-family: 'robotolight';
 	font-weight:normal;
 }

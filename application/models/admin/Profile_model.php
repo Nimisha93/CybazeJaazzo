@@ -11,15 +11,12 @@ class Profile_model extends CI_Model
     }
 
 
-
-
- 
-
      function get_all_partnertype($id)
      {
         $qry="select * from gp_pl_channel_partner where id='$id'";
         $qry=$this->db->query($qry);
-       // echo $this->db->last_query();
+       //echo $this->db->last_query();
+      // exit();
         if($qry->num_rows()>0){
             $data=$qry->row_array();
 
@@ -113,23 +110,24 @@ function update_admin_byid($id){
 
 function get_exicutives($id)
     {
-
-        $qry = "SELECT 
-m.id,
+$qry = "SELECT m.id,
 m.name,
-
 d.phone,
-d.phone2,
 d.email,
 d.address,
 d.status,
-d.image
+d.image,
+type.designation,
+type.add_exec
 FROM gp_pl_sales_team_members m 
 LEFT JOIN gp_pl_sales_team_member_details d on m.id = d.sales_team_member_id
+left join gp_pl_sales_designation_type type on m.sales_desig_type_id = type.id
+
 WHERE m.id = '$id'";
 
         $qry = $this->db->query($qry);
-     // echo $this->db->last_query();
+
+
         if($qry->num_rows()>0)
         {
             return $qry->row_array();
@@ -151,7 +149,7 @@ WHERE m.id = '$id'";
             'phone2'=>$this->input->post('phone2'),
             'email'=>$this->input->post('email'),
             'address'=>$this->input->post('address'),
-             'image'=>$image
+            'image'=>$image
         );
         $this->db->where('sales_team_member_id',$id);
         $this->db->update('gp_pl_sales_team_member_details',$data);

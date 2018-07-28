@@ -1268,26 +1268,7 @@ Class Channelpartner_model extends CI_Model{
             return true;
         }
     }
-    function get_pooling_group_settings(){
-        $qry_pool_set = "select pl_stg.id, pl_stg.title, pl_stg.group_persentage, pl_stg.no_of_levels from gp_pl_pool_group_settings pl_stg";
-        $qry_pool_set = $this->db->query($qry_pool_set);
-        if($qry_pool_set->num_rows()>0)
-        {
-            return $qry_pool_set->result_array();
-        }else{
-            return array();
-        }
-    }
-    function get_pooling_stage__settings(){
-        $qry_stg_pool_set = "select stg.id, stg.title, stg.stage_group_persentage,stg.no_of_levels from gp_pl_pool_stage_group_settings stg";
-        $qry_stg_pool_set = $this->db->query($qry_stg_pool_set);
-        if($qry_stg_pool_set->num_rows()>0)
-        {
-            return $qry_stg_pool_set->result_array();
-        }else{
-            return array();
-        }
-    }
+   
     function get_parent_from_login($login_id, $desig_type_id,$parent_reward_rs){      
         $qry = "select * from gp_login_table lg where lg.id = '$login_id'";       
         $lg_qry = $this->db->query($qry);
@@ -1346,13 +1327,33 @@ Class Channelpartner_model extends CI_Model{
         {
             $lg_result = $lg_qry->row_array();
             $lg_id = $lg_result['id'];
+            //var_dump($lg_id);exit;
            return $this->get_parent_from_login($lg_id,$desig_type_id,$parent_reward_rs);
         }else{
            return $this->get_parent_from_login($parent_id,$desig_type_id,$parent_reward_rs);
         }
     }
 
-
+     function get_pooling_group_settings(){
+        $qry_pool_set = "select pl_stg.id, pl_stg.title, pl_stg.group_persentage, pl_stg.no_of_levels from gp_pl_pool_group_settings pl_stg";
+        $qry_pool_set = $this->db->query($qry_pool_set);
+        if($qry_pool_set->num_rows()>0)
+        {
+            return $qry_pool_set->result_array();
+        }else{
+            return array();
+        }
+    }
+    function get_pooling_stage__settings(){
+        $qry_stg_pool_set = "select stg.id, stg.title, stg.stage_group_persentage,stg.no_of_levels from gp_pl_pool_stage_group_settings stg";
+        $qry_stg_pool_set = $this->db->query($qry_stg_pool_set);
+        if($qry_stg_pool_set->num_rows()>0)
+        {
+            return $qry_stg_pool_set->result_array();
+        }else{
+            return array();
+        }
+    }
 
 
 function get_recent_activity()

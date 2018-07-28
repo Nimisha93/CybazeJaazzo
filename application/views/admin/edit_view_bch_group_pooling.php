@@ -7,89 +7,9 @@
 
 <div class="right_col" role="main">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
         <div class="clearfix"></div>
-       <!--  <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Channel Partner Type<small></small></h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="">
-                            <table id="example" class="display" cellspacing="0" width="100%">
-                                <thead>
-                                <tr class="tablbg">
-                                    <th>Pool Group Name</th>
-                                    <th>Allocated Pesentage</th>
-                                    <th>No Of Levels</th>
-                                    <th>Action</th>
-
-                                </tr>
-                                </thead>
-                                <tfoot>
-                                <tr>
-                                    <th>Pool Group Name</th>
-                                    <th>Allocated Pesentage</th>
-                                    <th>No Of Levels</th>
-                                    <th>Action</th>
-
-                                </tr>
-                                </tfoot>
-                                <tbody style=" height:100px;overflow:scroll">
-
-                                <?php  foreach($pooling_groups as $pool_group ){?>
-                                <tr>
-                                    <td class="titleclass"><input type="hidden" value="<?php echo $pool_group['id'];?>" class="hiddentype_id"><?php echo $pool_group['title'];?></td>
-                                    <td class="descrip"><?php echo $pool_group['group_persentage'];?></td>
-                                    <td class="descrip"><?php echo $pool_group['no_of_levels'];?></td>
-                                    <td><a href="<?= base_url();  ?>admin/pooling/full_system_pool_bch_settings/<?= $pool_group['id']; ?>/group/">View Full Pool Settings</a>
-                                        <button type="button" class="commission_delete">Delete Pool Group</button></td>
-
-
-
-                                </tr>
-                                    <?php }?>
-                                <?php  foreach($pooling_stages as $pool_group ){?>
-                                <tr>
-                                    <td class="titleclass"><input type="hidden" value="<?php echo $pool_group['id'];?>" class="hiddentype_id"><?php echo $pool_group['title'];?></td>
-                                    <td class="descrip"><?php echo $pool_group['group_persentage'];?></td>
-                                    <td class="descrip"><?php echo $pool_group['no_of_levels'];?></td>
-                                    <td><a href="<?= base_url();  ?>admin/pooling/full_system_pool_bch_settings/<?= $pool_group['id']; ?>/stage/">View Full Pool Settings</a>
-                                        <button type="button" class="stage_commission_delete">Delete Pool Group</button></td>
-
-
-
-                                </tr>
-                                    <?php }?>
-
-                            
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div> -->
+     
     </div>
     <div class="clearfix"></div>
     <script>

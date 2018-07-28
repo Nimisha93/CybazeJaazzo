@@ -9,37 +9,89 @@ Class Pooling_model extends CI_Model{
     //add desigination
     public function add_designation()
     {
-        $datestring = ':%Y:%m:%d %h:%i%a';
-
-
-         $data=array
+        $this->db->trans_begin();
+        $datestring = date("Y-m-d h:i:sa");
+        $add=$this->input->post('add_exec');
+        $bde_count=$this->input->post('bde_count');
+        
+        if($add !='' ){
+           $add1 ='1';
+        }
+        else{
+            $add1='0';
+        }
+        if($bde_count!=''){
+           $bde =$bde_count;
+        }
+        else{
+            $bde ='0';
+        }
+        $sort=$this->input->post('sortorder');
+        $data=array
         (
-            'designation'=>$this->input->post('Desigination'),
-            'description'=>$this->input->post('discription'),
-            'sort_order'=>$this->input->post('Sortorder'),
-            'group_id'=>$this->input->post('priv_group'),
-            'created_on'=>$datestring
+            'designation'=>$this->input->post('designation'),
+            'add_exec'=>$add1,
+            'description'=>$this->input->post('description'),
+            'sort_order'=>$sort+3,
+            //'group_id'=>$this->input->post('priv_group'),
+            'created_on'=>$datestring,
+            'type'=>'executive',
+            'is_del'=>0,
+            'bde_count'=>$bde
 
         );
+     
+        $slug = slugify($this->input->post('designation'));
+        $data['slug'] = $slug;
         $result=$this->db->insert('gp_pl_sales_designation_type',$data);
         $insert_id=$this->db->insert_id();
-            $date = date("Y-m-d h:i:sa") ;
-           $action = "added designation ";
-            $loginsession = $this->session->userdata('logged_in_admin');
+        $date = date("Y-m-d h:i:sa") ;
+        $action = "added designation ";
+        $loginsession = $this->session->userdata('logged_in_admin');
 
-            $userid=$loginsession['user_id'];
-            $status = 0;
+        $userid=$loginsession['user_id'];
+        $status = 0;
+        activity_log($action,$userid,$status,$date);
 
-            activity_log($action,$userid,$status,$date);
-
-        return $insert_id;
+        if($this->db->trans_status=false){
+            $this->db->trans_rollback();
+            return false;
+        }
+        else{
+            $this->db->trans_commit();
+            return $insert_id;
+        }
     }
-    // check sort oder of desigination exist or not
-
-    function check_sort_order()
+    //count designations
+    function get_all_desiginations_count($search)
     {
-        $id=$this->input->post('Sortorder');
-        $qry="select *  from gp_pl_sales_designation_type where sort_order='$id'";
+        if(!empty($search)){
+            $keyword = "%{$search}%";
+            $where = "and (gp_des.designation LIKE '%$keyword%' OR gp_des.type LIKE '%$keyword%' OR gp_des.description LIKE '%$keyword%' OR gp_des.sort_order LIKE '%$keyword%' OR gp_gpname.group LIKE '%$keyword%')";
+        }else{
+            $where = '';
+        }
+         $qry="select gp_des.id,gp_des.designation,gp_des.slug,gp_des.type,gp_des.description,gp_des.sort_order,gp_des.group_id,gp_gpname.group,gp_des.add_exec,gp_des.bde_count from gp_pl_sales_designation_type gp_des 
+             left join gp_privillage_groupname gp_gpname on gp_des.group_id=gp_gpname.id where gp_des.is_del !='1' and gp_des.type='executive'".$where;
+        $result=$this->db->query($qry);
+        if($result->num_rows()>0)
+        {
+            return $result->num_rows();
+        }else {
+            return false;
+        }
+    }
+    //list designations
+    function  get_all_desiginations($search,$limit, $start)
+    {
+        if(!empty($search)){
+            $keyword = "%{$search}%";
+            $where = "and (gp_des.designation LIKE '%$keyword%' OR gp_des.type LIKE '%$keyword%' OR gp_des.description LIKE '%$keyword%' OR gp_des.sort_order LIKE '%$keyword%' OR gp_gpname.group LIKE '%$keyword%')";
+        }else{
+            $where = '';
+        }
+         $qry="select gp_des.id,gp_des.designation,gp_des.type,gp_des.slug,gp_des.description,gp_des.sort_order,gp_des.group_id,gp_gpname.group,gp_des.add_exec,gp_des.bde_count from gp_pl_sales_designation_type gp_des 
+             left join gp_privillage_groupname gp_gpname on gp_des.group_id=gp_gpname.id where gp_des.is_del !='1' and gp_des.type='executive'".$where."LIMIT $start, $limit";  
         $result= $this->db->query($qry);
 
         if($result->num_rows()>0)
@@ -53,9 +105,372 @@ Class Pooling_model extends CI_Model{
         }
     }
 
-    function  get_all_desiginations()
+    public function update_designation($data2,$id)
     {
-        $qry="select *  from gp_pl_sales_designation_type";
+        $this->db->trans_begin();
+        $datestring = date("Y-m-d h:i:sa");
+        $this->db->where('id',$id);
+        $this->db->update('gp_pl_sales_designation_type',$data2);
+        $action = "designation updated";
+        $date = date("Y-m-d h:i:sa") ;
+        $loginsession = $this->session->userdata('logged_in_admin');
+        $userid=$loginsession['user_id'];
+        $status = 0;
+        activity_log($action,$userid,$status,$date);
+        if($this->db->trans_status=false){
+            $this->db->trans_rollback();
+            return false;
+        }else{
+            $this->db->trans_commit();
+            return true;
+        }
+    }
+    function delete_designaton($data)
+    {
+        $itemgrp = $data['itemgrps'];
+        $info = array('is_del' => 1);
+        $this->db->where_in('id', $itemgrp);
+        $qry = $this->db->update('gp_pl_sales_designation_type', $info);
+       
+        return $qry;
+    }
+    //get the sum of pool  percentage
+    function  get_total_pool_persantage()
+    {
+        $qry="SELECT  COALESCE(SUM(percentage),0)as total_percentage FROM gp_pl_pool_settings";
+        $result=$this->db->query($qry);
+        if($result->num_rows()>0)
+        {
+            return  $result->row_array();
+        }
+        else
+        {
+            return array();
+        }
+    }
+    //get all pooling stages
+    function get_all_stages()
+    {
+        $qry="select dt.* from gp_pl_sales_designation_type dt where dt.is_del=0";
+        $result=$this->db->query($qry);
+        if($result->num_rows()>0)
+        {
+            return $result->result_array();
+        }
+        else
+        {
+            return $result->row_array();
+        }
+    }
+    //add new pool data
+    function  add_new_pool_data()
+    {
+        $this->db->trans_begin();
+
+        $pool_name=$this->input->post('pool_name');
+        $group_persantage=$this->input->post('allow_persantage');
+        $no_of_levels=$this->input->post('no_of_levels');
+        $designation=$this->input->post('designation');
+        $designation_persantage=$this->input->post('design_allwed_persantage');
+        $related_to=$this->input->post('related_to');
+        $date= date("Y-m-d h:i:s a");
+        $data = array(
+            'title' => $pool_name,
+            'percentage' => $group_persantage,
+            'no_of_levels' => $no_of_levels,
+            'related_to' =>$related_to,
+            'created_on' => $date,
+            'created_by' => 'admin',
+        );
+        $qry = $this->db->insert('gp_pl_pool_settings', $data);
+        if($qry)
+        {
+            $insert_id = $this->db->insert_id();
+        }
+
+        foreach ($designation as $key => $design) {
+
+            $designation_persantages[] = array(
+                'pool_settings_id' => $insert_id,
+                'designation_type_id' => $design,
+                'percentage' => $designation_persantage[$key],
+
+            );
+        }
+        $ins_qry = $this->db->insert_batch('gp_pl_pool_members_settings', $designation_persantages);
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            return FALSE;
+        }
+        else
+        {
+            $this->db->trans_commit();
+            return true;
+        }
+    }
+    // get all pooling data
+    function  get_all_pooings()
+    {
+        $qry="select * from gp_pl_pool_settings";
+        $result=$this->db->query($qry);
+        if($result->num_rows()>0)
+        {
+            return  $result->result_array();
+        } else{
+            return array();
+        }
+    }
+    //get all  pooling data by id
+    function  get_all_members_by_id($id)
+    {
+        $qry="SELECT gp_pl_pool_settings.id as group_id,
+        gp_pl_pool_settings.title,
+        gp_pl_pool_settings.related_to,
+        gp_pl_pool_settings.percentage as percentage,
+        gp_pl_pool_settings.no_of_levels,
+        gp_pl_sales_designation_type.designation as designation,
+        gp_pl_sales_designation_type.id as designation_id,
+        gp_pl_pool_members_settings.percentage as member_persantage,
+        gp_pl_pool_members_settings.id
+        FROM gp_pl_pool_settings LEFT JOIN
+        gp_pl_pool_members_settings on
+        gp_pl_pool_settings.id=gp_pl_pool_members_settings.pool_settings_id
+        LEFT JOIN gp_pl_sales_designation_type on gp_pl_pool_members_settings.designation_type_id= gp_pl_sales_designation_type.id
+        WHERE gp_pl_pool_settings.id='$id'";
+        $result= $this->db->query($qry);
+
+        if($result->num_rows()>0)
+        {
+            return $result->result_array();
+
+        }
+        else
+        {
+            return array();
+        }
+    }
+    //delete pool data
+    function delete_pool_settings($id)
+    {
+        $this->db->trans_begin();
+        $sql="DELETE FROM `gp_pl_pool_settings` WHERE id='$id'";
+        $this->db->query($sql);
+        if($this->db->trans_status=false){
+            $this->db->trans_rollback();
+            return false;
+        }
+        else{
+            $sql="DELETE FROM `gp_pl_pool_members_settings` WHERE `pool_settings_id`='$id'";
+            $this->db->query($sql);
+            $this->db->trans_commit();
+            return true;
+        }
+    }
+    //delete pooling member
+    function delete_pooling_member($id)
+    {
+        $this->db->trans_begin();
+        $pool_settings_id = 
+        $qry="SELECT gp_pl_pool_settings.id,gp_pl_pool_settings.no_of_levels
+        FROM gp_pl_pool_settings LEFT JOIN
+        gp_pl_pool_members_settings on
+        gp_pl_pool_settings.id=gp_pl_pool_members_settings.pool_settings_id WHERE gp_pl_pool_members_settings.id='$id'";
+        $result1= $this->db->query($qry);
+
+        if($result1->num_rows()>0)
+        {
+            $res =  $result1->row_array();
+            $pool_settings_id = $res['id'];
+        }
+
+        $sql1="DELETE FROM `gp_pl_pool_members_settings` WHERE id='$id'";
+        $result= $this->db->query($sql1);
+        if($this->db->trans_status=false){
+            $this->db->trans_rollback();
+            return false;
+        }
+        else{
+            $sql="UPDATE `gp_pl_pool_settings` SET no_of_levels=no_of_levels-1  WHERE `id`='$pool_settings_id'";
+            $this->db->query($sql);
+            $this->db->trans_commit();
+            return true;
+        }
+    }
+    //update  pooling data
+    function  update_pool_data()
+    {
+        $this->db->trans_begin();
+            $pool_group_name=$this->input->post('pool_name');
+            $id=$this->input->post('id');
+            $main_id=$this->input->post('main_id');
+            $group_persantage=$this->input->post('allow_persantage');
+            $no_of_levels=$this->input->post('no_of_levels');
+            $related_to=$this->input->post('related_to');
+            $designation=$this->input->post('designation');
+            $new_designations=$this->input->post('designation_new');
+            $new_designation_persantage=$this->input->post('new_designation_persantage');
+            $designation_persantage=$this->input->post('design_allwed_persantage');
+            $update_id=$this->input->post('allowed_persantage_id');
+            $date= date("Y-m-d h:i:sa");
+            $data = array
+            (
+                'title' => $pool_group_name,
+                'percentage' => $group_persantage,
+                'no_of_levels' => $no_of_levels,
+                'related_to'=>$related_to,
+                'created_on' => $date,
+                'created_by' => 'admin',
+            );
+            $this->db->where('id',$main_id);
+            $qry = $this->db->update('gp_pl_pool_settings', $data);
+            if($qry)
+            {
+                $insert_id = $main_id;
+            }
+            foreach ($designation as $key => $design)
+            {
+                $designation_persantages = array
+                (
+                    'pool_settings_id' => $insert_id,
+                    'designation_type_id' => $design,
+                    'percentage' => $designation_persantage[$key]
+
+                );
+                $this->db->where('id',$update_id[$key]);
+                $upd_qry = $this->db->update('gp_pl_pool_members_settings', $designation_persantages);
+            }
+            if($new_designations)
+            {
+                foreach($new_designations as $key => $new_desigination)
+                {
+                    $new_designation_persantages[] = array
+                    (
+                        'pool_settings_id' => $insert_id,
+                        'designation_type_id' => $new_desigination,
+                        'percentage' => $new_designation_persantage[$key]
+                    );
+                }
+                $ins_qry = $this->db->insert_batch('gp_pl_pool_members_settings', $new_designation_persantages);
+            }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            return FALSE;
+        } else {
+            $this->db->trans_commit();
+            return true;
+        }
+    }
+
+    function get_partner_type(){
+        $session_data=$this->session->userdata('logged_in_admin');
+        $loginuser=$session_data['user_id'];
+       
+        $qry="select
+                typ.title ,typ.id,con.`id` conid,
+                typ.`status`
+                from
+                gp_pl_channel_partner_type_connection con
+                left join gp_pl_channel_partner cp on cp.id = con.channel_partner_id
+                left join gp_pl_channel_partner_types typ on typ.id = con.channel_partner_type_id ";
+               // where con.channel_partner_id='$loginuser'";
+        $qry=$this->db->query($qry);
+        if($qry){
+            $data['type']=$qry->result_array();
+        }
+        else{
+            $data['type']=array();
+        }
+        return $data;
+
+    }
+    function set_new_commission(){
+
+            $this->db->trans_begin();
+            $session_data=$this->session->userdata('logged_in_admin');
+            $loginuser=$session_data['user_id'];
+            $company_commission = $this->input->post('company_commission');
+            $customer_commission = $this->input->post('customer_commission');
+            $date = date("Y-m-d h:i:sa") ;
+                $data=array(
+                    'company_commission' => $company_commission,
+                    'customer_commission'=> $customer_commission,
+                    'created_on' => $date
+                );
+    
+            $this->db->insert('gp_pl_commission',$data);
+            $action = "added new commision";
+           
+            $loginsession = $this->session->userdata('logged_in_admin');
+
+            $userid=$loginsession['user_id'];
+            $status = 0;
+
+            activity_log($action,$userid,$status,$date);
+            
+            $this->db->trans_complete();
+            if($this->db->trans_status() == false){
+                $this->db->trans_rollback();
+                return false;
+            }
+            else{
+                $this->db->trans_commit();
+                return true;
+            }
+    }
+    function update_commission(){
+
+            $this->db->trans_begin();
+            $session_data=$this->session->userdata('logged_in_admin');
+            $loginuser=$session_data['user_id'];
+            $company_commission = $this->input->post('company_commission');
+            $customer_commission = $this->input->post('customer_commission');
+            $date = date("Y-m-d h:i:sa") ;
+                $data=array(
+                    'company_commission' => $company_commission,
+                    'customer_commission'=> $customer_commission,
+                    'created_on' => $date
+                );
+    
+            $this->db->update('gp_pl_commission',$data);
+            $action = "updated new commision";
+           
+            $loginsession = $this->session->userdata('logged_in_admin');
+
+            $userid=$loginsession['user_id'];
+            $status = 0;
+
+            activity_log($action,$userid,$status,$date);
+            
+            $this->db->trans_complete();
+            if($this->db->trans_status() == false){
+                $this->db->trans_rollback();
+                return false;
+            }
+            else{
+                $this->db->trans_commit();
+                return true;
+            }
+    }
+    function get_commission(){
+        $qry = "select * from gp_pl_commission";
+        $qry = $this->db->query($qry);
+        if($qry->num_rows()>0)
+        {
+            return $qry->row_array();
+        }   else{
+            return array();
+        }
+    }
+    /*// check sort oder of desigination exist or not
+
+    function check_sort_order()
+    {
+        $id=$this->input->post('Sortorder');
+        $qry="select *  from gp_pl_sales_designation_type where sort_order='$id'";
         $result= $this->db->query($qry);
 
         if($result->num_rows()>0)
@@ -104,7 +519,6 @@ Class Pooling_model extends CI_Model{
             $this->db->trans_commit();
             return true;
         }
-
     }
     //pranav starts
 
@@ -155,9 +569,6 @@ Class Pooling_model extends CI_Model{
             $this->db->trans_commit();
             return true;
         }
-
-
-
     }
     //add new pool data
     function  add_new_ba_pool_data()
@@ -207,9 +618,6 @@ Class Pooling_model extends CI_Model{
             $this->db->trans_commit();
             return true;
         }
-
-
-
     }
     //add new pool data
     function  add_new_bch_pool_data()
@@ -259,9 +667,6 @@ Class Pooling_model extends CI_Model{
             $this->db->trans_commit();
             return true;
         }
-
-
-
     }
     //add new pool stage data
     function add_new_stage_pool_data()
@@ -314,9 +719,6 @@ Class Pooling_model extends CI_Model{
             $this->db->trans_commit();
             return true;
         }
-
-
-
     }
     //add new ba pool stage data
     function add_new_ba_stage_pool_data()
@@ -425,7 +827,8 @@ Class Pooling_model extends CI_Model{
     {
         $qry="SELECT (SELECT COALESCE(SUM(group_persentage),0) FROM gp_pl_pool_group_settings) + (SELECT COALESCE(SUM(stage_group_persentage),0) FROM gp_pl_pool_stage_group_settings) as total_persantage";
         $result=$this->db->query($qry);
-
+        // echo $this->db->last_query();
+       //exit;
         if($result->num_rows()>0)
         {
             return  $result->row_array();
@@ -467,7 +870,7 @@ Class Pooling_model extends CI_Model{
             return array();
         }
     }
-    //detete system pool group
+   //system pool group
     function delete_system_pool_group($id)
     {
         $this->db->trans_begin();
@@ -838,13 +1241,13 @@ Class Pooling_model extends CI_Model{
         $loginuser=$session_data['user_id'];
         //$qry="select ct.id,ct.title from gp_pl_channel_partner_types ct where ct.is_del='0' order by ct.id desc";
         $qry="select
-				typ.title ,typ.id,con.`id` conid,
-				typ.`status`
-				from
-				gp_pl_channel_partner_type_connection con
-				left join gp_pl_channel_partner cp on cp.id = con.channel_partner_id
-				left join gp_pl_channel_partner_types typ on typ.id = con.channel_partner_type_id
-				where con.channel_partner_id='$loginuser'";
+                typ.title ,typ.id,con.`id` conid,
+                typ.`status`
+                from
+                gp_pl_channel_partner_type_connection con
+                left join gp_pl_channel_partner cp on cp.id = con.channel_partner_id
+                left join gp_pl_channel_partner_types typ on typ.id = con.channel_partner_type_id ";
+               // where con.channel_partner_id='$loginuser'";
         $qry=$this->db->query($qry);
         if($qry){
             $data['type']=$qry->result_array();
@@ -860,17 +1263,25 @@ Class Pooling_model extends CI_Model{
 
             $this->db->trans_begin();
             $session_data=$this->session->userdata('logged_in_admin');
-            $loginuser=$session_data['id'];
+            $loginuser=$session_data['user_id'];
             $cat_name = $this->input->post('category_name');
             $cat_perc = $this->input->post('category_percent');
+            $con_id = $this->input->post('channel_type');
+            $sql = "select channel_partner_type_id from gp_pl_channel_partner_type_connection where id = '$con_id'";
+            $sql = $this->db->query($sql);
+            //echo $this->db->last_query();
+            $ct = $sql->row_array();
+            $ct = $ct['channel_partner_type_id'];
                 $data=array(
-                    'channel_partner_con_id'=>$this->input->post('channel_type'),
+                    'channel_partner_type_id' => $ct,
+                    'channel_partner_id'=> $loginuser,
+                    'channel_partner_con_id'=>$con_id,
                     'pooling_commission'=>$this->input->post('company_commission')
                    
                 );
     //  var_dump($data);exit;   
                 $this->db->insert('gp_pl_system_commission_settings',$data);
-
+                 //echo $this->db->last_query();
                 // $up_commision = array(
                 //     'channel_partner_main_commision' => $this->input->post('main_commission')
                 //     );
@@ -885,7 +1296,7 @@ Class Pooling_model extends CI_Model{
                     );
                 }
                 $this->db->insert_batch('gp_channel_con_cat_commision', $product_cat);
-
+       // echo $this->db->last_query();
                  $action = "added new commision";
             $date = date("Y-m-d h:i:sa") ;
             $loginsession = $this->session->userdata('logged_in_admin');
@@ -924,13 +1335,8 @@ Class Pooling_model extends CI_Model{
            // var_dump($this->input->post());exit;    
                 $this->db->where('id', $comm_settgs_id);
                 $this->db->update('gp_pl_system_commission_settings',$data);
-
-                // $up_commision = array(
-                //     'channel_partner_main_commision' => $this->input->post('main_commission')
-                //     );
-                // $this->db->where('id', $this->input->post('channel_type'));
-                // $up_qry = $this->db->update('gp_pl_channel_partner_type_connection', $up_commision);
-                
+               // echo $this->db->last_query();
+                //exit;
                 foreach ($cat_name as $key => $cat) {
                  $product_cat = array(
                     'cp_con_id' => $this->input->post('channel_type'),
@@ -962,19 +1368,18 @@ Class Pooling_model extends CI_Model{
                 $this->db->trans_commit();
                 return true;
             }
-
-
     }
-
     function get_all_commision(){
         $session_data=$this->session->userdata('logged_in_admin');
-        $loginuser=$session_data['id'];
+        $loginuser=$session_data['user_id'];
         $qry="select types.title title,commi.id,commi.pooling_commission,commi.direct_commission,par.name from gp_pl_system_commission_settings commi
                 left join gp_pl_channel_partner_types types on types.id=commi.channel_partner_type_id
                 left join gp_pl_channel_partner par on par.id=commi.channel_partner_id
                 where commi.channel_partner_id='$loginuser'";
 
         $query=$this->db->query($qry);
+       // echo $this->db->last_query();
+       // exit;
         if($query){
             $data['commission']=$query->result_array();
         }
@@ -1012,16 +1417,21 @@ Class Pooling_model extends CI_Model{
 
         $this->db->trans_begin();
         $id=$this->input->post('hiddentype');
-
+        $con_id = $this->input->post('channel_type');
+        $sql = "select channel_partner_type_id from gp_pl_channel_partner_type_connection where id = '$con_id'";
+        $sql = $this->db->query($sql);
+        //echo $this->db->last_query();
+        $ct = $sql->row_array();
+        $ct = $ct['channel_partner_type_id'];
 
         $data=array(
-            'channel_partner_type_id'=>$this->input->post('channel_type'),
+            'channel_partner_type_id'=>$ct,
             'pooling_commission'=>$this->input->post('company_commi'),
             'direct_commission'=>$this->input->post('direct_commi'),
         );
         $this->db->where('id',$id);
         $this->db->update('gp_pl_system_commission_settings',$data);
-
+        //echo $this->db->last_query();exit;
 
          $action = "update commission";
             $date = date("Y-m-d h:i:sa") ;
@@ -1099,7 +1509,7 @@ Class Pooling_model extends CI_Model{
         $sql="DELETE FROM `gp_pl_pool_bch_stage_settings` WHERE id='$id'";
 
         $this->db->query($sql);
-
+       // echo $this->db->last_query();
 
         if($this->db->trans_status=false)
         {
@@ -1108,9 +1518,10 @@ Class Pooling_model extends CI_Model{
         }
         else
         {
-            $sql="DELETE FROM `gp_pl_pool_stage_members_settings` WHERE `system_pool_stage_id`='$id'";
+            $sql="DELETE FROM `gp_pl_pool_bch_stage_members` WHERE `bch_stg_id`='$id'";
 
             $this->db->query($sql);
+           // echo $this->db->last_query();
             $this->db->trans_commit();
             return true;
         }
@@ -1146,22 +1557,30 @@ Class Pooling_model extends CI_Model{
     function  update_pool_data()
     {
         $this->db->trans_begin();
-        $type=$this->input->post('type');
 
+        $type=$this->input->post('type');
+        
         $pool_group_name=$this->input->post('pool_name');
         $id=$this->input->post('id');
         $main_id=$this->input->post('main_id');
+       // var_dump($main_id);exit();
         $group_persantage=$this->input->post('allow_persantage');
         $no_of_levels=$this->input->post('no_of_levels');
         $designation=$this->input->post('designation');
         $new_designation=$this->input->post('designation_new');
-        $new_designation_persantage=$this->input->post('design_allwed_persantage');
+        $new_designation_persantage=$this->input->post('new_designation_persantage');
+
         $designation_persantage=$this->input->post('design_allwed_persantage');
-        $update_id=$this->input->post('allowed_persantage_id');
+        // var_dump($designation);
+        //var_dump($designation_persantage);
+        //var_dump($new_designation);
+        //var_dump($new_designation_persantage);
+         $update_id=$this->input->post('allowed_persantage_id');
 
         $date= date("Y-m-d h:i:sa");
         if($type=='group')
         {
+
         $data = array
         (
             'title' => $pool_group_name,
@@ -1174,7 +1593,7 @@ Class Pooling_model extends CI_Model{
         $this->db->where('id',$main_id);
 
         $qry = $this->db->update('gp_pl_pool_group_settings', $data);
-
+       
         if($qry)
         {
             $insert_id = $main_id;
@@ -1197,7 +1616,7 @@ Class Pooling_model extends CI_Model{
  if($new_designation)
  {
 
-        foreach($new_designation as $new_desigination)
+        foreach($new_designation as $key =>  $new_desigination)
         {
             $new_designation_persantages[] = array
             (
@@ -1226,8 +1645,9 @@ Class Pooling_model extends CI_Model{
             return true;
         }
         }
-        elseif($type=='stage')
+        else if($type=='stage')
         {
+
             $data = array
             (
                 'title' => $pool_group_name,
@@ -1240,7 +1660,7 @@ Class Pooling_model extends CI_Model{
             $this->db->where('id',$main_id);
 
             $qry = $this->db->update('gp_pl_pool_stage_group_settings', $data);
-
+            //echo $this->db->last_query();
             if($qry)
             {
                 $insert_id = $main_id;
@@ -1248,22 +1668,22 @@ Class Pooling_model extends CI_Model{
 
             foreach ($designation as $key => $design)
             {
-
+                //var_dump("update");
                 $designation_persantages = array
                 (
                     'group_id' => $insert_id,
                     'system_pool_stage_id' => $design,
                     'persentage' => $designation_persantage[$key]
-//                'id' => $update_id[$key],
 
                 );
                 $this->db->where('id',$update_id[$key]);
                 $upd_qry = $this->db->update('gp_pl_pool_stage_members_settings', $designation_persantages);
-            }
-            if($new_designation)
-            {
 
-                foreach($new_designation as $new_desigination)
+            }
+            if(!empty($new_designation))
+            {
+              // var_dump("insert");
+                foreach($new_designation as $key => $new_desigination)
                 {
                     $new_designation_persantages[] = array
                     (
@@ -1288,6 +1708,8 @@ Class Pooling_model extends CI_Model{
             }
             else
             {
+
+
                 $this->db->trans_commit();
                 return true;
             }
@@ -1387,7 +1809,7 @@ Class Pooling_model extends CI_Model{
         $qry="SELECT gp_pl_pool_bch_group_settings.id,
         gp_pl_pool_bch_group_settings.title,
         gp_pl_pool_bch_group_settings.no_of_levels,
-        gp_pl_pool_bch_group_settings.percentage,
+        gp_pl_pool_bch_group_settings.percentage as group_persentage,
         gp_pl_sales_designation_type.designation,
         gp_pl_sales_designation_type.sort_order,
         gp_pl_pool_bch_group_members.id,
@@ -1429,7 +1851,7 @@ Class Pooling_model extends CI_Model{
         $no_of_levels=$this->input->post('no_of_levels');
         $designation=$this->input->post('designation');
         $new_designation=$this->input->post('designation_new');
-        $new_designation_persantage=$this->input->post('design_allwed_persantage');
+        $new_designation_persantage=$this->input->post('design_allwed_persantage_new');
         $designation_persantage=$this->input->post('design_allwed_persantage');
         $update_id=$this->input->post('allowed_persantage_id');
 
@@ -1537,7 +1959,7 @@ Class Pooling_model extends CI_Model{
             if($new_designation)
             {
 
-                foreach($new_designation as $new_desigination)
+                foreach($new_designation as $key => $new_desigination)
                 {
                     $new_designation_persantages[] = array
                     (
@@ -1554,14 +1976,17 @@ Class Pooling_model extends CI_Model{
             {
 
             }
+
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE)
             {
+
                 $this->db->trans_rollback();
                 return FALSE;
             }
             else
             {
+
                 $this->db->trans_commit();
                 return true;
             }
@@ -1578,7 +2003,7 @@ Class Pooling_model extends CI_Model{
         $qry="SELECT gp_pl_pool_ba_group_settings.id,
         gp_pl_pool_ba_group_settings.title,
         gp_pl_pool_ba_group_settings.no_of_levels,
-        gp_pl_pool_ba_group_settings.percentage,
+        gp_pl_pool_ba_group_settings.percentage as group_persentage,
         gp_pl_sales_designation_type.designation,
         gp_pl_sales_designation_type.sort_order,
         gp_pl_pool_ba_group_members.id,
@@ -1609,7 +2034,7 @@ Class Pooling_model extends CI_Model{
     {
         $this->db->trans_begin();
         $type=$this->input->post('type');
-
+       // var_dump($type);
         $pool_group_name=$this->input->post('pool_name');
         $id=$this->input->post('id');
         $main_id=$this->input->post('main_id');
@@ -1617,7 +2042,7 @@ Class Pooling_model extends CI_Model{
         $no_of_levels=$this->input->post('no_of_levels');
         $designation=$this->input->post('designation');
         $new_designation=$this->input->post('designation_new');
-        $new_designation_persantage=$this->input->post('design_allwed_persantage');
+        $new_designation_persantage=$this->input->post('new_designation_persantage');
         $designation_persantage=$this->input->post('design_allwed_persantage');
         $update_id=$this->input->post('allowed_persantage_id');
 
@@ -1660,7 +2085,7 @@ Class Pooling_model extends CI_Model{
         }
         if($new_designation)
         {
-            foreach($new_designation as $new_desigination)
+            foreach($new_designation as $key => $new_desigination)
             {
                 $new_designation_persantages[] = array
                 (
@@ -1727,7 +2152,7 @@ Class Pooling_model extends CI_Model{
             if($new_designation)
             {
 
-                foreach($new_designation as $new_desigination)
+                foreach($new_designation as $key => $new_desigination)
                 {
                     $new_designation_persantages[] = array
                     (
@@ -1780,7 +2205,7 @@ Class Pooling_model extends CI_Model{
         WHERE gp_pl_pool_bch_stage_settings.id='$id'";
         $result= $this->db->query($qry);
 
-        //echo $this->db->last_query();
+       // echo $this->db->last_query();
 
         if($result->num_rows()>0)
         {
@@ -1904,7 +2329,7 @@ Class Pooling_model extends CI_Model{
 
 
     }
-
+*/
 
 
 

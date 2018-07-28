@@ -6,7 +6,7 @@
 <script src="<?php echo base_url();?>assets/datatables/jquery.dataTables.min.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>assets/datatables/dataTables.bootstrap.min.js"></script>
 
-<link rel="stylesheet" href="<?php echo base_url();?>assets/admin/css/datatable_daterangepicker.css">
+<link rel="stylesheet" href="<?php echo base_url();?>assets/datatables/daterangepicker.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/datatables/style_datatable.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>assets/datatables/dataTables.buttons.min.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>assets/datatables/buttons.bootstrap.min.js"></script>
@@ -21,8 +21,6 @@
   <script type="text/javascript" language="javascript" src="<?php echo base_url();?>assets/datatables/buttons.colVis.min.js"></script>
 
 
- <link href="<?php echo base_url();?>assets/jqui/jq_jquery-ui.css" rel="stylesheet">
-  <script src="<?php echo base_url();?>assets/jqui/jquery-ui.js" type="text/javascript" charset="utf-8"></script>
 
 <style type="text/css">
   .ui-datepicker-prev.ui-corner-all {
@@ -326,21 +324,7 @@ $('#purchase_table thead tr.filters th').each(function () {
 
 <div class="right_col" role="main">
 <div class="">
-<div class="page-title">
-    <div class="title_left">
-        <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-        </h3>
-    </div>
-    <div class="title_right">
-        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-        </div>
-    </div>
-</div>
+
 <div class="clearfix"></div>
 <div class="row">
 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -360,7 +344,7 @@ $('#purchase_table thead tr.filters th').each(function () {
                                 <p data-dismiss="alert"><?php echo $this->session->flashdata('msg'); ?></p>
                             </div>
                             <?php  } ?>
-                            <table id="purchase_table" class="table table-bordered table-striped">
+                            <table id="purchase_table" class="table table-bordered table-striped" width="100%">
                                 <thead>
 
                                 <tr class="filters">

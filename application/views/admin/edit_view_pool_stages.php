@@ -7,21 +7,7 @@
 
 <div class="right_col" role="main">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
         <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -42,21 +28,21 @@
                                     <th>Stage Name</th>
                                     <th>Description</th>
                                     <th>Created On</th>
-                                    <th></th>
+                                   
 
 
                                 </tr>
                                 </thead>
-                               <!--  <tfoot>
+                              <tfoot>
                                 <tr>
                                     <th>No</th>
                                     <th>Stage Name</th>
                                     <th>Description</th>
-                                    <th>Created On</th>
-                                    <th></th>
+                                    <td></td>
+                                   
 
                                 </tr>
-                                </tfoot> -->
+                                </tfoot> 
                                 <tbody style=" height:100px;overflow:scroll">
                                 <?php foreach($all_stages as $key=>$stages){?>
                                 <tr><input type="hidden" value="<?php echo $stages['id'];?>" class="hidden_id">
@@ -64,14 +50,14 @@
                                     <td class="stage"><?php echo $stages['stage_name'];?></td>
                                     <td class="descrip"> <?php echo $stages['description'];?></td>
                                   
-                                    <td><button type="button" class="type_sub" class="btn btn-primary type_sub" data-toggle="modal" data-target="#agree1">Edit </button>
+                                    <td><button type="button" class="btn btn-primary type_sub" data-toggle="modal" data-target="#agree1">Edit </button>
                                     <!-- <button type="button"  class="btn btn-primary type_sub edit_stage" >Edit </button> -->
                                         <button type="button" class="btn btn-danger commission_delete">Delete </button></td>
 
                                 </tr>
                                     <?php }?>
                                 <div id="agree1" class="modal fade" role="dialog">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog" >
 
                                         <!-- Modal content-->
                                         <div class="modal-content">
@@ -79,7 +65,7 @@
                                                 <button type="button" class="close" data-dismiss="modal">X</button>
                                                 <h4 class="modal-title">Edit Pool Stages</h4>
                                             </div>
-                                            <div class="modal-body">
+                                            <div class="modal-body" style="overflow:hidden;">
                                                 
                                                     <form method="post" id="commission_forms" class="commission_forms" name="commission_forms">
                                                     <input type="hidden"  name='hiddentype'  id="hiddentype"  class="form-control" ng-model="hidden_id">
@@ -219,18 +205,49 @@
 
 <script>
 
-    $(document).ready(function() {
-        var table = $('#example').DataTable( {
-            fixedHeader: {
-                header: true,
-                footer: true,
-
+$(document).ready(function() {
+    var table = $('#example').DataTable( {
+        fixedHeader: {
+            header: true,
+            footer: true,
+			
+        }
+    } );
+	
+} );
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );
+ 
+    // DataTable
+    var table = $('#example').DataTable();
+ 
+    // Apply the search
+    table.columns().every( function () {
+        var that = this;
+ 
+        $( 'input', this.footer() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
             }
         } );
-
     } );
-
+} );
 </script>
+<style>
+tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+		background-color:#e6e6e6;
+    }
+	tfoot {background-color:#f1f1f1}
+	</style>
 
 
 <!-- Datatables -->

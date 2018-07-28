@@ -5,9 +5,9 @@
       <div class="main_container">
           <div class="col-md-3 left_col ">
               <div class="left_col scroll-view">
-                  <div class="navbar nav_title" style="border: 0;background-color:#84868b">
+                  <div class="navbar nav_title" style="border: 0;background-color:#313854">
 
-                      <a href="index.html" class="site_title whiteclr">Green India</a>
+                      <a href="index.html" class="site_title whiteclr">Jaazzo</a>
 
 
                   </div>
@@ -17,7 +17,7 @@
                   <!-- menu profile quick info -->
                   <div class="profile clearfix">
                       <div class="profile_pic"> 
-                    <img src="<?php echo base_url();?>upload/<?= $user['image'];?>" alt="..." class="img-circle profile_img"> 
+                    <img src="<?php echo base_url();?>assets\admin\brand\<?= $user['brand_image'];?>" alt="..." class="img-circle profile_img">
                       </div>
                       <div class="profile_info">
                           <span>Welcome</span>
@@ -82,10 +82,17 @@
 
                                   </ul>
                               </li>
+                              <li><a><i class="fa fa-rub" aria-hidden="true"></i>Deals<span class="fa fa-chevron-down"></span></a>
+                                  <ul class="nav child_menu">
+                                      <li><a href="<?php echo base_url();?>deal">Add Deals</a></li>
+                                      <li><a href="<?php echo base_url();?>deal_list">View Deals</a></li>
+
+                                  </ul>
+                              </li>
                               <li><a><i class="fa fa-exchange" aria-hidden="true"></i>Transaction<span class="fa fa-chevron-down"></span></a>
                                   <ul class="nav child_menu">
                                       <li><a href="<?php echo base_url();?>cp_transaction">Transaction</a></li>
-
+                                      <li><a href="<?php echo base_url();?>cp_bank_transaction">Bank Transaction</a></li>
                                   </ul>
                               </li>
 
@@ -95,12 +102,12 @@
 
                                   </ul>
                               </li>
-                              <li><a><i class="fa fa-commenting-o" aria-hidden="true"></i>Notification<span class="fa fa-chevron-down"></span></a>
-                                  <ul class="nav child_menu">
-                                      <li><a href="<?php echo base_url();?>cp_notification">Notification</a></li>
-                                      <li><a href="<?php echo base_url();?>notification_list">View Notification</a></li>
-                                  </ul>
-                              </li>
+<!--                              <li><a><i class="fa fa-commenting-o" aria-hidden="true"></i>Notification<span class="fa fa-chevron-down"></span></a>-->
+<!--                                  <ul class="nav child_menu">-->
+<!--                                      <li><a href="--><?php //echo base_url();?><!--cp_notification">Notification</a></li>-->
+<!--                                      <li><a href="--><?php //echo base_url();?><!--notification_list">View Notification</a></li>-->
+<!--                                  </ul>-->
+<!--                              </li>-->
                                <li><a><i class="fa fa-google-wallet" aria-hidden="true"></i>Wallet<span class="fa fa-chevron-down"></span></a>
                                   <ul class="nav child_menu">
                                       <li><a href="<?php echo base_url();?>wallet-activity">Wallet Report</a></li>

@@ -9,21 +9,196 @@ class Refer extends CI_Controller
 		$this->load->library(array('form_validation'));
 		$this->load->helper(array('form', 'date'));
 	}
+    /*
+    function add_friend()
+    {
+        if($this->input->is_ajax_request())
+        {
+            $this->form_validation->set_rules("mobile1", "Mobile ", "trim|required|htmlspecialchars");
+            if( $this->form_validation->run() == TRUE )
+            {
+                $session_array1 = $this->session->userdata('logged_in_user');
+                $session_array2 = $this->session->userdata('logged_in_club_member');
+                $session_array3 = $this->session->userdata('logged_in_club_agent');
+                
+                if(isset($session_array1)){
+                    $lid = $session_array1['id'];
+                }
+                if(isset($session_array2)){
+                    $lid = $session_array2['id'];
+                }
+                if(isset($session_array3)){
+                    $lid = $session_array3['id'];
+                }
+                $name = $this->input->post('name');
+                $mail1 = $this->input->post('mail1');
+                // $mail2 = $this->input->post('mail2');
+                $mob1 = $this->input->post('mobile1');
+                // $mob2 = $this->input->post('mobile2');
+                // $result = $this->refer_model->refer_validation($mail1,$mail2,$mob1,$mob2);
+                $result = $this->refer_model->refer_validation($mail1,$mob1);
+              
+                if($result == 'bothtrue')
+                {
+                    $result1 = $this->refer_model->refer_exists($mail1,$mob1);
+                    if($result1 == 'allok')
+                    {
+                        $result2 = $this->refer_model->refer($name,$mail1,$mob1,$lid);
+                        if($result2==TRUE)
+                        { 
+                            $s=18;
+                            $username = "pranavpk.pk1@gmail.com";
+                            $hash = "4ec424c177ff9fdebcb835599d38a546ff2238cd";
+                            $datas['mobile'] = $mob1;
+                            $test = "0";
+                            $sender = "TXTLCL"; // This is who the message appears to be from.
+                            $numbers = $mob1; // A single number or a comma-seperated list of numbers
+                            $message = "Hi, Welcome to Jaazzo.If you are interested with Jaazzo.Please continue with signup: http://jaazzo.cybase.in/jaazzo/friends_signup/".encrypt_decrypt('encrypt',$mob1);
+                            $message = urlencode($message);
+                            $data = "username=" . $username . "&hash=" . $hash . "&message=" . $message . "&sender=" . $sender . "&numbers=" . $numbers . "&test=" . $test;
+                            $ch = curl_init('http://api.textlocal.in/send/?');
+                            curl_setopt($ch, CURLOPT_POST, true);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                            $result = curl_exec($ch); // This is the result from the API
+                            curl_close($ch);
 
-function add()
-{
-       $session_array = $this->session->userdata('logged_in_user');
+                            $email = "maneeshakk16@gmail.com";
+                            $mail_head = 'Message From Jaazzo';
+                            $status = send_custom_email($email, $mail_head, $mail1, 'Add Friend', $this->load->view('templates/public/mail/add_friend_success',$datas,TRUE));
+
+                            exit(json_encode(array("status"=>TRUE)));
+                        }elseif($result2==FALSE)
+                        { 
+                            $s=19;
+                        }
+
+                    }elseif($result1 == 'allerror')
+                    { $s=20;
+                        // echo "bot mails & mobnos exists"; exit();
+                    }
+                    elseif($result1 == '1')
+                    { $s=21;
+                        // echo "mail1 exists"; exit();
+                    }
+                    elseif($result1 == '3')
+                    { $s=23;
+                        // echo "mob1 exists"; exit();
+                    } 
+                }elseif($result == 'bothfalse' )
+                { $s=35;
+                // echo "bothfalse"; exit();
+                }
+                elseif($result == 'mobfalse' )
+                { $s=36; 
+                // echo "mobfalse"; exit();
+                }
+                elseif($result == 'mailfalse' )
+                { $s=37; 
+                // echo "mailfalse"; exit();
+                }
+                if($s==19){ exit(json_encode(array('status'=> False,"reason"=>"Unsuccess"))); }
+                elseif($s==20){ exit(json_encode(array('status'=> False,"reason"=>"Both Mail id & Mobile number alredy exist"))); }
+                elseif($s==21){ exit(json_encode(array('status'=> False,"reason"=>"Mail id already exist"))); }
+                elseif($s==23){ exit(json_encode(array('status'=> False,"reason"=>"Mobile number already exist"))); }
+                elseif($s==35){ exit(json_encode(array("status"=> FALSE,"reason"=>"Invalid Email & Mobile Format"))); }    
+                elseif($s==36){ exit(json_encode(array("status"=> FALSE,"reason"=>"Invalid Mobile Format"))); }    
+                elseif($s==37){ exit(json_encode(array("status"=> FALSE,"reason"=>"Invalid Email Format"))); }    
+                else{ exit(json_encode(array("status"=>FALSE,"reason"=>".$result.Hai.$s."))); }    
+            }else{  
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }               
+        }else{
+            show_error("We are unable to process this request on this way!");   
+        }
+    }*/
+    function add_friend()
+    {
+        if($this->input->is_ajax_request())
+        {
+            $this->form_validation->set_rules("mobile1", "Mobile ", "trim|required|htmlspecialchars");
+            if( $this->form_validation->run() == TRUE )
+            {
+                $session_array1 = $this->session->userdata('logged_in_user');
+                $session_array2 = $this->session->userdata('logged_in_club_member');
+                $session_array3 = $this->session->userdata('logged_in_club_agent');
+                
+                if(isset($session_array1)){
+                    $lid = $session_array1['id'];
+                }
+                if(isset($session_array2)){
+                    $lid = $session_array2['id'];
+                }
+                if(isset($session_array3)){
+                    $lid = $session_array3['id'];
+                }
+                $name = $this->input->post('name');
+                $mail1 = $this->input->post('mail1');
+                // $mail2 = $this->input->post('mail2');
+                $mob1 = $this->input->post('mobile1');
+                // $mob2 = $this->input->post('mobile2');
+                // $result = $this->refer_model->refer_validation($mail1,$mail2,$mob1,$mob2);
+                $result = $this->refer_model->refer_validation($mail1,$mob1);
+              
+                if($result == 'bothtrue')
+                {
+                    $result1 = $this->refer_model->refer_exists($mob1);
+                    if($result1 == 'allok')
+                    {
+                        $result2 = $this->refer_model->refer($name,$mail1,$mob1,$lid);
+                        if($result2==TRUE)
+                        { 
+                            $s=18;
+                            $url = base_url().'friends_signup/'.encrypt_decrypt('encrypt',$mob1);
+                            $datas['mobile']=$mob1;
+                            $message = "Hi, Welcome to Jaazzo.If you are interested with Jaazzo.Please continue with signup: ".$url;
+                            send_message($mob1,$message);
+                            $email = "maneeshakk16@gmail.com";
+                            $mail_head = 'Message From Jaazzo';
+                            $status = send_custom_email($email, $mail_head, $mail1, 'Add Friend', $this->load->view('templates/public/mail/add_friend_success',$datas,TRUE));
+
+                            exit(json_encode(array("status"=>TRUE)));
+                        }elseif($result2==FALSE)
+                        { 
+                            $s=19;
+                        }
+
+                    }
+                    elseif($result1 == '3')
+                    { 
+                        $s=23;
+                        // echo "mob1 exists"; exit();
+                    } 
+                }
+                elseif($result == 'mobfalse' )
+                { $s=36; 
+                // echo "mobfalse"; exit();
+                }
+                if($s==19){ exit(json_encode(array('status'=> False,"reason"=>"Unsuccess"))); }
+                elseif($s==23){ exit(json_encode(array('status'=> False,"reason"=>"Mobile number already exist"))); }   
+                elseif($s==36){ exit(json_encode(array("status"=> FALSE,"reason"=>"Invalid Mobile Format"))); }   
+                else{ exit(json_encode(array("status"=>FALSE,"reason"=>".$result.Hai.$s."))); }    
+            }else{  
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }               
+        }else{
+            show_error("We are unable to process this request on this way!");   
+        }
+    }
+    function add()
+    {
+        $session_array = $this->session->userdata('logged_in_user');
 			if(isset($session_array))
 			{
 			$lid = $session_array['id'];
 			    if($this->input->is_ajax_request())
 			 	{ 
                     // $s=1;                                    
-                 $this->form_validation->set_rules("name", "Name ", "trim|required|htmlspecialchars");
-                 $this->form_validation->set_rules("mail1", "Email id ", "trim|required|htmlspecialchars");
-                 $this->form_validation->set_rules("mail2", "Alt Email id", "trim|required|htmlspecialchars");
+                // $this->form_validation->set_rules("name", "Name ", "trim|required|htmlspecialchars");
+                 //$this->form_validation->set_rules("mail1", "Email id ", "trim|required|htmlspecialchars");
+                 //$this->form_validation->set_rules("mail2", "Alt Email id", "trim|required|htmlspecialchars");
                  $this->form_validation->set_rules("mobile1", "Mobile ", "trim|required|htmlspecialchars");
-                 $this->form_validation->set_rules("mobile2", "Alt Mobile ", "trim|required|htmlspecialchars");
+                 //$this->form_validation->set_rules("mobile2", "Alt Mobile ", "trim|required|htmlspecialchars");
                     if($this->form_validation->run()== TRUE)
                     { 
                     // $s=$s+1;
@@ -41,7 +216,7 @@ function add()
                         // echo "1"; exit();
                         // $mail1='s@z.s45';$mail2='s@z.q';$mob1='24';$mob2='287';
                         $result1 = $this->refer_model->refer_exists($mail1,$mail2,$mob1,$mob2);
-                            if($result1 == 'allok')
+                                if($result1 == 'allok')
                                 {
                                     // echo "do"; exit();
                                     $result2 = $this->refer_model->refer($name,$mail1,$mail2,$mob1,$mob2,$lid);
@@ -62,149 +237,149 @@ function add()
                                                     $ci->email->subject('Green India Refferel');
                                                     // $ci->email->message('A Green India Club Member has been refered you, please register at http://localhost/green/index.php/home ');
                                                     $ci->email->message('
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
-<style type="text/css">
-@charset "utf-8";
-/* CSS Document */
-body{
-    background-color:#f2f2f2;
-    margin:0;
-    padding:0;
-    font-family:Arial;
-    color:#999;
-    }
-h3 {
-    margin:10px 35px;
-    }   
-#main_body{
-    /* height: 700px; */
-    /* width: 60%; */
-    padding: 0px 0px 65px 0px;
-    background-color: #fff;
-    float: left;
-    margin: 2% 20%;
-    }   
-.line{
-    height:1px;
-    width:100%;
-    background-color:#f2f2f2;
-    float:left;
-    margin: 0px 3%;
-    }   
-.admin{
-    height:80px;
-    width:100%;
-    background-color:;} 
-h5{
-    margin:0;}  
-.to{
-    font-size:12px;
-    font-style:normal;} 
-.scnd_main{
-    font-size: 13px;
-    padding: 1px 20px;
-    width: 78%;
-    margin: 70px 70px 0px;
-    line-height: 17px;
-    border-top: 0;
-    clear: both;
-    background-color: #f2f2f2;
-}   
-.log_box{
-    padding: 0px 0px 0px 37%;
-    width:100%;
-    background-color:;
-    float:left;}
-.log_box img{
-    margin:17px 0px;}       
-.txt_box{
-    background: #fff;
-    color: #5b5b5b;
-    border-radius: 4px;
-    font-family: arial;
-    font-size: 13px;
-    padding: 5px 20px 15px 20px;
-    width: 90%;
-    margin: 20px auto;
-    line-height: 20px;
-    border: 1px #ddd solid;
-    border-top: 0;
-    clear: both;}   
-.color{
-    background-color:#06306c;
-    padding: 1px 20px;  
-    }   
-.color p{
-    color:#fff;
-    text-align:center;}  
-.social_media{
-    padding: 5px 0px 45px 37%;
-    background-color:;} 
-.fb{
-    height:40px;
-    width:40px;
-    border-radius:100%;
-    background-color:;
-    float:left;
-    margin:0px 5px;}    
-.gift{
-    height: 105px;
-    width: 150px;
-    float: left;
-    margin: 0px 30px 10px 6px;
-    }
-.offr_link{
-    font-size:18px;
-    }
-.offr_link a:visited{
-    color:#06306c;
-    text-decoration:none;
-    }
-.offr_link a:hover{
-    color:#06306c;
-    text-decoration:none;
-    }   
-</style>
-</head>
-<body>
-    <div id="main_body">
-        <div class="scnd_main">
-            <div class="log_box">
-                <img src="<?= base_url();?>assets/img/online-portal-logo.png" />
-            </div>
-            <div class="txt_box">
-                <p>Hi '.$name.'</p>
-                <p>Thanks for ordering automatic! You are on your way to driving smarter.</p>
-                <div class="gift">
-                    <img src="<?= base_url();?>assets/img/gift.png" width="115px" style="margin:0px 18px;" />
-                </div>
-                <p>want to get $20 back? share the url below with your friends and family. when one of them buys Automatic Youll Get $20 Credited to Your               accound.</p>
-                <p class="offr_link"><a href="#">http://fbuy.me/xlrB</a></p>
-                <p>Since any friend of yours is  a friend of ours, your friend will get 20% off their order. Share today, this offer is only good for a 
-                limited time. </p>
-                <div class="social_media">
-                    <div class="fb">
-                        <a href="#"><img src="<?= base_url();?>assets/img/fb.png" height="40px" /></a>
-                    </div>
-                    <div class="fb">
-                        <a href="#"><img src="<?= base_url();?>assets/img/twtr.png" height="40px" /></a>
-                    </div>
-                    <div class="fb">
-                        <a href="#"><img src="<?= base_url();?>assets/img/gpls.png" height="40px" /></a>
-                    </div>
-                </div>
-            </div>
-            <div class="txt_box color">
-                <p>www.greenindia.com</p>
-            </div>
-            </div>
-        </div>
-</body>
-</html>');
+                                                        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+                                                        <html xmlns="http://www.w3.org/1999/xhtml">
+                                                        <head>
+                                                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                                                        <title>Untitled Document</title>
+                                                        <style type="text/css">
+                                                        @charset "utf-8";
+                                                        /* CSS Document */
+                                                        body{
+                                                            background-color:#f2f2f2;
+                                                            margin:0;
+                                                            padding:0;
+                                                            font-family:Arial;
+                                                            color:#999;
+                                                            }
+                                                        h3 {
+                                                            margin:10px 35px;
+                                                            }   
+                                                        #main_body{
+                                                            /* height: 700px; */
+                                                            /* width: 60%; */
+                                                            padding: 0px 0px 65px 0px;
+                                                            background-color: #fff;
+                                                            float: left;
+                                                            margin: 2% 20%;
+                                                            }   
+                                                        .line{
+                                                            height:1px;
+                                                            width:100%;
+                                                            background-color:#f2f2f2;
+                                                            float:left;
+                                                            margin: 0px 3%;
+                                                            }   
+                                                        .admin{
+                                                            height:80px;
+                                                            width:100%;
+                                                            background-color:;} 
+                                                        h5{
+                                                            margin:0;}  
+                                                        .to{
+                                                            font-size:12px;
+                                                            font-style:normal;} 
+                                                        .scnd_main{
+                                                            font-size: 13px;
+                                                            padding: 1px 20px;
+                                                            width: 78%;
+                                                            margin: 70px 70px 0px;
+                                                            line-height: 17px;
+                                                            border-top: 0;
+                                                            clear: both;
+                                                            background-color: #f2f2f2;
+                                                        }   
+                                                        .log_box{
+                                                            padding: 0px 0px 0px 37%;
+                                                            width:100%;
+                                                            background-color:;
+                                                            float:left;}
+                                                        .log_box img{
+                                                            margin:17px 0px;}       
+                                                        .txt_box{
+                                                            background: #fff;
+                                                            color: #5b5b5b;
+                                                            border-radius: 4px;
+                                                            font-family: arial;
+                                                            font-size: 13px;
+                                                            padding: 5px 20px 15px 20px;
+                                                            width: 90%;
+                                                            margin: 20px auto;
+                                                            line-height: 20px;
+                                                            border: 1px #ddd solid;
+                                                            border-top: 0;
+                                                            clear: both;}   
+                                                        .color{
+                                                            background-color:#06306c;
+                                                            padding: 1px 20px;  
+                                                            }   
+                                                        .color p{
+                                                            color:#fff;
+                                                            text-align:center;}  
+                                                        .social_media{
+                                                            padding: 5px 0px 45px 37%;
+                                                            background-color:;} 
+                                                        .fb{
+                                                            height:40px;
+                                                            width:40px;
+                                                            border-radius:100%;
+                                                            background-color:;
+                                                            float:left;
+                                                            margin:0px 5px;}    
+                                                        .gift{
+                                                            height: 105px;
+                                                            width: 150px;
+                                                            float: left;
+                                                            margin: 0px 30px 10px 6px;
+                                                            }
+                                                        .offr_link{
+                                                            font-size:18px;
+                                                            }
+                                                        .offr_link a:visited{
+                                                            color:#06306c;
+                                                            text-decoration:none;
+                                                            }
+                                                        .offr_link a:hover{
+                                                            color:#06306c;
+                                                            text-decoration:none;
+                                                            }   
+                                                        </style>
+                                                        </head>
+                                                        <body>
+                                                            <div id="main_body">
+                                                                <div class="scnd_main">
+                                                                    <div class="log_box">
+                                                                        <img src="<?= base_url();?>assets/img/online-portal-logo.png" />
+                                                                    </div>
+                                                                    <div class="txt_box">
+                                                                        <p>Hi '.$name.'</p>
+                                                                        <p>Thanks for ordering automatic! You are on your way to driving smarter.</p>
+                                                                        <div class="gift">
+                                                                            <img src="<?= base_url();?>assets/img/gift.png" width="115px" style="margin:0px 18px;" />
+                                                                        </div>
+                                                                        <p>want to get $20 back? share the url below with your friends and family. when one of them buys Automatic Youll Get $20 Credited to Your               accound.</p>
+                                                                        <p class="offr_link"><a href="#">http://fbuy.me/xlrB</a></p>
+                                                                        <p>Since any friend of yours is  a friend of ours, your friend will get 20% off their order. Share today, this offer is only good for a 
+                                                                        limited time. </p>
+                                                                        <div class="social_media">
+                                                                            <div class="fb">
+                                                                                <a href="#"><img src="<?= base_url();?>assets/img/fb.png" height="40px" /></a>
+                                                                            </div>
+                                                                            <div class="fb">
+                                                                                <a href="#"><img src="<?= base_url();?>assets/img/twtr.png" height="40px" /></a>
+                                                                            </div>
+                                                                            <div class="fb">
+                                                                                <a href="#"><img src="<?= base_url();?>assets/img/gpls.png" height="40px" /></a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="txt_box color">
+                                                                        <p>www.greenindia.com</p>
+                                                                    </div>
+                                                                    </div>
+                                                                </div>
+                                                        </body>
+                                                        </html>');
                                     $ci->email->send();
                                     
                                     if($result2==TRUE)
@@ -216,8 +391,7 @@ h5{
                                     { $s=19;
                                     // echo "unsuccess"; exit(); 
                                     }
-                                }
-                                elseif($result1 == 'allerror')
+                                }elseif($result1 == 'allerror')
                                         { $s=20;
                                             // echo "bot mails & mobnos exists"; exit();
                                         }
@@ -314,9 +488,9 @@ h5{
                 else
                 {	
                 $s=42;
-		 		// exit(json_encode(array("status"=>FALSE,"reason"=>"validation_errors()")));
+		 		// exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
 			    }
-                                if($s==19){ exit(json_encode(array('status'=> False,"reason"=>"Unsuccess"))); }
+                            if($s==19){ exit(json_encode(array('status'=> False,"reason"=>"Unsuccess"))); }
                             elseif($s==20){ exit(json_encode(array('status'=> False,"reason"=>"Both Mail ids & Mobile numbers Exists"))); }
                             elseif($s==21){ exit(json_encode(array('status'=> False,"reason"=>"Mail id 1 Exists"))); }
                             elseif($s==22){ exit(json_encode(array('status'=> False,"reason"=>"Mail id 2 Exists"))); }
@@ -342,10 +516,9 @@ h5{
                             elseif($s==42){ exit(json_encode(array("status"=> FALSE,"reason"=>"Validation Error"))); }    
                             else{ exit(json_encode(array("status"=>FALSE,"reason"=>".$result.Hai.$s."))); }    
             }
-}
-
-function transfer_amount()
-{
+    }
+    function transfer_amount()
+    {
        $session_array = $this->session->userdata('logged_in_user');
 		if(isset($session_array)){
 			 $login_id = $session_array['id'];
@@ -381,18 +554,52 @@ function transfer_amount()
 			       }	
 
                 }
-           
+        }
+    }
+    function delete_refer()
+    {
+        if($this->input->is_ajax_request()){
+            $id = $this->input->post('row_id');
+            $result = $this->refer_model->delete_refer($id);
+            if($result){
+                exit(json_encode(array("status"=>TRUE)));
+            }
+            else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
+            }
+            
+        } else {
+            show_error("We are unable to process this request on this way!");
+        }
+    }
+    function update_refer()
+    {
+        if($this->input->is_ajax_request()){
+            $this->form_validation->set_rules("mobile", "Mobile ", "trim|required|htmlspecialchars");
+            if( $this->form_validation->run() == TRUE )
+            {
+                $id = $this->input->post('row_id');
+                $mob1 = $this->input->post('mobile');
+                $result1 = $this->refer_model->refer_mob_exists($mob1,$id);
+                if($result1)
+                {
 
-         }
-
-     }
-   
-
- }
-
-
-
-
-
-
+                    $result = $this->refer_model->update_refer($id);
+                    if($result){
+                        exit(json_encode(array("status"=>TRUE)));
+                    }
+                    else{
+                        exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
+                    }
+                }else{
+                  exit(json_encode(array("status"=>FALSE,"reason"=>"Mobile already exist")));      
+                }
+            }else{  
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }
+        } else {
+            show_error("We are unable to process this request on this way!");
+        }
+    }
+}
 ?>

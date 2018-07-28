@@ -53,14 +53,14 @@
   display: block !important;
 }
 .howl-iconpicker .geticonval .fa {
-    font-size: 28px;
+    font-size: 16px;
     margin-right: 10px;
     padding-bottom: 10px;
 }
 .howl-iconpicker .geticonval {
     background: #fcfcfc;
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 3px;
     border-radius: 3px;
     margin: 5px;
     width: 28px;

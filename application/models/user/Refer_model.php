@@ -10,7 +10,32 @@ class Refer_model extends CI_Model
 		parent::__construct();
 		$this->load->database();
 	}
-	function refer_validation($mail1,$mail2,$mob1,$mob2)
+	function refer_validation($mail1,$mob1)
+	{	$mobile='start';$email='start';
+		if(preg_match("/^[0-9]*$/",$mob1) && strlen($mob1)== 10)
+		{
+			$mobile='true';
+		}				
+		else
+		{
+			$mobile='false';
+		}
+		/*if (!filter_var($mail1, FILTER_VALIDATE_EMAIL) === false) 
+		{
+	    	$email='true';
+		} 
+		else{
+			$email='false';
+		}*/
+		// if($mobile == 'true' && $email == 'true'){ return 'bothtrue'; }
+		// elseif($mobile == 'false' && $email == 'false'){ return 'bothfalse'; }
+		// else
+			if($mobile == 'false'){ return 'mobfalse'; }else{
+				return 'bothtrue'; 
+			}
+		// elseif($email == 'false'){ return 'mailfalse'; }
+	}
+	/*function refer_validation($mail1,$mail2,$mob1,$mob2)
 	{	$mobile='start';$email='start';
         // print_r($mail1);print_r($mail2);print_r($mob1);print_r($mob2); exit();
 		// if(!preg_match("/^[0-9]*$/",$mob1) && strlen($mob1)!= 10)
@@ -74,8 +99,67 @@ class Refer_model extends CI_Model
 		elseif($mobile == 'false' && $email == 'false'){ return 'bothfalse'; }
 		elseif($mobile == 'false'){ return 'mobfalse'; }
 		elseif($email == 'false'){ return 'mailfalse'; }
+	}*/
+	function refer_exists($mob1)
+	{
+		$a=0;$c=0;
+		$qry = "select id from gp_user_referrel where  mobile = '$mob1' 
+		 OR altmobile = '$mob1' UNION select id from gp_login_table where (mobile = '$mob1')AND(type='club_member' OR type='normal_customer') ";
+		$qry = $this->db->query($qry);
+		if($qry->num_rows()>0)
+		{   
+			$c=1; 
+		}
+		// echo $a,$b,$c,$d; exit();
+		// return $a,$b,$c,$d;
+		if($c == 1 )
+		{ 
+			return '3';
+		}else{ 
+			// echo "string"; exit();
+			return 'allok';
+		}
 	}
-	function refer_exists($mail1,$mail2,$mob1,$mob2)
+	/*last
+	function refer_exists($mail1,$mob1)
+	{
+		$qry = "select id from gp_user_referrel where email = '$mail1' OR altemail = '$mail1'  OR mobile = '$mob1' 
+		 OR altmobile = '$mob1' UNION select id from gp_login_table where (email = '$mail1'  OR mobile = '$mob1')AND(type='club_member' OR type='normal_customer') ";
+		$qry = $this->db->query($qry);
+		if($qry->num_rows()>0)
+		{   $a=0;$c=0;
+			$qry1 = "select id from gp_user_referrel where email = '$mail1' or altemail = '$mail1' UNION select id from gp_login_table where email = '$mail1' AND(type='club_member' OR type='normal_customer')";
+			$qry1 = $this->db->query($qry1);
+			if($qry1->num_rows()>0)
+			{ $a=1; }
+			$qry3 = "select id from gp_user_referrel where mobile = '$mob1' or altmobile = '$mob1' UNION select id from gp_login_table where mobile = '$mob1' AND(type='club_member' OR type='normal_customer')";
+			$qry3 = $this->db->query($qry3);
+			if($qry3->num_rows()>0)
+			{ $c=1; }
+		// echo $a,$b,$c,$d; exit();
+		// return $a,$b,$c,$d;
+		if($a == 1 &&  $c == 1){ return 'allerror'; }
+		elseif($a == 1 && $c == 0){ return '1'; }
+		elseif($a == 0 && $c == 1 ){ return '3'; }
+		else{ return 'error'; }
+		} 
+		else
+			{ 
+			// echo "string"; exit();
+			return 'allok';
+			}
+	}*/
+	function refer_mob_exists($mob1,$id)
+	{
+		$qry = "select id from gp_user_referrel where  (mobile = '$mob1' 
+		 OR altmobile = '$mob1')AND gp_user_referrel.id!='$id'";
+		$qry = $this->db->query($qry);
+		if($qry->num_rows()>0)
+		{   
+			return false;
+		}else{ return true; }
+	}
+	/*function refer_exists($mail1,$mail2,$mob1,$mob2)
 	{
         // print_r($mail1);print_r($mail2);print_r($mob1);print_r($mob2); 
         // exit();
@@ -125,8 +209,54 @@ class Refer_model extends CI_Model
 			// echo "string"; exit();
 			return 'allok';
 			}
+	}*/
+	function refer($name,$mail1,$mob1,$lid)
+	{	
+		$this->db->trans_begin();
+	    $created_on = date("h:i:sa");
+		$data=array(            
+            'referrer_id'=>$lid,
+            'name'=>$name,
+            'email'=>$mail1,
+            'mobile'=>$mob1,
+            'status' =>"0",
+            'location'=>$this->input->post('location'),
+            'created_by' => $lid,
+            'created_on' => $created_on
+        );
+        $this->db->insert('gp_user_referrel',$data);
+    	$this->db->trans_complete();
+    	if( $this->db->trans_status()===false){
+	    	$this->db->trans_rollback();
+	    	return false;
+	    }
+	    else{
+	        $this->db->trans_commit();
+	    	return true;
+	    }
 	}
-	function refer($name,$mail1,$mail2,$mob1,$mob2,$lid)
+	function update_refer($lid)
+	{	
+	    $this->db->trans_begin();
+       
+		$data=array(            
+            'name'=>$this->input->post('name'),
+            'mobile'=>$this->input->post('mobile'),
+            'location'=>$this->input->post('location')
+        );
+
+        $this->db->where('id',$lid);
+        $this->db->update('gp_user_referrel',$data);
+    	$this->db->trans_complete();
+    	if( $this->db->trans_status()===false){
+	    	$this->db->trans_rollback();
+	    	return false;
+	    }else{
+	        $this->db->trans_commit();
+	    	return true;
+	    }
+	}
+	/*function refer($name,$mail1,$mail2,$mob1,$mob2,$lid)
 	{	
 	    $created_on = date("h:i:sa");
 		$data=array(            
@@ -150,11 +280,11 @@ class Refer_model extends CI_Model
 	        $this->db->trans_commit();
 	    	return true;
 	    }
-	}
+	}*/
 	function get_refer($login_id)
 	{
 		$qry = " select * from gp_user_referrel
-				where referrer_id = $login_id ";
+				where referrer_id = $login_id and is_del!=1";
 		$qry = $this->db->query($qry, $login_id);
 		if($qry->num_rows()>0)
 		{
@@ -165,10 +295,15 @@ class Refer_model extends CI_Model
 	}
 	function get_child($login_id)
 	{
-		$qry = " select lt.*,nc.name,nc.profile_image from gp_login_table lt
+		/*$qry = " select lt.*,nc.name,nc.profile_image from gp_login_table lt
 				join gp_normal_customer nc on lt.user_id = nc.id
+				where lt.parent_login_id = $login_id ";*/
+		$qry = "select lt.id,nc.name,lt.mobile,nc.profile_image,gcai.location
+		        from gp_login_table lt
+				left join gp_normal_customer nc on lt.user_id = nc.id
+				left join gp_customer_additional_info gcai on nc.id=gcai.customer_id
 				where lt.parent_login_id = $login_id ";
-		$qry = $this->db->query($qry, $login_id);
+		$qry = $this->db->query($qry);
 		if($qry->num_rows()>0)
 		{
 			return $qry->result_array();
@@ -299,7 +434,48 @@ class Refer_model extends CI_Model
 	    	return true;
 	    }
 	}		
+    function check_valid_mobile($mobile)
+    {
+        $data = array();
+        $qry = "select * from gp_user_referrel where mobile = '$mobile'";
+        $qry = $this->db->query($qry);
+        if($qry->num_rows()>0)
+        {
+            return $qry->row_array();
+        } else{
+           return FALSE;
+        }
+    }
+    function delete_refer($id)
+    {
+    	$this->db->trans_begin();
+        /*$data = array('is_del' => 1);
+        $this->db->where('id', $id);
+        $qry = $this->db->update('gp_user_referrel', $data);*/
+        $this->db->where('id', $id);
+        $qry = $this->db->delete('gp_user_referrel');
+        $date = date("Y-m-d h:i:sa") ;
 
+        $action = "Refer has been deleted";
+        $datas = getLoginId();
+        if($datas){
+          $user_id = $datas['user_id'];
+        }
+        $status = 0;
+
+        activity_log($action,$user_id,$status,$date);
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            return false;
+        }
+        else
+        {
+            $this->db->trans_commit();
+            return true;
+        }
+    }
 
 }
 

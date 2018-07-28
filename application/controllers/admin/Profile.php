@@ -58,7 +58,7 @@ class Profile extends CI_Controller
                             $this->load->view('admin/edit_admin_profile',$data);
                       }
                          
-                    else if($loginsession['type']=='executive')
+/*                    else if($loginsession['type']=='executive')
                       {
                           $data['user']=$this->Profile_model->get_exicutives($userid);
                        //echo json_encode($data['user']);
@@ -68,7 +68,7 @@ class Profile extends CI_Controller
                            $data['sidebar'] = $this->load->view('admin/templates/ex_sidebar',$data, true);
                            $data['footer'] = $this->load->view('admin/templates/admin_footer', '', true);
                            $this->load->view('admin/edit_executive_profile',$data);
-                      }
+                      }*/
                
               
       }

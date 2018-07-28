@@ -16,20 +16,21 @@ Class Search extends CI_Controller{
         // load model
         $search_data = $this->input->post('search_data');
 
-        $result = $this->search_model->get_search_category($search_data);
+        $result = $this->search_model->get_search_category1($search_data);
         // print_r($result);
         // exit();
         if (!empty($result))
         {
-            $base_link="search/get_search_result/";
+            $base_link="home/get_all_products_cat_wise/";
             echo "<h4 style='color: #042f6d;'>Search Categories</h4>";
             echo "<div class='options'>";
             foreach ($result as $row):
                 $key=$row['title'];
+            $id=$row['id'];
                 //    echo $key; exit();
                 //    $term = mysqli_real_escape_string($link, $_REQUEST['term']);
                 //    <a href="http://localhost/green/<li"></a>
-                echo "<li class='search_cls'><a href=".base_url().$base_link.$key.">".$row['title']."</a></li>";
+                echo "<li class='search_cls'><a href=".base_url().$base_link.$id.">".$row['title']."</a></li>";
             endforeach;
             echo "<div>";
         }
@@ -41,6 +42,52 @@ Class Search extends CI_Controller{
 
     }
 
+    public function search_cp()
+    {
+        // load model
+        $search_data = $this->input->post('search_data');
+
+        $result = $this->search_model->search_cp($search_data);
+        // print_r($result);
+        // exit();
+        if (!empty($result))
+        {
+            $base_link="home/get_all_products_cp_wise/";
+            echo "<h4 style='color: #042f6d;'>Search Channel Partners</h4>";
+            echo "<div class='options'>";
+            foreach ($result as $row):
+                $key=$row['name'];
+                $id=$row['id'];
+                
+                echo "<li class='search_cls'><a href=".base_url().$base_link.$id.">".$row['name']."</a></li>";
+            endforeach;
+            echo "<div>";
+        }
+        else
+        {
+            echo "<h4 style='color: #042f6d;'>Search Channel Partners</h4>";
+            echo "<li> <em> Not found ... </em> </li>";
+        }
+
+    }
+
+    public function search_location()
+    {
+        $search_data = $this->input->post('keyword');
+
+        $result = $this->search_model->search_location_by_keyword($search_data);
+        if (!empty($result))
+        {
+           exit(json_encode(array("status"=>TRUE, "data"=>$result)));
+           //$data = $result;
+        }
+        else
+        {
+          exit(json_encode(array("status"=>FALSE,'reason'=>'Database Error!')));
+        }
+        return $data;
+      
+    }
     public function search_recent()
     {
         // load model
@@ -127,18 +174,18 @@ Class Search extends CI_Controller{
         // echo "prod"; print_r($result); exit();
          if (!empty($result))
          {
-            $base_link="assets/admin/products/";
+         
             echo "<h4 style='color: #042f6d;'>Products</h4>";
             foreach ($result as $row):
                 $kid=$row['id'];
                 $key=$row['name'];
                 $img=$row['image'];
                 $dsp=$row['description'];
-                $qty=$row['quantity'];
+               $qty=$row['quantity'];
                 $cost=$row['cost'];
                 // echo "<li class='search_cls'><a href=".base_url().$base_link.$key.">".$row['name']."</a></li>";
                 echo "<div class='col-lg-6 cart-entry'> <div class='col-lg-4'> <div class='vnm'> <a class='image'>
-                      <img style='height:60px; width:60px;' src=".base_url().$base_link.$img."> </a> </div> </div> <div class='col-lg-8 content'>
+                      <img style='height:60px; width:60px;' src=".base_url().$img."> </a> </div> </div> <div class='col-lg-8 content'>
                       <a class='title' href=".base_url().$base_link1.$kid.">".$key."</a> <div class='quantity'>
                       ".$qty." qty</div> <div class='price'> ₹ ".$cost."</div> </div> </div>";
             endforeach;
@@ -158,15 +205,16 @@ Class Search extends CI_Controller{
         // exit();
         if (!empty($result))
         {
-            $base_link="search/get_search_result/";
+            $base_link="home/product_details/";
             echo "<h4 style='color: #042f6d;'>Popular Searches</h4>";
             echo "<div class='options'>";
             foreach ($result as $row):
                 $key=$row['name'];
+             $kid=$row['id'];
                 //    echo $key; exit();
                 //    $term = mysqli_real_escape_string($link, $_REQUEST['term']);
                 //    <a href="http://localhost/green/<li"></a>
-                echo "<li class='search_cls'><a href=".base_url().$base_link.$key.">".$key."</a></li>";
+                echo "<li class='search_cls'><a href=".base_url().$base_link.$kid.">".$key."</a></li>";
             endforeach;
             echo "</div>";
         }
@@ -176,6 +224,83 @@ Class Search extends CI_Controller{
             echo "<li> <em> Not found ... </em> </li>";
         }
     }
+
+
+
+      public function search_popular_deals()
+    {
+        // load model
+        $search_data = $this->input->post('search_data');
+        $result = $this->search_model->search_popular_deals($search_data);
+        // print_r($result);
+        // exit();
+        if (!empty($result))
+        {
+            $base_link="home/deal_details/";
+            echo "<h4 style='color: #042f6d;'>Popular Deals</h4>";
+            echo "<div class='options'>";
+            foreach ($result as $row):
+                $key=$row['name'];
+             $kid=$row['id'];
+                //    echo $key; exit();
+                //    $term = mysqli_real_escape_string($link, $_REQUEST['term']);
+                //    <a href="http://localhost/green/<li"></a>
+                echo "<li class='search_cls'><a href=".base_url().$base_link.$kid.">".$key."</a></li>";
+            endforeach;
+            echo "</div>";
+        }
+        else
+        {
+            echo "<h4 style='color: #042f6d;'>Popular Deals</h4>";
+            echo "<li> <em> Not found ... </em> </li>";
+        }
+    }
+
+
+
+
+    public function search_deals()
+    {
+        $search_data = $this->input->post('search_data');
+        $result = $this->search_model->get_search_deals($search_data);
+        // print_r($result);
+        // exit();
+        if (!empty($result))
+        {
+
+            $base_link1="home/deal_details/";
+           // $base_link="search/get_search_result/";
+            echo "<h4 style='color: #042f6d;'>Search Deals</h4>";
+            echo "<div class='options'>";
+            foreach ($result as $row):
+                
+ $kid=$row['id'];
+                $key=$row['name'];
+               // $img=$row['image'];
+               //  $dsp=$row['description'];
+               // $qty=$row['quantity'];
+               //  $cost=$row['cost'];
+                //    echo $key; exit();
+                //    $term = mysqli_real_escape_string($link, $_REQUEST['term']);
+                //    <a href="http://localhost/green/<li"></a>
+                echo "<li class='search_cls'><a href=".base_url().$base_link1.$kid.">".$key."</a></li>";
+            endforeach;
+            echo "</div>";
+        }
+        else
+        {   
+            echo "<h4 style='color: #042f6d;'>Search Deals</h4>";
+            echo "<li> <em> Not found ... </em> </li>";
+        }
+
+
+
+
+    }
+
+
+
+
     public function search_chanelpartner()
     {
         // load model
@@ -197,9 +322,12 @@ Class Search extends CI_Controller{
                 //    $term = mysqli_real_escape_string($link, $_REQUEST['term']);
                 //    <a href="http://localhost/green/<li"></a>
                 echo "<div class='col-lg-6 cart-entry'> <div class='col-lg-4'> <div class='vnm'> <a class='image'>
-                      <img style='height:60px; width:60px;' src=".base_url().$base_link.$img."> </a> </div> </div> <div class='col-lg-8 content'>
+                      </a> </div> </div> <div class='col-lg-8 content'>
                       <a class='title' href=".base_url().$key.">".$key."</a> <div class='quantity'>
                       </div> <div class='price'> call: ".$phone."</div> </div> </div>";
+
+                                      // echo "<li class='search_cls'><a href=".base_url().$base_link1.$kid.">".$key."</a></li>";
+
             endforeach;
             echo "</div>";
         }
@@ -218,15 +346,23 @@ Class Search extends CI_Controller{
         // exit();
         if (!empty($result))
         {
-            $base_link="search/get_search_result/";
+
+            $base_link1="home/product_details/";
+           // $base_link="search/get_search_result/";
             echo "<h4 style='color: #042f6d;'>Search Products</h4>";
             echo "<div class='options'>";
             foreach ($result as $row):
+                
+                $kid=$row['id'];
                 $key=$row['name'];
+               // $img=$row['image'];
+               //  $dsp=$row['description'];
+               // $qty=$row['quantity'];
+               //  $cost=$row['cost'];
                 //    echo $key; exit();
                 //    $term = mysqli_real_escape_string($link, $_REQUEST['term']);
                 //    <a href="http://localhost/green/<li"></a>
-                echo "<li class='search_cls'><a href=".base_url().$base_link.$key.">".$key."</a></li>";
+                echo "<li class='search_cls'><a href=".base_url().$base_link1.$kid.">".$key."</a></li>";
             endforeach;
             echo "</div>";
         }

@@ -24,7 +24,7 @@
   
   <div class="or"><p> Or </p></div>
   
-<h5>Greenindia Account</h5>
+<h5>Jaazzo Account</h5>
 
 <div class="logn_frrmbx">
 
@@ -207,7 +207,7 @@
 
     <div class="indxhdrmartop">
     <div class="">
-     <div class="container-fluid bm_mar10 btmbdr">
+     <div class="container-fluid bm_mar10">
    
     <div class="main">
 				<nav id="cbp-hrmenu" class="cbp-hrmenu">

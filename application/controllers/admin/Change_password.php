@@ -46,11 +46,10 @@ class Change_password extends CI_Controller
     {
         if ($this->input->is_ajax_request()) 
         {
-            $this->form_validation->set_rules('old', 'Username', 'required|trim');
-            $this->form_validation->set_rules('new_pass', 'Password', 'required|trim');
-            $this->form_validation->set_rules('confirm_pass', 'Username', 'required|trim');
-            // $this->form_validation->set_rules("password","Password","trim|required|htmlspecialchars");
-            // $this->form_validation->set_rules("confirm_pass","Confirm Password","trim|required|htmlspecialchars|matches[password]");
+            $this->form_validation->set_rules('old', 'Old Password', 'required|trim');
+            $this->form_validation->set_rules('new_pass', 'New Password', 'required|trim');
+            $this->form_validation->set_rules('confirm_pass', 'Confirm Password', 'required|trim');
+            
             if($this->form_validation->run() == TRUE)
             {
                 $old_pass = $this->input->post('old');
@@ -61,10 +60,12 @@ class Change_password extends CI_Controller
                 
                 $current_pass = $this->Change_model->get_current_pass($user_id);
                 $current_pass = $current_pass['password'];
-                
+                $current_pass = encrypt_decrypt('decrypt',$current_pass);
+                //var_dump($current_pass);var_dump($old_pass);exit();
                 if($current_pass == $old_pass)
                 {
                     if($new_pass == $confirm_pass){
+                        $new_pass = encrypt_decrypt('encrypt',$new_pass);
                         $update_pass = $this->Change_model->update_pass($new_pass, $user_id);
                         if($update_pass)
                         {
@@ -73,10 +74,10 @@ class Change_password extends CI_Controller
                             exit(json_encode(array('status'=>false, 'reason'=>'Database Error')));
                         }
                     } else{
-                        exit(json_encode(array('status'=>false, 'reason'=>'New password and Confirm Password Does not Matchs')));
+                        exit(json_encode(array('status'=>false, 'reason'=>'New password and confirm password does not match')));
                     }
                 } else{
-                    exit(json_encode(array('status'=>false, 'reason'=>'This is not your old password :(')));
+                    exit(json_encode(array('status'=>false, 'reason'=>'This is not your old password ')));
                 }
                 
             } else

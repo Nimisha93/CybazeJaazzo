@@ -2,24 +2,19 @@
 <?php echo $sidebar; ?>
 <div class="right_col" role="main" xmlns="http://www.w3.org/1999/html"  >
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
         <div class="clearfix"></div>
 
         <form class="" id='update_pools' method="post" enctype="multipart/form-data>">
+        <div class="x_title">
+                <h2>BA Pool Settings<small></small></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <h2 style="color:red ">You can split <label id="split" name="split"><?php $bal= 100- $total_group_persantage['total_persantage'] ; echo $bal ?>%</label> to Any Pool group<small></small></h2>
+                    <input type="hidden" name="check_bal" id="check_bal" value="<?php echo $bal; ?>">
+                   
+                </ul>
+                <div class="clearfix"></div>
+            </div>
 <!--           <div class="row">-->
 <!--            <div class="col-md-12 col-sm-12 col-xs-12">-->
 <!--                <div class="x_panel">-->
@@ -196,13 +191,16 @@
 
                             <td style="border:none;">
                                 <label style="color: #fff;">Pool Name</label>
-                                <input placeholder="Pool Name" id="" name="no_of_levels" value="<?php echo $pooling_details[0]['title']; ?>" class="form-control validate[required]" type="text">
+                                <input type="hidden" name="type" value="<?php echo $type ?>">
+                                <input type="hidden" name="main_id" value="<?php echo $id ?>">
+                                <input placeholder="Pool Name" id="" name="pool_name" value="<?php echo $pooling_details[0]['title']; ?>" class="form-control validate[required]" type="text">
 
                             </td>
 
                             <td style="border:none;">
                                 <label style="color: #fff;">Allowed Percentage(%)</label>
-                                <input placeholder="Allowed Persantage(%)" id="allow_persantage" value="<?php echo $pooling_details[0]['group_persentage']; ?>" name="no_of_levels" class="form-control validate[required]" type="text"></td>
+                                <input  id="allow_persantage_old" value="<?php echo $pooling_details[0]['group_persentage']; ?>" name="allow_persantage_old" class="form-control validate[required]" type="hidden">
+                                <input placeholder="Allowed Percentage(%)" id="allow_persantage" value="<?php echo $pooling_details[0]['group_persentage']; ?>" name="allow_persantage" class="form-control validate[required]" type="text"></td>
 
                             <td style="border:none;">  <label style="color: #fff;">No Of Levels</label>
                                 <input placeholder="No of Levels" id="no_of_levels" name="no_of_levels" value="<?php echo $pooling_details[0]['no_of_levels']; ?>" class="form-control validate[required]" type="text"></td>
@@ -225,13 +223,17 @@
                                 <div class="col-md-5 col-sm-12 col-xs-12 form-group">
                                     <label>Allowed Persantage</label>
                                     <input type="hidden" class="allowed_persantage_id" name="allowed_persantage_id[]" value="<?php echo  $pool_details['id'] ?>">
+
                                     <input class="form-control validate[required] allow perc_cls" rows="3" name="design_allwed_persantage[]" value="<?php echo  $pool_details['percentage'] ?>" placeholder="Allowed Persantage">
                                 </div>
                                 <label>Action</label>
                                 <div class="col-md-2 col-sm-12 col-xs-12 form-group ">
-
+                                    <button type="submit" name="" class="btn btn-primary">
                                     <i class="fa fa-trash remove_persantage" ></i>
+                                    </button>
+                                    <button type="submit" name="" class="btn btn-primary">
                                     <i class="fa fa fa-plus-square-o add_persantage" ></i>
+                                    </button>
                                 </div>
                             </div>
 
@@ -282,7 +284,7 @@
 
 <?php echo $footer; ?>
 
-<?php if($pesantage_limit=='over_flow'){ ?>
+<!-- <?php if($pesantage_limit=='over_flow'){ ?>
 
 <script type="text/javascript">
 
@@ -295,7 +297,7 @@
     });
 </script>
 
-<?php }  ?>
+<?php }  ?> -->
 
 <script type="text/javascript">
 
@@ -335,14 +337,17 @@
                     '</div>'+
                     '<div class="col-md-5 col-sm-12 col-xs-12 form-group">'+
                     '<label>Allowed Persantage</label>'+
-                    '<input class="form-control validate[required] allow" rows="3" name="design_allwed_persantage_new[]" placeholder="Allowed Persantage">'+
+                    '<input class="form-control validate[required] allow" rows="3" name="new_designation_persantage[]" placeholder="Allowed Persantage">'+
                     '</i></div></div>';
 
             new_row+='<label>Action</label>'+
                     '<div class="col-md-2 col-sm-12 col-xs-12 form-group ">'+
-
+                 '<button type="submit" name="" class="btn btn-primary">'+
                 '<i class="fa fa-trash remove_persantage" ></i>&nbsp&nbsp&nbsp&nbsp'+
+				'</button>'+
+				'<button type="submit" name="" class="btn btn-primary">'+
                 '<i class="fa fa fa-plus-square-o add_persantage" ></i>'+
+				'</button>'+
                 '</div></div>';
 
                   var sum=0;
@@ -391,7 +396,7 @@
 
         function getsum()
         {
-          var allow_111sval=0
+          var allow_sval=0
             $('.allow').each(function(){
                 var val=$(this).val();
                 var vals = isNaN(parseInt(val)) ? 0 : parseInt(val);
@@ -469,6 +474,38 @@
 
 
         })
+
+          function findSum()
+        {
+            var sum=0;
+            var alp1 = $(document).find('#allow_persantage').val();
+            var alp2 = $(document).find('#allow_persantage_old').val();
+            var check = $(document).find('#check_bal').val();
+
+            sum = parseInt(check)+parseInt (alp2-alp1);
+            //alert(sum);
+
+            if(sum<0)
+            {
+                noty({text: 'Allowed Percentage has Exceeded the limit', type: 'error',timeout:4000});
+                $("#update_pool").prop('disabled',true);
+                $(".allow").prop('disabled',true);
+
+            }
+            else
+            {
+
+                $("#update_pool").prop('disabled',false);
+                $(".allow").prop('disabled',false);
+            }
+        }
+
+        $(document).on('keyup','#allow_persantage',function()
+        {
+         // alert("sdf");
+            var sum=0;
+            var sum = findSum();
+        });
 
     });
 

@@ -14,39 +14,50 @@ class Purchase extends CI_Controller
 	}
 	function give_notification()
 	{
-		if($this->input->is_ajax_request()){
-			$this->form_validation->set_rules("channel_partner_con_id","Select Shope","trim|required|htmlspecialchars");
+			if($this->input->is_ajax_request()){
+			$this->form_validation->set_rules("channel_partner_id","Select Shop","trim|required|htmlspecialchars");
 			$this->form_validation->set_rules("login_id","Customer","trim|required|htmlspecialchars");
-			$this->form_validation->set_rules("price[]","Price","trim|htmlspecialchars");
-			$this->form_validation->set_rules("sum_of_billing","Total","trim|htmlspecialchars|numeric|required");
+			//$this->form_validation->set_rules("price[]","Price","trim|htmlspecialchars");
+			//$this->form_validation->set_rules("sum_of_billing","Total","trim|htmlspecialchars|numeric|required");
 
 			if( $this->form_validation->run() == TRUE )
 			{
 				$wal_amount = $this->purchase_model->get_total_wallet_amount_customer();
 				$wallet_price = $this->input->post('price');
-				$sum_enterd = 0;
-				foreach ($wallet_price as $key => $price) {
-					$sum_enterd += $price;
-				}
-				$in_wallet = $wal_amount['as_total'];
-				
-				if($in_wallet >= $sum_enterd){
-					$check_bal_in_wallet = $this->purchase_model->check_bal_in_wallet();
-						//var_dump($check_bal_in_wallet);exit;
-					if($check_bal_in_wallet["status"] == TRUE){
-						$result=$this->purchase_model->give_notification();
-					
-						if($result){
-							exit(json_encode(array("status"=>TRUE)));
-						}else{
-							exit(json_encode(array("status"=>FALSE,"reason"=>'Database Error')));
-						}
-					} else{
-						exit(json_encode(array("status"=>FALSE,"reason"=>'Not Enough Money')));
+				if($wallet_price){
+					$sum_enterd = 0;
+					foreach ($wallet_price as $key => $price) {
+						//var_dump($price);
+						$price = ($price=='')? 0 : $price;
+						$sum_enterd += $price;
 					}
+					$in_wallet = $wal_amount['as_total'];
+	                $in_wallet = intval($in_wallet);
+	                $sum_enterd = intval($sum_enterd);
+					if($in_wallet >= $sum_enterd){
+						$check_bal_in_wallet = $this->purchase_model->check_bal_in_wallet();
+						if($check_bal_in_wallet["status"] == TRUE){
+							$result=$this->purchase_model->give_notification();
 						
+							if($result){
+								exit(json_encode(array("status"=>TRUE)));
+							}else{
+								exit(json_encode(array("status"=>FALSE,"reason"=>'Database Error')));
+							}
+						} else{
+							exit(json_encode(array("status"=>FALSE,"reason"=>'Not Enough Money')));
+						}
+							
+					}else{
+						exit(json_encode(array("status"=>FALSE,"reason"=>'Not Enough Money in Your Wallet ')));
+					}
 				}else{
-					exit(json_encode(array("status"=>FALSE,"reason"=>'Not Enough Money in Your Wallet')));
+					$result=$this->purchase_model->give_notification();
+					if($result){
+						exit(json_encode(array("status"=>TRUE)));
+					}else{
+						exit(json_encode(array("status"=>FALSE,"reason"=>'Database Error')));
+					}
 				}
 											
 			}else{	

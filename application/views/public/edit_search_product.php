@@ -25,7 +25,7 @@
 @media (max-width:767px){
 
   .goToTop {
-  position: static;
+  position: relative;
   top: 0;
   left: 0;
   height: 210px;

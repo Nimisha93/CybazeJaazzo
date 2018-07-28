@@ -3,21 +3,7 @@
 <?php echo $sidebar; ?>
 <div class="right_col" role="main">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
 
         <div class="clearfix"></div>
         <div class="row">
@@ -32,10 +18,10 @@
                     </div>
                     <div class="x_content">
                         <div class="">
-                            <div class="table-responsive tabmargntp30">
+                            <div class="">
                                 <form method="post" name="type_form" id="type_form">
                                     <div class="col-md-12">
-                                        <div class="col-md-10 col-sm-6 col-xs-12 form-group">
+                                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
                                             <label>Select Category</label>
                                             <select id="channel_type" class="form-control validate[required] " name="category">
                                                 <option value="0">none</option>
@@ -45,7 +31,7 @@
                                                     <?php } ?>
                                             </select>
                                         </div>
-                                        <div class="col-md-10 col-sm-6 col-xs-12 form-group">
+                                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
                                             <label>Title</label>
                                             <input type="text" placeholder="Title" name="title" class="form-control validate[required]">
                                         </div>
@@ -54,7 +40,7 @@
 <!--                                            <input type="file" placeholder="Image" name="userfile" id="userfile" class="form-control">-->
 <!---->
 <!--                                        </div>-->
-                                        <div class="col-md-10 col-sm-12 col-xs-12 form-group">
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group">
                                             <label>Description</label>
                                             <textarea class="form-control" title="description" name="description" rows="3" placeholder="Description" class="form-control validate[required]"></textarea>
                                         </div>

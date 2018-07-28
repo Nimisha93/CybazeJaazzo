@@ -10,7 +10,7 @@ Class Dashboard_model extends  CI_Model
 
     function get_mywallet_value()
     {
-        $qry="SELECT total_value FROM `gp_wallet_values` WHERE `user_id` = '13'";
+        $qry="SELECT total_value FROM `gp_wallet_values` WHERE `user_id` = '1' and wallet_type_id='4'";
 
         $result=$this->db->query($qry);
         if($result->num_rows()>0)
@@ -23,7 +23,57 @@ Class Dashboard_model extends  CI_Model
         }
 
     }
+    function get_dashboard_data()
+    {
+        $qry="SELECT total_value FROM `gp_wallet_values` WHERE `user_id` = '1' and wallet_type_id='4'";
 
+        $result=$this->db->query($qry);
+        if($result->num_rows()>0)
+        {
+            $data['nc_count'] = empty($sql_nc)? 0 :$sql_nc->nc_count ;
+            return $result->row_array();
+        }
+        else
+        {
+            return array();
+        }
+
+    }
+    public function getDashboardData()
+    {
+        //channel partner
+        $sql_cp = $this->db->query("SELECT count(id) as cp_count FROM gp_pl_channel_partner cp WHERE cp.is_del = 0 and cp.status = 'JOINED'");
+        $sql_cp = $sql_cp->row();
+        $data['cp_count'] = empty($sql_cp)? 0 :$sql_cp->cp_count ;
+
+        //normal customer
+        $sql_nc = $this->db->query("SELECT count(nc.id) as nc_count FROM gp_normal_customer nc WHERE nc.is_del = 0 and nc.status = 'approved' and nc.type = 'normal_customer'");
+        $sql_nc = $sql_nc->row();
+        $data['nc_count'] = empty($sql_nc)? 0 :$sql_nc->nc_count ;
+
+        //club member
+        $sql_cm = $this->db->query("SELECT count(nc.id) as nc_count FROM gp_normal_customer nc WHERE nc.is_del = 0 and nc.status = 'approved' and nc.type = 'club_member'");
+        $sql_cm = $sql_cm->row();
+        $data['cm_count'] = empty($sql_cm)? 0 :$sql_cm->nc_count ;
+
+        //club agent
+        $sql_ca = $this->db->query("SELECT count(nc.id) as nc_count FROM gp_normal_customer nc WHERE nc.is_del = 0 and nc.status = 'approved' and nc.type = 'club_agent'");
+        $sql_ca = $sql_ca->row();
+        $data['ca_count'] = empty($sql_ca)? 0 :$sql_ca->nc_count ;
+
+        //jaazzo store
+        $sql_jz = $this->db->query("SELECT count(nc.id) as nc_count FROM pl_ba_registration nc WHERE nc.is_del = 0 and nc.status = 'ACTIVE'");
+        $sql_jz = $sql_jz->row();
+        $data['jz_count'] = empty($sql_jz)? 0 :$sql_jz->nc_count ;
+
+        //executive
+        $sql_exc = $this->db->query("SELECT count(nc.id) as nc_count FROM gp_pl_sales_team_members nc WHERE nc.is_del = 0 and nc.status = 'ACTIVE' ");
+        $sql_exc = $sql_exc->row();
+        $data['exc_count'] = empty($sql_exc)? 0 :$sql_exc->nc_count ;
+
+        return $data;
+
+    }
     function get_cpwallet_value(){
         $session_data=$this->session->userdata('logged_in_admin');
         $loginuser=$session_data['id'];
@@ -54,10 +104,9 @@ Class Dashboard_model extends  CI_Model
 
 
 
-    function get_graph_datas()
+    function get_graph_datas($lgid)
     {
-        $session_array = $this->session->userdata('logged_in_admin');
-        $logid = $session_array['id'];
+       
         $qry = "select
 				a.wallet_type_id,
 				t.title title_a,
@@ -73,7 +122,7 @@ Class Dashboard_model extends  CI_Model
 				left join gp_wallet_types t on t.id = a.wallet_type_id
 				left join gp_wallet_values v on v.id = a.wallet_val_id
 				left join gp_wallet_types tt on tt.id = v.wallet_type_id
-				where v.user_id = $logid or a.user_id = $logid and DATE_FORMAT(a.date_modified, '%Y') = YEAR(CURDATE())
+				where v.user_id = $lgid or a.user_id = $lgid and DATE_FORMAT(a.date_modified, '%Y') = YEAR(CURDATE())
 
 			group by DATE_FORMAT(a.date_modified, '%b')	order by a.date_modified desc ";
         $qry = $this->db->query($qry);

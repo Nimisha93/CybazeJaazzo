@@ -46,25 +46,13 @@
                                             <?php } ?>
                                         </select>
                                     </div>
-<!--                                    <div class="col-md-4 col-sm-6 col-xs-12 form-group">-->
-<!--                                        <label>Main Reward</label>-->
-<!--                                        <input type="text" placeholder="Main Commission" name="main_commission" class="form-control validate[required]">-->
-<!--                                    </div>-->
+
                                     <div class="col-md-3 col-sm-6 col-xs-12 form-group">
                                         <label>Company Commision</label>
                                         <input type="text" placeholder="Company Commission" id="company_commission" name="company_commission" class="form-control validate[required]">
                                     </div>
                                     <div class="col-md-6 col-sm-6 col-xs-6 append_percent"></div>
-                                   <!--  <div class="col-md-3 col-sm-6 col-xs-12 form-group">
-                                        <label>Product Category</label>
-                                        <input type="text" placeholder="Pooling Commission"  name="pooling_commission" class="form-control validate[required,min[5]]">
-                                    </div>
-                                    <div class="col-md-3 col-sm-6 col-xs-12 form-group">
-                                        <label>Percentage</label>
-                                        <input type="text" placeholder="Pooling Commission"  name="pooling_commission" class="form-control validate[required,min[5]]">
-                                    </div> -->
-
-
+                                 
                                     <div class="col-md-12 col-sm-12 col-xs-12 form-group">
                                         <button type="button" class="btn btn-primary commisionsubmit commi" id="commisionsubmit" name="commisionsubmit">Save</button>
                                     </div>
@@ -213,6 +201,7 @@
 
                 var cur= $(this);
                 var data=$("#commission_form").serializeArray();
+                console.log(data);
                 $('.body_blur').show();
                 $.post('<?php echo base_url();?>admin/Pooling/new_commision_add', data, function(data){
                     $('.body_blur').hide();

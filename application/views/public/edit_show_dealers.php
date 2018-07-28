@@ -8,7 +8,7 @@
     <META content="FOLLOW" name="ROBOTS"/>
     <META content="" name="copyright"/>
     <meta name="distribution" content="Global" />
-    <title>Greenindia</title>
+    <title>Jaazzo | rewards unlimitted</title>
     <link rel="shortcut icon" href="<?= base_url();?>assets/public/favicon/favicon.png">
     <?= $default_assets;?>
 
@@ -39,11 +39,14 @@
 
     <style type="text/css">
 
-        .row{margin:0;}
+         .row{margin:0;}
+         
+    .goToTop{position:fixed;border-bottom:1px solid #ccc;z-index: 17;background-color: #000}
+
         @media (max-width:767px){
 
             .goToTop {
-                position: static;
+                position: relative;
                 top: 0;
                 left: 0;
                 height: 210px;

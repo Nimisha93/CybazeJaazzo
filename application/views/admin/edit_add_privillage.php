@@ -8,21 +8,7 @@
 <?php echo $sidebar; ?>
 <div class="right_col" role="main">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
 
         <div class="clearfix"></div>
         <div class="row">
@@ -37,7 +23,7 @@
                     </div>
                     <div class="x_content">
                         <div class="">
-                            <div class="table-responsive tabmargntp30">
+                            <div class="">
                                 <form method="post"  name="priv_form" id="priv_form" enctype="multipart/form-data">
                                     <div class="col-md-12">
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">

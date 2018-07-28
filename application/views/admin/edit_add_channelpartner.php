@@ -1,680 +1,563 @@
 <?php echo $default_assets; ?>
 <link href="<?php echo base_url();?>assets/admin/sumo-select/sumoselect.css" rel="stylesheet" />
-
-  <?php echo $map['js']; ?>
-  <script type="text/javascript">
+<style type="text/css">
+ input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+</style>
+<?php echo $map['js']; ?>
+<script type="text/javascript">
     function getPosition(newLat, newLng)
     {
-      $('#lat').val(newLat);
-      $('#long').val(newLng);
+        $('#lat').val(newLat);
+        $('#long').val(newLng);
     }
-  </script>
+    function isNumberKey(evt){
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57 ))
+            return false;
+        return true;
+    }
+</script>
 
 </head>
 <?php echo $sidebar; ?>
 <div class="right_col" role="main">
-    <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+<div class="">
 
-        <div class="clearfix"></div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Add Channel Partner<small></small></h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="">
-                            <div class="">
-                                <form method="post" name="channel_form" id="channel_form" action="<?php echo base_url();?>admin/Channel_partner/new_partner" enctype="multipart/form-data">
-                                    <div class="col-md-12">
-                                        <!-- <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Channel Partner Type</label>
-                                            <select id="channel_type" class="form-control validate[required] search-box-open-up search-box-sel-all" name="channel_type[]" multiple="multiple" onchange="console.log($(this).val())">
-                                            <?php foreach($partner_type['type'] as $type){?>
-                                            <option value="<?php echo $type['id'];?>"><?php echo $type['title'];?></option>
-                                            <?php } ?>
-                                            </select>
-                                        </div> -->
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Module</label>
-                                            <select name="module" class="form-control search-box-open-up search-box" id="module">
-                                            <option value="">Please Select</option>
-                                            <?php foreach ($modules['type'] as $type) { ?>
-                                            <option value="<?php echo $type['id'];?>"><?php echo $type['module_name'];?></option>
-                                            <?php } ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Channel Partner Type</label>
-                                            <select id="channel_type" class="form-control validate[required] search-box-open-up search-box-sel-all" name="channel_type[]" multiple="multiple" onchange="console.log($(this).val())">
-                                            <?php foreach($category['type'] as $type){ ?>
+
+<div class="clearfix"></div>
+<div class="row">
+<form method="post" name="channel_form" id="channel_form" action="<?php echo base_url();?>admin/Home/add_partner" enctype="multipart/form-data">
+<div class="col-md-12 col-sm-12 col-xs-12">
+<div class="x_panel">
+<div class="x_title">
+    <h2>Channel Details<small></small></h2>
+    <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
+
+
+<div class="x_content">
+<div class="">
+<div class="">
+
+<div class="col-md-12">
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Channel Name </label> <label style="color:red;">(Mandatory)</label>
+    <input type="text" placeholder="Name of the Organization (Company/Institution/Shop)" name="name" class="form-control" data-rule-required="true">
+</div>
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Service </label>  <label style="color:red;">(Mandatory)</label>
+    <select name="module" class="form-control search-box-open-up search-box" id="module" data-rule-required="true">
+        <option value="">Please Select</option>
+        <?php foreach ($modules['type'] as $type) { ?>
+        <option value="<?php echo $type['id'];?>"><?php echo $type['module_name'];?></option>
+        <?php } ?>
+    </select>
+</div>
+
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Channel Partner Type </label>  <label style="color:red;">(Mandatory)</label>
+    <select id="channel_type" class="form-control search-box-open-up search-box-sel-all channel_type" name="channel_type[]" multiple="multiple" onchange="console.log($(this).val())" data-rule-required="true">
+        <?php foreach($category['type'] as $type){ ?>
                                             
-                                            <option value="<?php echo $type['id'];?>"><?php echo $type['title'];?></option>
-                                            
+                                           
+                                            <optgroup label="<?php echo $type['title'];?>">
                                             <?php $pid=$type['id']; foreach($subcategory['type'] as $stype){ if($stype['parent']==$pid){ ?>
 
-                                            <option class="subc" value="<?php echo $stype['id'];?>"><?php echo $stype['title'];?></option>
-                                            
-                                            <?php } } } ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Name</label>
-                                            <input type="text" placeholder="Name" name="name" class="form-control validate[required]">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Contact Person</label>
-                                            <input type="text" placeholder="Name" name="cname" class="form-control validate[required]">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Contact Number</label>
-                                            <input type="text" placeholder="Phone" name="phone" id="phone" class="form-control validate[required]">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Alternative Contact Number</label>
-                                            <input type="text" placeholder="Phone" name="phone2" class="form-control">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Email</label>
-                                            <input type="text" name="email" class="form-control validate[required] email" id="email">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Country</label>
-                                            <select name="country" class="form-control search-box-open-up search-box-sel-all" id="sel_country">
-                                            <option value="">Please Select</option>
-                                            <?php foreach ($countries as $key => $country) { ?>
-                                            <option value="<?php echo $country['id'];?>"><?php echo $country['name'];?></option>
-                                            <?php } ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>State</label>
-                                            <select name="state" class="validate[required] form-control sel_state select_box_sel" id="sel_state">
-                                             <option value="">Please Select</option>                                       
-                                            </select>
-                                        </div>
+            <option class="subc" value="<?php echo $stype['id'];?>"><?php echo $stype['title'];?></option>
 
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Town</label>
-                                            <input type="text" name="town" class="form-control validate[required]" id="town">
-                                        </div>
-                                        <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-                                            <label>Profile Image</label>
-                                            <input type="file" name="pro" class="form-control validate[required]" id="pro">
-                                        </div>
+            <?php } ?> </optgroup> <?php } } ?>
+    </select>
+</div>
 
-                                        <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-                                            <label>Brand Image</label>
-                                            <input type="file" name="bri" class="form-control validate[required]" id="bri">
-                                        </div>
-                                        <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                            <label>Address</label>
-                                            <textarea class="form-control" title="Address" name="address" rows="3" placeholder="Address" class="form-control validate[required]"></textarea>
-                                        </div>
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Email </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="email" name="email" class="form-control email" id="email" data-rule-required="true" data-rule-email="true" placeholder="Email Id (Username)">
+</div>
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Contact Number </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="number"  onKeyPress="return isNumberKey(event)" placeholder="Phone" name="phone" id="phone" class="form-control" data-rule-required="true" data-rule-number="true">
+</div>
 
-                                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                                            <label>Latitude*</label>
-                                            <input type="text" placeholder="Latitude" id="lat" name="latt" class="form-control validate[required]">
-                                        </div>
-                                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                                            <label>Longitude*</label>
-                                            <input type="text" placeholder="Longitude" id="long" name="long" class="form-control validate[required]">
-                                        </div>
 
-                                        <div class="col-md-12">
-                                        <?php echo $map['html']; ?>
-                                        <br>
-                                        </div>
-                                        
-                                        <div class="col-md-12 col-sm-6 col-xs-12 form-group">
-                                            <div class="checkbox">
-                                                        <label> <input type="checkbox"  name="isagree" id="checkbox1" class="validate[required]">
-                                                        <a type="button" class="" data-toggle="modal" data-target="#agree1"> Agree Terms and Condition</a> </label>
-                                            </div>
-                                            
-                                            <div id="agree1" class="modal fade" role="dialog">
-                                                <div class="modal-dialog">
-                                                    <!-- Modal content-->
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal">X</button>
-                                                            <h4 class="modal-title">Modal Header</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
-                                                                <div class="panel">
-                                                                    <a class="panel-heading collapsed" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                                                        <h4 class="panel-title">Collapsible Group Items #1</h4>
-                                                                    </a>
-                                                                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" aria-expanded="false" style="height: 0px;">
-                                                                        <div class="panel-body">
-                                                                            <table class="table table-bordered">
-                                                                                <thead>
-                                                                                <tr>
-                                                                                    <th>#</th>
-                                                                                    <th>First Name</th>
-                                                                                    <th>Last Name</th>
-                                                                                    <th>Username</th>
-                                                                                </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                <tr>
-                                                                                    <th scope="row">1</th>
-                                                                                    <td>Mark</td>
-                                                                                    <td>Otto</td>
-                                                                                    <td>@mdo</td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <th scope="row">2</th>
-                                                                                    <td>Jacob</td>
-                                                                                    <td>Thornton</td>
-                                                                                    <td>@fat</td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <th scope="row">3</th>
-                                                                                    <td>Larry</td>
-                                                                                    <td>the Bird</td>
-                                                                                    <td>@twitter</td>
-                                                                                </tr>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="panel">
-                                                                    <a class="panel-heading collapsed" role="tab" id="headingTwo" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                                        <h4 class="panel-title">Collapsible Group Items #2</h4>
-                                                                    </a>
-                                                                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false" style="height: 0px;">
-                                                                        <div class="panel-body">
-                                                                            <p><strong>Collapsible Item 2 data</strong>
-                                                                            </p>
-                                                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="panel">
-                                                                    <a class="panel-heading collapsed" role="tab" id="headingThree" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                                        <h4 class="panel-title">Collapsible Group Items #3</h4>
-                                                                    </a>
-                                                                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree" aria-expanded="false" style="height: 0px;">
-                                                                        <div class="panel-body">
-                                                                            <p><strong>Collapsible Item 3 data</strong>
-                                                                            </p>
-                                                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-primary antosubmit">Agree</button>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                           <!--  <button type="button" class="btn btn-primary channelsubmit" name="channelsubmit" id="channelsubmit">Save</button> -->
-                                            <input type="submit" class="btn btn-primary channelsubmit" name="channelsubmit" id="channelsubmit" value="Save">
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-12 col-sm-12 col-xs-12">
+<div class="x_panel">
+<div class="x_title">
+    <h2>Contact Details<small></small></h2>
+    <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
+    </ul>
     <div class="clearfix"></div>
+</div>
 
-    <!--************************row  end******************************************************************* -->
-     <script type="text/javascript">
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Owner Contact Person </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="text" placeholder="Contact Person" name="ocname" class="form-control" data-rule-required="true">
+</div>
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Owner Contact Email </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="text" name="oc_email" class="form-control oc_email" id="oc_email" data-rule-required="true" data-rule-email="true" placeholder="Contact Email">
+</div>
 
-        /*$(document).ready(function() {
-            // bind form using ajaxForm
-         
-            $('#channel_form').ajaxForm({
-                // dataType identifies the expected content type of the server response
-                dataType:  'json',
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Owner Contact Mobile </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="number"  onKeyPress="return isNumberKey(event)" name="oc_mobile" class="form-control oc_mobile" id="oc_mobile" data-rule-required="true" data-rule-number="true"  placeholder="Contact Mobile">
+</div>
+<div class="col-md-3 col-sm-6 col-xs-12 form-group">
+    <label>Country </label>  <label style="color:red;">(Mandatory)</label>
+    <select name="country" class="form-control search-box-open-up search-box-sel-all" id="sel_country" data-rule-required="true">
+        <option value="">Please Select</option>
+        <?php foreach ($countries as $key => $country) { ?>
+        <option value="<?php echo $country['id'];?>"><?php echo $country['name'];?></option>
+        <?php } ?>
+    </select>
+</div>
+<div class="col-md-3 col-sm-6 col-xs-12 form-group">
+    <label>State </label>  <label style="color:red;">(Mandatory)</label>
+    <select name="state" class="form-control sel_state select_box_sel" id="sel_state" data-rule-required="true">
+        <option value="">Please Select</option>
+    </select>
+</div>
 
-                // success identifies the function to invoke when the server response
-                // has been received
-                success:   function(data){
-                    if(data.status){
+<div class="col-md-3 col-sm-6 col-xs-12 form-group">
+    <label>City </label>  <label style="color:red;">(Mandatory)</label>
+    
+     <select name="town" class="form-control town" id="town" data-rule-required="true">
+        <option value="">Please Select</option>
+    </select>
+</div>
 
-                        noty({text: 'Channel Partner Added Successfully', type: 'success', timeout: 1000 });
-                        //window.location = "<?php echo base_url();?>product";
-                    } else {
-                        noty({text: data.reason, type: 'error', timeout: 1000 });
+
+
+
+
+
+
+
+
+<div class="col-md-3 col-sm-6 col-xs-12 form-group">
+    <label>Area </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="text" placeholder="Area" name="area" class="form-control" data-rule-required="true">
+</div>
+
+
+
+
+
+ 
+
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+<h2>Map Locator (Please choose channel location) <small></small></h2>
+</div>
+
+
+
+
+
+<div class="col-md-6 col-sm-6 col-xs-12 form-group">
+    <label>Latitude* </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="text" placeholder="Latitude" id="lat" name="latt" class="form-control" data-rule-required="true">
+</div>
+<div class="col-md-6 col-sm-6 col-xs-12 form-group">
+    <label>Longitude* </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="text" placeholder="Longitude" id="long" name="long" class="form-control" data-rule-required="true">
+</div>
+
+<div class="col-md-12">
+    <?php echo $map['html']; ?>
+    <br>
+</div>
+
+</div>
+</div>
+<div class="col-md-12 col-sm-12 col-xs-12">
+<div class="x_panel">
+<div class="x_title">
+    <h2>Verification Details<small></small></h2>
+    <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
+
+
+<div class="x_content">
+<div class="">
+<div class="">
+
+<div class="col-md-12">
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Pan Number </label>  <label style="color:red;">(Mandatory)</label>
+    <input type="text" placeholder="Pan Number of Comapny" name="pan" class="form-control" data-rule-required="true" id="pan" >
+</div>
+
+<div class="col-md-4 col-sm-6 col-xs-12 form-group">
+    <label>Gst Number</label>
+    <input type="text" name="gst" class="form-control" id="gst" placeholder="Gst Number">
+</div>
+<div class="col-md-4 col-sm-6 col-xs-12">
+    <label>Company Registration Document</label>
+    <div class="input-group">
+        <label class="input-group-btn">
+                    <span class="btn btn-primary">
+                        Browse&hellip; <input type="file" name="company_registration" id="company_registration" class="form-control" data-rule-required="true" style="display: none;" multiple >
+                    </span>
+        </label>
+        <input type="text" class="form-control" readonly>
+    </div>
+</div>
+
+
+
+<div class="col-md-4 col-sm-6 col-xs-12">
+    <label>Corporation/Panchayath/Muncipality License</label>
+    <div class="input-group">
+        <label class="input-group-btn">
+                    <span class="btn btn-primary">
+                        Browse&hellip; <input type="file" name="license" data-rule-required="true" class="form-control" id="license" style="display: none;" multiple>
+                    </span>
+        </label>
+        <input type="text" class="form-control" readonly>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12 form-group">
+<input type="submit" class="btn btn-primary channelsubmit" name="channelsubmit" id="channelsubmit" value="Save">
+</div>
+
+</form>
+<div class="clearfix"></div>
+
+<!--************************row  end******************************************************************* -->
+
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="notifications"></div><input type="hidden" id="position" value="center">
+
+<!--************************row  end******************************************************************* -->
+</div>
+<?php echo $footer; ?>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var v = jQuery("#channel_form").validate({
+
+            submitHandler: function(datas) {
+                $('.body_blur').show();
+                jQuery(datas).ajaxSubmit({
+
+                    dataType : "json",
+                    success  :    function(data)
+                    {
+                        $('.body_blur').hide();
+                        if(data.status)
+                        {
+
+                            //$('#channel_form').hide();
+
+                            var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">Successfully added channel partner </div></div>';
+                            var effect='zoomIn';
+                            $("#notifications").append(center);
+                            $("#notifications-full").addClass('animated ' + effect);
+                            refresh_close();
+                            setTimeout(function(){
+
+                                //$('#channel_form').hide();
+                                location.reload();
+                            }, 1000);
+                        }
+                        else
+                        {
+                            // $('#channel_form').hide();
+                            var regex = /(<([^>]+)>)/ig;
+                            var body = data.reason;
+                            var result = body.replace(regex, "");
+                            var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-down" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+                            var effect='fadeInRight';
+                            $("#notifications").append(center);
+                            $("#notifications-full").addClass('animated ' + effect);
+                            $('.close').click(function(){
+                                $(this).parent().fadeOut(1000);
+                            });
+                            //$.toast(data.reason, {'width': 500});
+                            // return false;
+                        }
                     }
-
-                }
-            });
-    }); */
-
-
-// prepare the form when the DOM is ready
-$(document).ready(function() {
-    var options = {
-        // target element(s) to be updated with server response
-         // pre-submit callback
-        dataType:  'json',
-        success:       function(data){
-            alert("ddd");
-        }  // post-submit callback
-
-        // other available options:
-        //url:       url         // override for form's 'action' attribute
-        //type:      type        // 'get' or 'post', override for form's 'method' attribute
-                // 'xml', 'script', or 'json' (expected server response type)
-        //clearForm: true        // clear all form fields after successful submit
-        //resetForm: true        // reset the form after successful submit
-
-        // $.ajax options can be used here too, for example:
-        //timeout:   3000
-    };
-
-    // bind to the form's submit event
-    $('#channel_form').submit(function() {
-        // inside event callbacks 'this' is the DOM element so we first
-        // wrap it in a jQuery object and then invoke ajaxSubmit
-        $(this).ajaxSubmit(options);
-
-        // !!! Important !!!
-        // always return false to prevent standard browser submit and page navigation
-        return false;
-    });
-});
-
-
-
- </script> 
-    <script type="text/javascript">
-        $(document).on('change', '#sel_country',function(){
-          var cur = $(this); 
-          var country = cur.val();
-          $('.body_blur').show();
-          $.post('<?php echo base_url();?>admin/Channel_partner/get_state_by_id/'+country, function(data){
-            $('.body_blur').hide();
-            if(data.status)
-            {
-              var data = data.data;
-              var option ='';
-               option += '<option value="">Please Select</option>';
-             for(var i=0; i<data.length; i++){
-                option += '<option value="'+data[i].id+'">'+data[i].name+'</option>';
-             }
-              $('.sel_state').html(option);
-            } else{
-              noty({text: data.reason, type:error, timeout:1000});
+                });
             }
-          },'json');
         });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            // $('#channelsubmit').click(function(e){
-            //     e.preventDefault();
-            //     var sta = $("#channel_form").validationEngine("validate");
-            //     if(sta== true){
+    });
+    //pan validation
+    $('#pan').change(function (event) {     
+     var regExp = /[A-Z]{5}\d{4}[A-Z]{1}/; 
+     var txtpan = $(this).val(); 
+     if (txtpan.length == 10 ) { 
+      if( txtpan.match(regExp) ){ 
+      
+      }
+      else {
+       
+        var regex = /(<([^>]+)>)/ig;
+        var body = "Not a valid PAN number";
+        var result = body.replace(regex, "");
+        var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-down" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+        var effect='fadeInRight';
+        $("#notifications").append(center);
+        $("#notifications-full").addClass('animated ' + effect);
+        $('.close').click(function(){
+            $(this).parent().fadeOut(1000);
+        });
+        $('#pan').val('');
+       event.preventDefault(); 
+      } 
+     } 
+     else { 
+           
+            var regex = /(<([^>]+)>)/ig;
+            var body = "Please enter 10 digits for a valid PAN number";
+            var result = body.replace(regex, "");
+            var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-down" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+            var effect='fadeInRight';
+            $("#notifications").append(center);
+            $("#notifications-full").addClass('animated ' + effect);
+            $('.close').click(function(){
+                $(this).parent().fadeOut(1000);
+            });
 
-            //         var cur= $(this);
-            //         var data=$("#channel_form").serializeArray();
-            //         $('.body_blur').show();
+           event.preventDefault(); 
+     } 
 
-            //         $.post('<?php echo base_url();?>admin/Channel_partner/new_partner', data, function(data){
-            //             $('.body_blur').hide();
+    });
+    //end of pan validation
+    //gst validation
+      $(document).on('change',"#gst", function(){    
+        var inputvalues = $(this).val();
+        var gstinformat = new RegExp('^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
 
-            //             if(data.status){
-            //                 noty({text:"Successfully created",type: 'success',layout: 'top', timeout: 3000});
-            //                 $('#channel_form')[0].reset();
-            //             }
-            //             else{
-            //                 noty({text:data.reason,type: 'error',layout: 'top', timeout: 3000});
-            //             }
+        if (gstinformat.test(inputvalues)) {
+         return true;
+        } else {
+            var regex = /(<([^>]+)>)/ig;
+            var body = "Please Enter Valid GST Number";
+            var result = body.replace(regex, "");
+            var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-down" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+            var effect='fadeInRight';
+            $("#notifications").append(center);
+            $("#notifications-full").addClass('animated ' + effect);
+            $('.close').click(function(){
+                $(this).parent().fadeOut(1000);
+            });
+            $("#gst").val('');
+            $("#gst").focus();
+        }
 
-            //         },'json');
-            //     }
+     });
+    // end of gst validation
+</script>
+<script type="text/javascript">
+    $(document).on('change', '#sel_country',function(){
+        var cur = $(this);
+        var country = cur.val();
+        if(country!=''){
+            $('#sel_state')[0].sumo.unload();
+            $('.body_blur').show();
+            $.post('<?php echo base_url();?>admin/Home/get_state_by_id/'+country, function(data){
+                $('.body_blur').hide();
+                if(data.status)
+                {
+                    var data = data.data;
+                    var option ='';
+                    option += '<option value="">Please Select</option>';
+                    for(var i=0; i<data.length; i++){
+                        option += '<option value="'+data[i].id+'">'+data[i].name+'</option>';
+                    }
+                    $('.sel_state').html(option);
+                } else{
+                    
+                }
+                $('#sel_state').SumoSelect({search: true, placeholder: 'select state'});
+                var count1 = $('#town option').length;
+                for(var j = 0; j < count1; j++) {
+                    $('#town')[0].sumo.remove(0);    
+                }
+                $('#town').html('<option value="">Please Select</option>');
+                $('#town').SumoSelect({search: true, placeholder: 'select city'});
+            },'json');
+        }else{
+            var count = $('#sel_state option').length;
+            for(var i = 0; i < count; i++) {
+                $('#sel_state')[0].sumo.remove(0);    
+            }
+            $('#sel_state').html('<option value="">Please Select</option>');
+            $('#sel_state').SumoSelect({search: true, placeholder: 'select city'});
 
-            // });
+            var count1 = $('#town option').length;
+            for(var j = 0; j < count1; j++) {
+                $('#town')[0].sumo.remove(0);    
+            }
+            $('#town').html('<option value="">Please Select</option>');
+            $('#town').SumoSelect({search: true, placeholder: 'select city'});
+        }
+    });
+    $(document).on('change', '#sel_state',function(){
+        var cur = $(this);
+        var state = cur.val();
+        if(state!=''){
+            $('.body_blur').show();
+            $('#town')[0].sumo.unload();
+            $.post('<?php echo base_url();?>admin/Home/get_town_by_id/'+state, function(data){
+                console.log(data);
+                $('.body_blur').hide();
+                if(data.status)
+                {
+                    var data = data.data;
+                    var option ='';
+                    option += '<option value="">Please Select</option>';
+                    for(var i=0; i<data.length; i++){
+                        option += '<option value="'+data[i].id+'">'+data[i].name+'</option>';
+                    }
+                    $('.town').html(option);
+                } else{
+                    
+                }
+                $('#town').SumoSelect({search: true, placeholder: 'select city'});
+            },'json');  
+        }else{
+            var count1 = $('#town option').length;
+            for(var j = 0; j < count1; j++) {
+                $('#town')[0].sumo.remove(0);    
+            }
+            $('#town').html('<option value="">Please Select</option>');
+            $('#town').SumoSelect({search: true, placeholder: 'select city'});
+        }
 
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
 
         $('#email').focusout(function(){
             var mail = $(this).val();
             var cur = $(this);
-            $.post('<?php echo base_url();?>admin/channel_partner/mail_exists/',{mail :mail},
-                   function(data)
-                    {
-                        if(data.status)
-                        {
-                            noty({text:"Mailid Already Exists",type: 'error',layout: 'top', timeout: 3000});
-//                                    cur.next().text("Mailid Already Exists").css('color', 'red');
-                            $("#channelsubmit").hide();
-                        }else{
-                            cur.next().remove();
-                            $("#channelsubmit").show();
-                        }
-                    },'json');
-         });
-        $('#phone').focusout(function(){
-            var mob = $(this).val();
-            var cur = $(this);
-            $.post('<?php echo base_url();?>admin/channel_partner/mobile_exists/',{mob :mob},
+            $.post('<?php echo base_url();?>admin/Home/mail_exists/',{mail :mail},
                     function(data)
                     {
                         if(data.status)
                         {
-                            noty({text:"Mobile Number Already Exists",type: 'error',layout: 'top', timeout: 3000});
-//                                    cur.next().text("Mailid Already Exists").css('color', 'red');
-                            $("#channelsubmit").hide();
+                            var regex = /(<([^>]+)>)/ig;
+                            var body = "Mail Id Already Exists";
+                            var result = body.replace(regex, "");
+                            var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-down" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+                            var effect='fadeInRight';
+                            $("#notifications").append(center);
+                            $("#notifications-full").addClass('animated ' + effect);
+                            $('.close').click(function(){
+                                $(this).parent().fadeOut(1000);
+                            });
+
+                            cur.val("");
+
                         }else{
-                            cur.next().remove();
-                            $("#channelsubmit").show();
+
                         }
                     },'json');
         });
-     });
-    </script>
+        $('#phone').focusout(function(){
+            var mob = $(this).val();
+            var cur = $(this);
+            $.post('<?php echo base_url();?>admin/Home/mobile_exists/',{mob :mob},
+                    function(data)
+                    {
+                        if(data.status)
+                        {
 
+                            var regex = /(<([^>]+)>)/ig;
+                            var body = "Mobile Number Already Exists";
+                            var result = body.replace(regex, "");
+                            var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-down" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+                            var effect='fadeInRight';
+                            $("#notifications").append(center);
+                            $("#notifications-full").addClass('animated ' + effect);
+                            $('.close').click(function(){
+                                $(this).parent().fadeOut(1000);
+                            });
+                            cur.val("");
+                        }else{
 
-</div>
-</div>
-</div>
-</div>
-</div>
+                        }
+                    },'json');
+        });
+    });
+</script>
 <script src="<?php echo base_url();?>assets/admin/sumo-select/jquery.sumoselect.js"></script>
+
+<link rel="stylesheet" media="screen" href="<?= base_url() ?>assets/admin/plugins/val/demo/css/screen.css">
 
 <script type="text/javascript">
     $(document).ready(function () {
-         window.asd = $('.SlectBox').SumoSelect({ csvDispCount: 3, captionFormatAllSelected: "Yeah, OK, so everything." });
-         window.test = $('.testsel').SumoSelect({okCancelInMulti:true, captionFormatAllSelected: "Yeah, OK, so everything." });
-         window.testSelAll = $('.testSelAll').SumoSelect({okCancelInMulti:true, selectAll:true });
-         window.testSelAlld = $('.SlectBox-grp').SumoSelect({okCancelInMulti:true, selectAll:true });
-
-        window.testSelAll2 = $('.testSelAll2').SumoSelect({selectAll:true });
-
-
-         window.Search = $('.search-box').SumoSelect({ csvDispCount: 3, search: true, searchText:'Enter here.' });
-        window.searchSelAll = $('.search-box-sel-all').SumoSelect({ csvDispCount: 3, selectAll:true, search: true, searchText:'Enter here.', okCancelInMulti:true });
-         window.searchSelAll = $('.search-box-open-up').SumoSelect({ csvDispCount: 3, selectAll:true, search: false, searchText:'Enter here.', up:true });
-
-         window.groups_eg_g = $('.groups_eg_g').SumoSelect({selectAll:true, search:true });
+        //$('.channel_type').SumoSelect({search: true, placeholder: 'select category',okCancelInMulti: true,});
+        $('#module').SumoSelect();
+        $('.channel_type').SumoSelect({search: true, placeholder: 'select category',okCancelInMulti: true,triggerChangeCombined: false});
+        $('#sel_country').SumoSelect({search: true, placeholder: 'select country'});
+        $('#sel_state').SumoSelect({search: true, placeholder: 'select state'});
+        $('#town').SumoSelect({search: true, placeholder: 'select city'});
     });
 </script>
+
+
+<script src="<?php echo base_url();?>assets/admin/js/file-browse/dropzone-min.js"></script>
+
+
+
 <script>
-    $(document).ready(function() {
-        //set initial state.
-        $('#textbox1').val($(this).is(':checked'));
+    $(function() {
 
-        $('#checkbox1').change(function() {
-            $('#textbox1').val($(this).is(':checked'));
+        $(document).on('change', ':file', function() {
+            var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
         });
 
-        $('#checkbox1').click(function() {
-            if (!$(this).is(':checked')) {
-                return confirm("Are you sure?");
-            }
+        $(document).ready( function() {
+            $(':file').on('fileselect', function(event, numFiles, label) {
+
+                var input = $(this).parents('.input-group').find(':text'),
+                        log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+                if( input.length ) {
+                    input.val(log);
+                } else {
+                    if( log ) alert(log);
+                }
+
+            });
         });
-    });
-</script>
-       
- <script src="<?php echo base_url(); ?>assets/admin/js/jquery.form.js"></script>
- <script src="<?php echo base_url();?>assets/admin/js/file-browse/dropzone-min.js"></script>
-<?php echo $footer; ?>
 
+    });</script>
 
-<!-- Datatables -->
-
-<!--============new customer popup start here=================-->
-
-<div id="newcstomr" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">X</button>
-    <h4 class="modal-title">New Customer</h4>
-</div>
-<div class="modal-body">
-<div id="testmodal" style="padding: 5px 20px;">
-<form id="antoform" class="form-horizontal Calendar" role="form">
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <select id="heard" class="form-control" required="">
-            <option value="">Saluation</option>
-            <option value="press">Mr.</option>
-            <option value="press">Mrs.</option>
-            <option value="press">Ms.</option>
-            <option value="press">Miss.</option>
-            <option value="press">Dr.</option>
-        </select>
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="First Name" class="form-control">
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="Last Name" class="form-control">
-    </div>
-    <div class="col-md-6 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="company name" class="form-control">
-    </div>
-    <div class="col-md-5 col-sm-11 col-xs-11 form-group">
-        <input type="text" placeholder="company display name" class="form-control">
-    </div>
-    <div class="col-md-1 col-sm-1 col-xs-1">
-        <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="Work Phone" class="form-control">
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="Mobile" class="form-control">
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group"> <a data-toggle="collapse" data-target="#morefield" class="lnht1">Add More Field</a> </div>
-    <div class="clear"></div>
-    <div id="morefield" class="collapse">
-        <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-            <input type="text" placeholder="Skype Name/ No." class="form-control">
-        </div>
-        <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-            <input type="text" placeholder="Designation" class="form-control">
-        </div>
-        <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-            <input type="text" placeholder="Department" class="form-control">
-        </div>
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group clear">
-        <input type="text" placeholder="Website" class="form-control">
-    </div>
-</form>
-<div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="x_panel">
-        <div class="x_content">
-            <div class="" role="tabpanel" data-example-id="togglable-tabs">
-                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">other Details</a> </li>
-                    <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Address</a> </li>
-                    <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Custom Field</a> </li>
-                    <li role="presentation" class=""><a href="#tab_content4" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Reporting Tags</a> </li>
-                    <li role="presentation" class=""><a href="#tab_content5" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Remarks</a> </li>
-                </ul>
-                <div id="myTabContent" class="tab-content sclbr mdltab">
-                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                            <select id="heard" class="form-control" required="">
-                                <option value="">Saluation</option>
-                                <option value="press">Mr.</option>
-                                <option value="press">Mrs.</option>
-                                <option value="press">Ms.</option>
-                                <option value="press">Miss.</option>
-                                <option value="press">Dr.</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                            <select id="heard" class="form-control" required="">
-                                <option value="">Saluation</option>
-                                <option value="press">Mr.</option>
-                                <option value="press">Mrs.</option>
-                                <option value="press">Ms.</option>
-                                <option value="press">Miss.</option>
-                                <option value="press">Dr.</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" value="">
-                                    Allow portal access for this contact </label>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                            <select id="heard" class="form-control" required="">
-                                <option value="">Portal Language</option>
-                                <option value="press">Mr.</option>
-                                <option value="press">Mrs.</option>
-                                <option value="press">Ms.</option>
-                                <option value="press">Miss.</option>
-                                <option value="press">Dr.</option>
-                            </select>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Facebook">
-                            <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span> </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Twitter">
-                            <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span> </div>
-                    </div>
-
-                    <!--======================tab_content1 end ==========================-->
-
-                    <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="tblttle">BILLING ADDRESS</h3>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Attention" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <textarea class="form-control" rows="3" placeholder="Street"></textarea>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="City" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="State" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Zip code" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <select id="heard" class="form-control" required="">
-                                    <option value="">Country</option>
-                                    <option value="press">Mr.</option>
-                                    <option value="press">Mrs.</option>
-                                    <option value="press">Ms.</option>
-                                    <option value="press">Miss.</option>
-                                    <option value="press">Dr.</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Fax" class="form-control">
-                            </div>
-                        </div>
-
-                        <!--++++++++++++++++SHIPPING ADDRESS end +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="tblttle">SHIPPING ADDRESS</h3>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Attention" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <textarea class="form-control" rows="3" placeholder="Street"></textarea>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="City" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="State" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Zip code" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <select id="heard" class="form-control" required="">
-                                    <option value="">Country</option>
-                                    <option value="press">Mr.</option>
-                                    <option value="press">Mrs.</option>
-                                    <option value="press">Ms.</option>
-                                    <option value="press">Miss.</option>
-                                    <option value="press">Dr.</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Fax" class="form-control">
-                            </div>
-                        </div>
-
-                        <!--++++++++++++++++SHIPPING ADDRESS end +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-
-                        <div class="col-md-12 col-sm-12 col-xs-12 form-group"> <strong>Note:</strong> You can add and manage additional addresses from contact details section. </div>
-                    </div>
-                    <!--======================tab_content2 end ==========================-->
-
-                    <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
-                        <p class="tabtxt">Start adding custom fields for your contacts by going to More Settings <strong> > </strong> Preferences <strong>></strong> Contacts. You can add as many as Ten extra fields, as well as refine the address format of your contacts from there. </p>
-                    </div>
-                    <!--======================tab_content3 end ==========================-->
-
-                    <div role="tabpanel" class="tab-pane fade" id="tab_content4" aria-labelledby="profile-tab">
-                        <p class="tabtxt">You've not created any Reporting Tags.
-                            Start creating reporting tags by going to More Settings <strong> > </strong> Reporting Tags </p>
-                    </div>
-                    <!--======================tab_content3 end ==========================-->
-
-                    <div role="tabpanel" class="tab-pane fade" id="tab_content5" aria-labelledby="profile-tab">
-                        <div class="col-md-9 col-sm-9 col-xs-12 form-group"> <strong>Remarks </strong>(For Internal Use)
-                            <textarea class="form-control" rows="5" placeholder="Street"></textarea>
-                        </div>
-                    </div>
-                    <!--======================tab_content3 end ==========================-->
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-default antoclose" data-dismiss="modal">Cancel</button>
-    <button type="button" class="btn btn-primary antosubmit">Save</button>
-</div>
-</div>
-</div>
-</div>
-
-</body>          
+</body>
 </html>

@@ -1,10 +1,131 @@
-
-
 <?php echo $default_assets; ?>
 
 
 <?php echo $sidebar; ?>
+<style type="text/css">
+    @media (min-width: 768px){
+        .circle-tile {
+            margin-bottom: 30px;
+        }
+    }
 
+    .circle-tile {
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .circle-tile-heading {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto -40px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-radius: 100%;
+        color: #fff;
+        transition: all ease-in-out .3s;
+    }
+        /* Use these to cuztomize the background color of a div. These are used along with tiles, or any other div you want to customize. */
+
+    .dark-blue {
+        background-color: #34495e;
+    }
+
+    .blue {
+        background-color: #5d8ab3;
+    }
+
+    .orange {
+        background-color: #5e8eb9;
+    }
+
+    .red {
+        background-color: #597590;
+    }
+
+    .purple {
+        background-color: #8e44ad;
+    }
+
+    .dark-gray {
+        background-color: #7f8c8d;
+    }
+
+    .gray {
+        background-color: #95a5a6;
+    }
+
+    .light-gray {
+        background-color: #bdc3c7;
+    }
+
+    .yellow {
+        background-color: #f1c40f;
+    }
+
+        /* -- Text Color Helper Classes */
+
+    .text-dark-blue {
+        color: #34495e;
+    }
+
+
+
+    .text-blue {
+        color: #2980b9;
+    }
+
+    .text-orange {
+        color: #f39c12;
+    }
+
+    .text-red {
+        color: #e74c3c;
+    }
+
+
+
+    .text-faded {
+        color: rgba(255,255,255,0.7);
+    }
+
+
+
+    .circle-tile-heading .fa {
+        line-height: 80px;
+    }
+
+    .circle-tile-content {
+        padding-top: 50px;
+    }
+    .circle-tile-description {
+        text-transform: uppercase;
+    }
+
+    .text-faded {
+        color: rgba(255,255,255,0.7);
+    }
+
+    .circle-tile-number {
+        padding: 5px 0 15px;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .circle-tile-footer {
+        display: block;
+        padding: 5px;
+        color: rgba(255,255,255,0.5);
+        background-color: rgba(0,0,0,0.1);
+        transition: all ease-in-out .3s;
+    }
+
+    .circle-tile-footer:hover {
+        text-decoration: none;
+        color: rgba(255,255,255,0.5);
+        background-color: rgba(0,0,0,0.2);
+    }
+</style>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/highcharts-more.js"></script>
@@ -25,10 +146,10 @@
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
+                       <!--  <input type="text" class="form-control" placeholder="Search for...">
                     <span class="input-group-btn">
                       <button class="btn btn-default" type="button">Go!</button>
-                    </span>
+                    </span> -->
                     </div>
                 </div>
             </div>
@@ -38,7 +159,92 @@
 
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="x_panel">
+                        
+                        <div class="x_content">
+                           <div class="row">
+                            <div class="col-lg-3 col-sm-6">
+                                <div class="circle-tile">
+                                    <a href="#">
+                                        <div class="circle-tile-heading dark-blue">
+                                            <i class="fa fa-cogs fa-fw fa-3x"></i>
+                                        </div>
+                                    </a>
+                                    <div class="circle-tile-content dark-blue">
+                                        <div class="circle-tile-description text-faded">
+                                            My Wallet 
+                                        </div>
+                                        <?php $wallet = empty($my_wallet_value['total_value']) ?0 : $my_wallet_value['total_value']; ?>
+                                        <div class="circle-tile-number text-faded">
+                                          <?php echo $wallet; ?>
+                                            <span id="sparklineA"></span>
+                                        </div>
+                                        <a href="<?php echo base_url();?>wallet_overview" class="circle-tile-footer">More Info <i class="fa fa-chevron-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6">
+                                <div class="circle-tile">
+                                    <a href="#">
+                                        <div class="circle-tile-heading orange">
+                                            <i class="fa fa-sitemap fa-fw fa-3x"></i>
+                                        </div>
+                                    </a>
+                                    <div class="circle-tile-content orange">
+                                        <div class="circle-tile-description text-faded">
+                                            Total Channel Partners
+                                        </div>
+                                        <div class="circle-tile-number text-faded">
+                                            <?php echo $data['cp_count']; ?>
+                                        </div>
+                                        <a href="<?php echo base_url() ?>get_active_cp/0" class="circle-tile-footer">More Info <i class="fa fa-chevron-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6">
+                                <div class="circle-tile">
+                                    <a href="#">
+                                        <div class="circle-tile-heading blue">
+                                            <i class="fa fa-user fa-fw fa-3x"></i>
+                                        </div>
+                                    </a>
+                                    <div class="circle-tile-content blue">
+                                        <div class="circle-tile-description text-faded">
+                                            Total Club Members
+                                        </div>
+                                        <div class="circle-tile-number text-faded">
+                                           <?php echo $data['cm_count']; ?>
+                                            <span id="sparklineB"></span>
+                                        </div>
+                                        <a href="<?php echo base_url();?>all_club_members/0" class="circle-tile-footer">More Info <i class="fa fa-chevron-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6">
+                                <div class="circle-tile">
+                                    <a href="#">
+                                        <div class="circle-tile-heading red">
+                                            <i class="fa fa-black-tie fa-fw fa-3x"></i>
+                                        </div>
+                                    </a>
+                                    <div class="circle-tile-content red">
+                                        <div class="circle-tile-description text-faded">
+                                            Total Executives
+                                        </div>
+                                        <div class="circle-tile-number text-faded">
+                                            <?php echo $data['exc_count']; ?>
+                                            <span id="sparklineC"></span>
+                                        </div>
+                                        <a href="<?php echo base_url();?>exe-view/0" class="circle-tile-footer">More Info <i class="fa fa-chevron-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div> 
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-9 col-sm-10 col-xs-12">
                     <div class="x_panel">
                         <div class="x_title">
                             <h2>Cash Flow<small></small></h2>
@@ -125,29 +331,62 @@
                 </div>
 
 
-            </div>
+<!--/////////////////////////////////////-->
 
+              
+                <div class="col-lg-3 col-sm-6">
+                    <div class="circle-tile">
+                        
+                        <div class="circle-tile-content red">
+                            <div class="circle-tile-description text-faded">
+                               Total Club Agents
+                            </div>
+                            <div class="circle-tile-number text-faded">
+                               <?php echo $data['ca_count']; ?>
+                                <span id="sparklineC"></span>
+                            </div>
+                            <a href="<?php echo base_url();?>all_club_agents/0" class="circle-tile-footer">More Info <i class="fa fa-chevron-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="circle-tile">
+                       
+                        <div class="circle-tile-content red">
+                            <div class="circle-tile-description text-faded">
+                               Total Jaazzo Store
+                            </div>
+                            <div class="circle-tile-number text-faded">
+                               <?php echo $data['jz_count']; ?>
+                                <span id="sparklineC"></span>
+                            </div>
+                            <a href="<?php echo base_url();?>view_ba" class="circle-tile-footer">More Info <i class="fa fa-chevron-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="circle-tile">
+                        
+                        <div class="circle-tile-content red">
+                            <div class="circle-tile-description text-faded">
+                               Total Normal Customers
+                            </div>
+                            <div class="circle-tile-number text-faded">
+                               <?php echo $data['nc_count']; ?>
+                                <span id="sparklineC"></span>
+                            </div>
+                            <a href="<?php echo base_url();?>normal_users/0" class="circle-tile-footer">More Info <i class="fa fa-chevron-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
         </div>
 
         <!-- ================= row end here =================================================-->
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="tile-stats">
-                        <div class="icon"><i class="fa fa-inr"></i>
-                        </div>
-                        <div class="count"><?php echo $my_wallet_value['total_value'] ?></div>
-
-                        <h3>My Wllet </h3>
-                        <p></p>
-                    </div>
-                </div>
-
-            </div>
-
-
-        </div>
+        
 
 
     </div>

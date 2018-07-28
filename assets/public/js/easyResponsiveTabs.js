@@ -43,7 +43,7 @@
                         $respTabs.addClass('resp-vtabs');
                     }
                     if (jfit == true) {
-                        $respTabs.css({ width: '100%', margin: '4px 0px 0px 0px' });
+                        $respTabs.css({ width: '100%', margin: '0px' });
                     }
                     if (jtype == accord) {
                         $respTabs.addClass('resp-easy-accordion');

@@ -9,21 +9,7 @@ echo $sidebar;
 <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.9.0/ui-bootstrap-tpls.min.js"></script>
 <div class="right_col" role="main">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
         <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -37,22 +23,26 @@ echo $sidebar;
                     </div>
                     <div class="x_content">
                         <div class="">
-                            <div class="table-responsive tabmargntp30">
+                            <div class="">
                                 <div class="col-md-12">
                                     <form id="pool_stage" class="form-horizontal Calendar"  action="" role="form" method="post">
-                                        <div class="col-md-8 col-sm-6 col-xs-12 form-group">
+                                    <div class="col-md-12">
+                                        <div class="col-md-4 col-sm-4 col-xs-12 form-group">
                                             <label>Stage Name</label>
                                             <input type="text" placeholder="Stage Name" name='stage_name' ng-model="designation" id="designation" name="desigination" class="form-control">
                                         </div>
-
-                                        <div class="col-md-8 col-sm-8 col-xs-8 form-group">
-                                            <label>Description</label>
-                                            <textarea class="form-control" rows="3" name='discription' id="discription" ng-model="discription" name="discription" placeholder="Discription"></textarea>
                                         </div>
 
+<div class="col-md-12">
+                                        <div class="col-md-4 col-sm-4 col-xs-8 form-group">
+                                            <label>Description</label>
+                                            <textarea class="form-control" rows="3" name='discription' id="discription" ng-model="discription" name="discription" placeholder="Discription"></textarea>
+                                        </div></div>
 
+<div class="col-md-12">
                                         <div class="col-md-12 col-sm-12 col-xs-12 form-group">
                                             <button type="submit" id="add_stage" class="btn btn-primary antosubmit">Add New Stage</button>
+                                        </div>
                                         </div>
                                         <form>
                                 </div>

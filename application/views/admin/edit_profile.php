@@ -1,26 +1,60 @@
-<?php echo $default_assets; ?>
-<link href="<?php echo base_url();?>assets/admin/sumo-select/sumoselect.css" rel="stylesheet" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta mame="description" content=" " />
+    <META content="ALL" name="ROBOTS"/>
+    <META content="FOLLOW" name="ROBOTS"/>
+    <META content="" name="copyright"/>
+    <meta name="distribution" content="Global" />
+    <title>Greenindia</title>
+    <link rel="shortcut icon" href="<?= base_url();?>assets/public/favicon/favicon.png">
+    <?= $default_assets;?>
+
+    <link rel="stylesheet" type="text/css" href="<?= base_url();?>assets/public/css/slick.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url();?>assets/public/css/slick-theme.css">
+    <link href="<?php echo base_url();?>assets/admin/sumo-select/sumoselect.css" rel="stylesheet" />
+
+   
+<style type="text/css">
+
+.row{margin:0;}
+.goToTop{position:fixed;background-color:#1268b3;border-bottom:1px solid #000;z-index: 17;}
 
 
+
+
+@media (max-width:1000px){
+  
+.goToTop{height:auto;position:relative;background-color:#fff;}
+  
+  
+}
+@media (max-width:767px){
+  
+  .goToTop {
+  position: static;
+  top: 0;
+  left: 0;
+  z-index: 10;
+      background-color: #1a4794;
+}
+
+.row{margin:0;}
+}
+</style>
 </head>
-<?php echo $sidebar; ?>
+
+<body>
+
+<!--===========header end here ========================-->
+
+
+<?= $header;?>
 <div class="right_col" role="main">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
 
         <div class="clearfix"></div>
         <div class="row">
@@ -35,9 +69,9 @@
                     </div>
                     <div class="x_content">
                         <div class="">
-                            <div class="table-responsive tabmargntp30">
+                            <div class="">
                                 <form method="post" name="channel" id="channel"  enctype='multipart/form-data' action="<?php echo base_url();?>admin/Profile/edit_channel_byid/<?php echo $user['id'];?>">
-                                    <div class="col-md-12">
+                                    <div class="">
                             <?php //echo $user['name']
                                
                            ?>

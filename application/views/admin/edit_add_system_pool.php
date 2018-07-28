@@ -2,36 +2,22 @@
 <?php echo $sidebar; ?>
 <div class="right_col" role="main" xmlns="http://www.w3.org/1999/html">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
         <div class="clearfix"></div>
 
-        <form class="" id='new_pool' method="post" enctype="multipart/form-data>"
+        <form class="" id='new_pool' method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>System Pool Settings<small></small></h2>
                         <ul class="nav navbar-right panel_toolbox">
-                            <h2 style="color:red ">You Have split <label id="split" name="split"></label>You can't add any pools more<small></small></h2>
+                            <h2 style="color:red ">You Have split <label id="split" name="split"><?php $bal= 100- $total_group_persantage['total_persantage'] ; echo $bal ?>%</label> to Any Pool group<small></small></h2>
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
                         </ul>
                         <div class="clearfix"></div>
                     </div>
-                   <!--  <div class="x_content">
+                    <div class="x_content">
                         <div class="">
                             <div class="table-responsive tabmargntp30">
                                 <div class="col-md-12">
@@ -57,7 +43,7 @@
                                     </div>
                                 <div class="col-md-6" id="pool_row">
 
-                                    <!--  -->
+                                    
                                     </div>
 
 
@@ -68,7 +54,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
 
                 </div>
             </div>
@@ -94,8 +80,15 @@
     });
 </script>
 
-    <?php }  ?>
+    <?php }  
+   if($bal<='0'){ ?>
 
+<script type="text/javascript">
+    alert("System Pooling Percentage Limit Exceeded");
+    window.location="<?php echo base_url(); ?>view_pooling"
+  
+</script>
+ <?php }   ?>
 
 <script type="text/javascript">
 
@@ -156,11 +149,11 @@
              if(data.status)
              {
                  noty({text:"Successfully created",type: 'success',layout: 'top', timeout: 3000});
-                 // $('#allow_persantage').val('');
-                 // $('#no_of_levels').val('');
-                 // $('#pool_name').val('');
-                    $('#new_pool').reset();
-               //  window.location = '<?= base_url();?>admin/pooling/new_pool';
+                 $('#new_pool')[0].reset();
+                     $("#pool_row").hide();
+                      setTimeout(function(){// wait for 5 secs(2)
+                           location.reload(); // then reload the page.(3)
+                      }, 1000);
 
              }
                  else

@@ -6,22 +6,6 @@
 <?php echo $sidebar; ?>
 <div class="right_col" role="main">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
-
         <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -35,47 +19,99 @@
                     </div>
                     <div class="x_content">
                         <div class="">
-                            <div class="table-responsive tabmargntp30">
-                                <form method="post" action="<?php echo base_url();?>admin/Product/edit_product_byid/<?= $products['produ']['id'];?>" name="product_form" id="product_form" enctype="multipart/form-data">
+                            <div class="">
+                                <form method="post" action="<?php echo base_url();?>admin/product/edit_product_byid/<?= $products['produ']['id'];?>" name="product_form" id="product_form" enctype="multipart/form-data">
                                     <div class="col-md-12">
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Category</label>
-                                            <select id="pro_category" class="form-control validate[required] " name="pro_category">
-                                                <?php foreach($product_cate['category'] as $category){?>
-                                                <option <?= $products['produ']['id']=$category['id'] ? 'selected' : ''?> value="<?php echo $category['id'];?>"><?php echo $category['title'];?></option>
+                                            <label>Channel Partner</label>
+                                            <select name="channel_partner" class="form-control channel_partner" id="channel_partner" data-rule-required="true">
+                                                <option value="0">Select</option>
+                                                <?php foreach($channel_partner as $cp){ ?>
+                                                <option <?= $products['produ']['channel_partner_id'] == $cp['id'] ? "selected" : ""; ?> value="<?php echo $cp['id'];?>"><?php echo $cp['name'];?></option>
+                                                <?php } ?> 
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
+                                            <label>Channel Partner Types</label>
+                                            <select id="pro_category" class="form-control" name="pro_category" data-rule-required="true">
+                                                
+                                                <?php foreach($products['produ']['types'] as $category){?>
+                                                  <optgroup label="<?= $category['title'] ?>">
+                                                    <?php foreach($category['sub'] as $sub){?>
+                                                       <option <?= $products['produ']['category_id'] == $sub['id'] ? "selected" : ""; ?> value="<?= $sub['id'] ?>"><?= $sub['title'] ?></option>
+                                                    <?php } ?>   
+                                                  </optgroup> 
                                                 <?php } ?>
                                             </select>
                                         </div>
-
+                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
+                                            <label>Channel Partner Sub Types</label>
+                                            <select name="sub_type"  class="form-control search-box-open-up search-box-sel-all sub_type vh" data-rule-required="true">
+                                                <option value="0">Select</option>
+                                                <?php foreach($subtype as $s){ ?>
+                                                <option <?= $products['produ']['sub_cp_type_id'] == $s['id'] ? "selected" : ""; ?> value="<?php echo $s['id'];?>"><?php echo $s['title'];?></option>
+                                                <?php } ?> 
+                                            </select>
+                                        </div>
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">
                                             <label>Name</label>
-                                            <input type="text" placeholder="Name" name="pro_name" class="form-control validate[required]" value="<?= $products['produ']['name']?>">
+                                            <input type="text" placeholder="Name" name="pro_name" class="form-control" value="<?= $products['produ']['name']?>" data-rule-required="true">
                                         </div>
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Description</label>
-                                            <input type="text" placeholder="Description" name="pro_description" class="form-control validate[required]" value="<?= $products['produ']['description']?>">
-                                        </div>
+                                      
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">
                                             <label>Model</label>
-                                            <input type="text" placeholder="Product Model" name="pro_model" class="form-control validate[required]" value="<?= $products['produ']['model']?>">
+                                            <input type="text" placeholder="Product Model" name="pro_model" class="form-control" value="<?= $products['produ']['model']?>">
                                         </div>
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Quantity</label>
-                                            <input type="text" placeholder="Product Quantity" name="pro_quantity" id="pro_quantity" class="form-control validate[required]" value="<?= $products['produ']['quantity']?>">
+                                            <label>Brands</label>
+                                            <select name="brands" class="form-control brands" id="brands" data-rule-required="true">
+                                                <option value="0">Select</option>
+                                                <?php foreach($brands as $br){ ?>
+                                                <option <?= $products['produ']['brand_id']==$br['id'] ? "selected" :"" ; ?> value="<?php echo $br['id'];?>"><?php echo $br['name'];?></option>
+                                                <?php } ?> 
+                                            </select>
+                                           
                                         </div>
+                                        
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">
                                             <label>Actual Cost</label>
-                                            <input type="text" placeholder="Actual Cost" name="pro_actualcost" id="pro_actualcost" class="form-control validate[required]" value="<?= $products['produ']['actual_cost']?>">
+                                            <input type="text" placeholder="Actual Cost" name="pro_actualcost" id="pro_actualcost" class="form-control" value="<?= $products['produ']['actual_cost']?>" onKeyPress="return isFloatKey(event)">
                                         </div>
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Cost</label>
-                                            <input type="text" placeholder="Product Cost" name="pro_cost" id="pro_cost" class="form-control validate[required]" value="<?= $products['produ']['cost']?>">
+                                            <label>Special Price</label>
+                                            <input type="text" placeholder="Special Prize" name="special_prize" id="special_prize" class="form-control" value="<?= $products['produ']['special_prize']?>" onKeyPress="return isFloatKey(event)">
+                                        </div>
+                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group" id="re_category">
+                                            <label>Rewards Category</label>
+                                            <select name="reward_category" class="form-control reward_category" id="reward_category" data-rule-required="true">
+                                                <option value="0">Select</option>
+                                                <?php foreach($type['reward'] as $s){ ?>
+                                                <option <?= $products['produ']['reward_cat_id'] == $s['id'] ? "selected" : ""; ?> value="<?php echo $s['id'];?>"><?php echo $s['category_title'].'('.$s['percentage'].'%)';?></option>
+                                                <?php } ?> 
+                                            </select>
                                         </div>
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Image</label>
-                                            <input type="file" placeholder="Image" name="pro_image" class="form-control">
-                                            <img src="<?php echo base_url();?>assets\admin\products\<?= $products['produ']['image']?>" width="50px" height="50px">
+                                         <label>Description</label>
+                                          <textarea id="textarea" data-rule-required="true" name="pro_description" class="form-control col-md-7 col-xs-12"  rows="5" style="overflow: hidden; word-wrap: break-word; resize: horizontal; "><?= $products['produ']['description']?></textarea>
                                         </div>
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <label>image</label><br>
+                                        <?php foreach ($products['produ']['images'] as $value) { ?>
+                                          <div id="imagePreview" style="overflow:hidden;">
+                                             <input type="hidden" name="img_id" class="img_id" value="<?= $value['id'];?>">
+                                             <img src="<?php echo base_url(). $value['p_image']?>" style="max-width:100%;height:160px;">
+                                             <button class="btn btn-danger del_img delteimagrbtn"><i class="fa fa-times"></i> Remove</button>
+                                          </div> 
+                                          
+                                        <?php } ?>
+                                        
+                                        <input id="uploadFile" type="file" name="pro_image[]" class="img btn btn-danger" />
+                                        <div class="clear"></div>
+
+                                         </div>
+ 
+                                        <div class="col-md-12 col-sm-6">
+                                          <div id="selectedFiles"></div></div>
 
                                         <div class="col-md-12 col-sm-12 col-xs-12 form-group">
                                             <input type="submit" class="btn btn-primary prosubmit" name="prosubmit" id="prosubmit" value="Save">
@@ -95,72 +131,7 @@
 
     <!--************************row  end******************************************************************* -->
 
-    <!--script type="text/javascript">
-        $(document).ready(function(){
 
-            $('#prosubmit').click(function(e){
-                e.preventDefault();
-                var sta = $("#product_form").validationEngine("validate");
-                if(sta== true){
-
-                    var cur= $(this);
-                    var data=$("#product_form").serializeArray();
-                    $('.body_blur').show();
-
-                    $.post('<?php echo base_url();?>admin/Product/new_product_add', data, function(data){
-                        $('.body_blur').hide();
-
-                        if(data.status){
-                            noty({text:"Successfully created",type: 'success',layout: 'top', timeout: 3000});
-                            $('#product_form')[0].reset();
-                        }
-                        else{
-                            noty({text:data.reason,type: 'error',layout: 'top', timeout: 3000});
-                        }
-
-                    },'json');
-                }
-
-            });
-
-        });
-    </script-->
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // bind form using ajaxForm
-            $('#product_form').ajaxForm({
-                // dataType identifies the expected content type of the server response
-                dataType:  'json',
-
-                // success identifies the function to invoke when the server response
-                // has been received
-                success:   function(data){
-                    if(data.status){
-                        noty({text: 'Product Updated', type: 'success', timeout: 1000 });
-                        window.location = "<?php echo base_url();?>product_list";
-                    } else {
-                        noty({text: data.reason, type: 'error', timeout: 1000 });
-                    }
-
-                }
-            });
-            $('#pro_quantity').on('input',function() {
-                calculte_cost();
-            });
-            $('#pro_actualcost').on('input',function() {
-                calculte_cost();
-            });
-        });
-        function calculte_cost(){
-            var quantity = isNaN(parseInt($('#pro_quantity').val())) ? 0 : parseInt($('#pro_quantity').val());
-            var actualcost = isNaN(parseInt($('#pro_actualcost').val())) ? 0 : parseInt($('#pro_actualcost').val());
-            var sal_one_day = quantity * actualcost;
-            $("#product_form").find('#pro_cost').val(parseInt(sal_one_day));
-            var test = inWords(cost);
-            console.log(test);
-        }
-
-    </script>
 
 
 </div>
@@ -169,255 +140,447 @@
 </div>
 </div>
 
-<script>
-    $(document).ready(function() {
-        //set initial state.
-        $('#textbox1').val($(this).is(':checked'));
 
-        $('#checkbox1').change(function() {
-            $('#textbox1').val($(this).is(':checked'));
-        });
-
-        $('#checkbox1').click(function() {
-            if (!$(this).is(':checked')) {
-                return confirm("Are you sure?");
-            }
-        });
-    });
-</script>
+<div id="notifications"></div><input type="hidden" id="position" value="center">
+<?php echo $footer; ?>
 <script src="<?php echo base_url(); ?>assets/admin/js/jquery.form.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/file-browse/dropzone-min.js"></script>
 
-<?php echo $footer; ?>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // bind form using ajaxForm
+            // $('#product_form').ajaxForm({
+            //     // dataType identifies the expected content type of the server response
+            //     dataType:  'json',
 
+            //     // success identifies the function to invoke when the server response
+            //     // has been received
+            //     success:   function(data){
+            //         if(data.status){
+            //             var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">Product updated successfully</div></div>';
+            //                     var effect='zoomIn';
+            //                     $("#notifications").append(center);
+            //                     $("#notifications-full").addClass('animated ' + effect);
+            //                     refresh_close();
+            //                     setTimeout(function(){
+            //                       window.location = "<?php echo base_url();?>product_list/0";
+            //                     }, 1000);
+                        
+            //         } else {
+            //                var regex = /(<([^>]+)>)/ig;
+            //                     var body = data.reason;
+            //                     var result = body.replace(regex, "");
+            //                     var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+            //                     var effect='fadeInRight';
+            //                     $("#notifications").append(center);
+            //                     $("#notifications-full").addClass('animated ' + effect);
+            //                     $('.close').click(function(){
+            //                         $(this).parent().fadeOut(1000);
+            //                     });
+            //         }
+
+            //     }
+            // });
+
+
+            /////image delete
+            $(document).on('click', '.del_img', function(e){
+                e.preventDefault();
+                var cur = $(this);
+                var img_id = cur.parent().find('.img_id').val();
+                $('body').alertBox({
+                    title: 'Are You Sure?',
+                    lTxt: 'Back',
+                    lCallback: function(){
+                      
+                    },
+                    rTxt: 'Okey',
+                    rCallback: function(){
+                  
+                                $.post('<?php echo base_url();?>admin/home/delete_product_image/'+img_id, function(data){
+                                    if(data.status)
+                                    {
+                                        cur.parent().remove();
+                                        var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">Successfully deleted image</div></div>';
+                                    var effect='zoomIn';
+                                    $("#notifications").append(center);
+                                    $("#notifications-full").addClass('animated ' + effect);
+                                    refresh_close();
+                                    setTimeout(function(){
+                                        location.reload();
+                                    }, 1000);
+                                    }else{
+                                        var regex = /(<([^>]+)>)/ig;
+                                        var body = data.reason;
+                                        var result = body.replace(regex, "");
+                                        var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+                                        var effect='fadeInRight';
+                                        $("#notifications").append(center);
+                                        $("#notifications-full").addClass('animated ' + effect);
+                                        $('.close').click(function(){
+                                                    $(this).parent().fadeOut(1000);
+                                        });
+                                    }
+                                },'json');
+                    }       
+                });
+            });
+        }); 
+    </script>
 
 <!-- Datatables -->
-
+<link href="<?= base_url() ?>assets/admin/css/sumoselect.css" rel="stylesheet"/>
+<script src="<?php echo base_url();?>assets/admin/sumo-select/jquery.sumoselect.js"></script>
 <!--============new customer popup start here=================-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#channel_partner').SumoSelect({search: true, placeholder: 'select channel partner'});
+        $('#brands').SumoSelect({search: true, placeholder: 'select brands'});
+        $('#pro_category').SumoSelect();
+        $('.vh').SumoSelect();
+    });
+</script>
+<script type="text/javascript">
 
-<div id="newcstomr" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">X</button>
-    <h4 class="modal-title">New Cutomer</h4>
-</div>
-<div class="modal-body">
-<div id="testmodal" style="padding: 5px 20px;">
-<form id="antoform" class="form-horizontal Calendar" role="form">
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <select id="heard" class="form-control" required="">
-            <option value="">Saluation</option>
-            <option value="press">Mr.</option>
-            <option value="press">Mrs.</option>
-            <option value="press">Ms.</option>
-            <option value="press">Miss.</option>
-            <option value="press">Dr.</option>
-        </select>
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="First Name" class="form-control">
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="Last Name" class="form-control">
-    </div>
-    <div class="col-md-6 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="company name" class="form-control">
-    </div>
-    <div class="col-md-5 col-sm-11 col-xs-11 form-group">
-        <input type="text" placeholder="company display name" class="form-control">
-    </div>
-    <div class="col-md-1 col-sm-1 col-xs-1">
-        <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="Work Phone" class="form-control">
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-        <input type="text" placeholder="Mobile" class="form-control">
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 form-group"> <a data-toggle="collapse" data-target="#morefield" class="lnht1">Add More Field</a> </div>
-    <div class="clear"></div>
-    <div id="morefield" class="collapse">
-        <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-            <input type="text" placeholder="Skype Name/ No." class="form-control">
-        </div>
-        <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-            <input type="text" placeholder="Designation" class="form-control">
-        </div>
-        <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-            <input type="text" placeholder="Department" class="form-control">
-        </div>
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group clear">
-        <input type="text" placeholder="Website" class="form-control">
-    </div>
-</form>
-<div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="x_panel">
-        <div class="x_content">
-            <div class="" role="tabpanel" data-example-id="togglable-tabs">
-                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">other Details</a> </li>
-                    <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Address</a> </li>
-                    <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Custom Field</a> </li>
-                    <li role="presentation" class=""><a href="#tab_content4" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Reporting Tags</a> </li>
-                    <li role="presentation" class=""><a href="#tab_content5" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Remarks</a> </li>
-                </ul>
-                <div id="myTabContent" class="tab-content sclbr mdltab">
-                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                            <select id="heard" class="form-control" required="">
-                                <option value="">Saluation</option>
-                                <option value="press">Mr.</option>
-                                <option value="press">Mrs.</option>
-                                <option value="press">Ms.</option>
-                                <option value="press">Miss.</option>
-                                <option value="press">Dr.</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                            <select id="heard" class="form-control" required="">
-                                <option value="">Saluation</option>
-                                <option value="press">Mr.</option>
-                                <option value="press">Mrs.</option>
-                                <option value="press">Ms.</option>
-                                <option value="press">Miss.</option>
-                                <option value="press">Dr.</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" value="">
-                                    Allow portal access for this contact </label>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group">
-                            <select id="heard" class="form-control" required="">
-                                <option value="">Portal Language</option>
-                                <option value="press">Mr.</option>
-                                <option value="press">Mrs.</option>
-                                <option value="press">Ms.</option>
-                                <option value="press">Miss.</option>
-                                <option value="press">Dr.</option>
-                            </select>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Facebook">
-                            <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span> </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Twitter">
-                            <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span> </div>
-                    </div>
+    $(document).ready(function(){
 
-                    <!--======================tab_content1 end ==========================-->
+        $('#channel_partner').change(function(e){
+            e.preventDefault();
+            var id = $(this).val();
+            if(id!=''){
+                $('.body_blur').show();
+                $('#pro_category')[0].sumo.unload();
+                $.post('<?php echo base_url();?>admin/product/get_cp_type', {id:id}, function(data){
+                    $('.body_blur').hide();
+                
+                    if(data){
+                        var data1 = data.data.reward;
+                        var data = data.data.type;
+                        // console.log(data);
+                        var selop='<option>Select</option>';
+                        if(data){
+                            for (var j=0;j<data.length;j++) {
+                             var optgroup='';
+                                for (var i=0;i<data[j].sub.length;i++) {
+                                    optgroup +='<option value="'+data[j].sub[i].id+'-'+data[j].sub[i].con_id+'">'+data[j].sub[i].title+'</option>';
+                                }
+                                selop +='<optgroup label="'+data[j].title+'">'+optgroup+'</optgroup>';
+                            }
+                            $('#pro_category').html(selop);
+                        }else{
+                            $('#pro_category').html(selop);
+                        }
+                        //rewards
+                        var selopt='<option value="0">Select</option>';
+                        if(data1){
+                            var optz = '';
+                              for (var k=0;k<data1.length;k++) {
+                                selopt +='<option value="'+data1[k].id+'">'+data1[k].category_title+'('+data1[k].percentage+'%)</option>';
+                              }
+                             //alert(selopt);
+                            $('#reward_category').html(selopt);
+                        }else{
+                            $('#reward_category').html(selopt);
+                        }    
+                        
+                    }
+                    else{
+                        // alert("failure");
+                        var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">Something went wrong</div></div>';
+                        var effect='fadeInRight';
+                        $("#notifications").append(center);
+                        $("#notifications-full").addClass('animated ' + effect);
+                        $('.close').click(function(){
+                            $(this).parent().fadeOut(1000);
+                        });
+                    }
+                  $('#pro_category').SumoSelect({search:true,placeholder:'select sub types'});
+                },'json');
+            }else{
+                var selopt='<option value="0">Select</option>';
+                $('#reward_category').html(selopt);
+            }
 
-                    <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="tblttle">BILLING ADDRESS</h3>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Attention" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <textarea class="form-control" rows="3" placeholder="Street"></textarea>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="City" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="State" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Zip code" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <select id="heard" class="form-control" required="">
-                                    <option value="">Country</option>
-                                    <option value="press">Mr.</option>
-                                    <option value="press">Mrs.</option>
-                                    <option value="press">Ms.</option>
-                                    <option value="press">Miss.</option>
-                                    <option value="press">Dr.</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Fax" class="form-control">
-                            </div>
-                        </div>
+        });
 
-                        <!--++++++++++++++++SHIPPING ADDRESS end +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+        $('#pro_category').change(function(e){
+            e.preventDefault();
+            var sta = $(this).val();
+            var sta = sta.split("-");
+            
+            var id = sta[0];
+            $('.vh')[0].sumo.unload();
+                $('.body_blur').show();
 
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <h3 class="tblttle">SHIPPING ADDRESS</h3>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Attention" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <textarea class="form-control" rows="3" placeholder="Street"></textarea>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="City" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="State" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Zip code" class="form-control">
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <select id="heard" class="form-control" required="">
-                                    <option value="">Country</option>
-                                    <option value="press">Mr.</option>
-                                    <option value="press">Mrs.</option>
-                                    <option value="press">Ms.</option>
-                                    <option value="press">Miss.</option>
-                                    <option value="press">Dr.</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                <input type="text" placeholder="Fax" class="form-control">
-                            </div>
-                        </div>
+                $.post('<?php echo base_url();?>admin/product/get_cp_sub_types', {id:id}, function(data){
+                    $('.body_blur').hide();
 
-                        <!--++++++++++++++++SHIPPING ADDRESS end +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+                    if(data.status){
+                        var data1 = data.data.type;
+                        console.log(data1);
+                        var selop='<option>Select</option>';
+                        for (var j=0 ;j<data1.length;j++) {
+                            selop +='<option value="'+data1[j].id+'">'+data1[j].title+'</option>';
+                        }
 
-                        <div class="col-md-12 col-sm-12 col-xs-12 form-group"> <strong>Note:</strong> You can add and manage additional addresses from contact details section. </div>
-                    </div>
-                    <!--======================tab_content2 end ==========================-->
+                        var dd= '';
+                        dd += ''+
+                                '<select class="form-control validate[required] select_box_sel select2 sub_type" name="sub_type">'+selop+'</select>'
 
-                    <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
-                        <p class="tabtxt">Start adding custom fields for your contacts by going to More Settings <strong> > </strong> Preferences <strong>></strong> Contacts. You can add as many as Ten extra fields, as well as refine the address format of your contacts from there. </p>
-                    </div>
-                    <!--======================tab_content3 end ==========================-->
+                        $('.vh').html(dd);
+                    }
+                    else{
+                        noty({text:data.reason,type: 'error',layout: 'top', timeout: 3000});
+                    }
+                $('.vh').SumoSelect({search:true,placeholder:'select sub types'});
+                },'json');
+        });
 
-                    <div role="tabpanel" class="tab-pane fade" id="tab_content4" aria-labelledby="profile-tab">
-                        <p class="tabtxt">You've not created any Reporting Tags.
-                            Start creating reporting tags by going to More Settings <strong> > </strong> Reporting Tags </p>
-                    </div>
-                    <!--======================tab_content3 end ==========================-->
+    });
+</script>
+<script type="text/javascript">
+// $(function() {
+//     $("#uploadFile").on("change", function()
+//     {
+//         var files = !!this.files ? this.files : [];
+//         if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+ 
+//         if (/^image/.test( files[0].type)){ // only image file
+//             var reader = new FileReader(); // instance of the FileReader
+//             reader.readAsDataURL(files[0]); // read the local file
+ 
+//             reader.onloadend = function(){ // set image data as background of div
+//                 $("#imagePreview").css("background-image", "url("+this.result+")");
+//             }
+//         }
+//     });
+// });
 
-                    <div role="tabpanel" class="tab-pane fade" id="tab_content5" aria-labelledby="profile-tab">
-                        <div class="col-md-9 col-sm-9 col-xs-12 form-group"> <strong>Remarks </strong>(For Internal Use)
-                            <textarea class="form-control" rows="5" placeholder="Street"></textarea>
-                        </div>
-                    </div>
-                    <!--======================tab_content3 end ==========================-->
+$(document).ready(function() {
+  $("#uploadFile").on("change", handleFileSelect);
+  selDiv = $("#selectedFiles");
+  $("#product_form").on("submit", handleForm);
+  $("body").on("click", ".selFile", removeFile);
+});
 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-default antoclose" data-dismiss="modal">Cancel</button>
-    <button type="button" class="btn btn-primary antosubmit">Save</button>
-</div>
-</div>
-</div>
-</div>
+// var selDiv = "";
+var storedFiles = [];
+function handleFileSelect(e) {
+
+          $("#selectedFiles").html('');
+
+  var files = e.target.files;
+  var filesArr = Array.prototype.slice.call(files);
+  // var device = $(e.target).data("device");
+  filesArr.forEach(function(f) {
+
+    if (!f.type.match("image.*")) {
+      return;
+    }
+    storedFiles.push(f);
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var html = "<div class='col-md-4'><img src=\"" + e.target.result + "\" data-file='" + f.name + "'  class='' style='   max-width: 100%;height: 160px;' /><span data-file='" + f.name + "' class='selFile'>Remove </span></div>";
+      $("#selectedFiles").append(html);
+    }
+    reader.readAsDataURL(f);
+
+
+  });
+
+   log = storedFiles.length > 0 ? storedFiles.length + ' files selected' : '';
+
+          if( storedFiles.length>0) {
+    $('#num_file').val(log);
+          } else {
+              if( log ) alert(log);
+                  $('#num_file').val('');
+
+          }
+
+
+}
+
+
+ var m = $("#product_form").validate({
+
+    
+ });
+function handleForm(e) {
+  e.preventDefault();
+  // var data = new FormData();
+
+  // for (var i = 0, len = storedFiles.length; i < len; i++) {
+  //   data.append('userfile', storedFiles[i]);
+  // }
+
+  
+  //  e.preventDefault();
+
+if(m.form())
+{
+
+ $('.body_blur').show();
+
+
+      
+
+        // }
+ var formData = new FormData();
+  for (var i = 0, len = storedFiles.length; i < len; i++) {
+    formData.append('pro_image[]', storedFiles[i]);
+  }
+
+
+         // console.log(formData);
+
+            var other_data = $("#product_form").serializeArray();
+
+ $.each(other_data,function(key,input){
+        formData.append(input.name,input.value);
+    });
+
+      
+        $.ajax({
+           
+                    url: $(this).attr('action'),
+                    data: formData,
+            processData: false,
+            contentType: false,
+             dataType : "json",
+            type: "POST",
+            success: function (data) 
+            {
+            $('.body_blur').hide();   
+//console.log(data.status);
+
+
+                if(data.status === true)
+                            {
+               
+ var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">Product updated successfully</div></div>';
+                                var effect='zoomIn';
+                                $("#notifications").append(center);
+                                $("#notifications-full").addClass('animated ' + effect);
+                                refresh_close();
+                                setTimeout(function(){
+                                  window.location = "<?php echo base_url();?>product_list/0";
+                                }, 1000);
+                            }
+                            else{
+                                var regex = /(<([^>]+)>)/ig;
+                                var body = data.reason;
+                                var result = body.replace(regex, "");
+                                var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+                                var effect='fadeInRight';
+                                $("#notifications").append(center);
+                                $("#notifications-full").addClass('animated ' + effect);
+                                $('.close').click(function(){
+                                    $(this).parent().fadeOut(1000);
+                                });
+
+                            }
+ //$('#landlord_form_p')[0].reset();
+                                // $('#contact_form').hide();
+            },
+
+            error: function (data) 
+            {
+                $('.body_blur').hide();
+                     var regex = /(<([^>]+)>)/ig;
+                                var body = data.reason;
+                                var result = body.replace(regex, "");
+                                var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+result+'</div></div>';
+                                var effect='fadeInRight';
+                                $("#notifications").append(center);
+                                $("#notifications-full").addClass('animated ' + effect);
+                                $('.close').click(function(){
+                                    $(this).parent().fadeOut(1000);
+                                });
+                
+            }
+
+
+        });
+    
+
+    }
+
+
+}
+
+function removeFile(e) {
+  var file = $(this).data("file");
+  for (var i = 0; i < storedFiles.length; i++) {
+    if (storedFiles[i].name === file) {
+      storedFiles.splice(i, 1);
+      break;
+    }
+  }
+  $(this).parent().remove();
+  $('#files').val('');
+
+
+
+
+
+
+
+  nput = $('#num_file').find(':text'),
+            log = storedFiles.length > 0 ? storedFiles.length + ' files selected' : '';
+
+          if( storedFiles.length>0) {
+    $('#num_file').val(log);
+          } else {
+              if( log ) alert(log);
+                  $('#num_file').val('');
+
+          }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<script type="text/javascript">
+  function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+  }
+  function isFloatKey(e){
+     var charCode = (e.which) ? e.which : e.keyCode
+    if ((charCode != 46 || $(this).val().indexOf('.') != -1) && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+  }
+</script>
+<style type="text/css">
+    .selFile {
+  display: block;
+  background: #444;
+  border: 1px solid black;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+.selFile:hover {
+  background: white;
+  color: black;
+</style>
 </body>
 </html>

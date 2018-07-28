@@ -1,33 +1,20 @@
 <?php echo $default_assets; ?>
-
 <link href="<?php echo base_url();?>assets/admin/css/file-browse/dropzone.min.css" rel="stylesheet" />
-
+<style type="text/css">
+    span.help-inline-error{
+        color: red;
+    }
+</style>
 </head>
 <?php echo $sidebar; ?>
 <div class="right_col" role="main">
-    <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="">     
         <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Add Product<small></small></h2>
+                        <h2>Add Service Ad<small></small></h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
                         </ul>
@@ -35,145 +22,154 @@
                     </div>
                     <div class="x_content">
                         <div class="">
-                            <div class="table-responsive tabmargntp30">
-                                <form method="post" action="<?php echo base_url();?>admin/Product/new_module_ads"  name="product_form" id="product_form" enctype="multipart/form-data">
+                            <div class="">
+                                <form method="post" action="<?php echo base_url();?>admin/Product/new_module_ads"  name="ad_form" id="ad_form" enctype="multipart/form-data">
                                     <div class="col-md-12">
                                         <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Bussiness Type</label>
-                                            <select id="add_type" class="form-control " name="add_type">
+                                            <label>Business Type</label>
+                                            <select id="add_type" class="form-control " name="ad_type">
                                                 <option value="">Select Module</option>
                                                 <?php foreach($select['type'] as $type){?>
-                                                <option value="<?php echo $type['id'];?>"><?php echo $type['module_name'];?></option>
+                                                <option value="<?php echo $type['id'];?>" data-img="<?php echo $type['module_image']?>"><?php echo $type['module_name'];?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
-
-
-                                        <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                            <label>Image</label>
-                                            <input type="file" placeholder="Image" name="pro_image" class="form-control">
-
+                                        <div class="col-md-4 col-sm-6 col-xs-12 ">
+                                            <label>Choose Image</label>
+                                            <div class="input-group">
+                                                <label class="input-group-btn">
+                                                <span class="btn btn-primary">
+                                                    Browse&hellip; <input type="file" style="display: none;" name="ad_image">
+                                                </span>
+                                                </label>
+                                                <input type="text" class="form-control"  readonly>
+                                            </div>
+                                            <br>
+                                            <div id="img_cont"></div>
                                         </div>
-
-
-
-
                                         <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                                            <input type="submit"
-                                                   name="add"  id="add_ads" class="btn btn-primary antosubmit"></button>
+                                            <input type="submit"   name="add"  id="add_ads" class="btn btn-primary antosubmit"></button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
     </div>
-    <div class="clearfix"></div>
-
-    <!--************************row  end******************************************************************* -->
-
-    <!--script type="text/javascript">
-        $(document).ready(function(){
-
-            $('#prosubmit').click(function(e){
-                e.preventDefault();
-                var sta = $("#product_form").validationEngine("validate");
-                if(sta== true){
-
-                    var cur= $(this);
-                    var data=$("#product_form").serializeArray();
-                    $('.body_blur').show();
-
-                    $.post('<?php echo base_url();?>admin/Product/new_product_add', data, function(data){
-                        $('.body_blur').hide();
-
-                        if(data.status){
-                            noty({text:"Successfully created",type: 'success',layout: 'top', timeout: 3000});
-                            $('#product_form')[0].reset();
-                        }
-                        else{
-                            noty({text:data.reason,type: 'error',layout: 'top', timeout: 3000});
-                        }
-
-                    },'json');
-                }
-
-            });
-
-        });
-    </script-->
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // bind form using ajaxForm
-            $('#product_form').ajaxForm({
-                // dataType identifies the expected content type of the server response
-                dataType:  'json',
-
-                // success identifies the function to invoke when the server response
-                // has been received
-                success:   function(data){
-                    if(data.status){
-
-                        noty({text: 'Product Added', type: 'success', timeout: 1000 });
-                        window.location = "<?php echo base_url();?>Ads";
-                    } else {
-                        noty({text: data.reason, type: 'error', timeout: 1000 });
-                    }
-
-                }
-            });
-            $('#pro_quantity').on('input',function() {
-                calculte_cost();
-            });
-            $('#pro_actualcost').on('input',function() {
-                calculte_cost();
-            });
-        });
-        function calculte_cost(){
-            var quantity = isNaN(parseInt($('#pro_quantity').val())) ? 0 : parseInt($('#pro_quantity').val());
-            var actualcost = isNaN(parseInt($('#pro_actualcost').val())) ? 0 : parseInt($('#pro_actualcost').val());
-            var sal_one_day = quantity * actualcost;
-            $("#product_form").find('#pro_cost').val(parseInt(sal_one_day));
-            var test = inWords(cost);
-            console.log(test);
-        }
-
-    </script>
-
-
+    <div class="clearfix"></div><div id="notifications"></div><input type="hidden" id="position" value="center">
 </div>
-
-<script>
-    $(document).ready(function() {
-        //set initial state.
-        $('#textbox1').val($(this).is(':checked'));
-
-        $('#checkbox1').change(function() {
-            $('#textbox1').val($(this).is(':checked'));
-        });
-
-        $('#checkbox1').click(function() {
-            if (!$(this).is(':checked')) {
-                return confirm("Are you sure?");
-            }
-        });
-    });
-</script>
+<?php echo $footer; ?>
 <script src="<?php echo base_url(); ?>assets/admin/js/jquery.form.js"></script>
 <script src="<?php echo base_url();?>assets/admin/js/file-browse/dropzone-min.js"></script>
+<script>
+$(document).on('change', '#add_type',function(){
+    var cur = $(this); 
+    var image = cur.children('option:selected').data('img');
+    var img = '<img src="<?php echo base_url();?>'+image+'" width="50%" height="50%">';
+    $('#img_cont').html(img);
+});
+$(function() {
 
-<?php echo $footer; ?>
+  $(document).on('change', ':file', function() {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [numFiles, label]);
+  });
 
+  $(document).ready( function() {
+      $(':file').on('fileselect', function(event, numFiles, label) {
 
-<!-- Datatables -->
+          var input = $(this).parents('.input-group').find(':text'),
+              log = numFiles > 1 ? numFiles + ' files selected' : label;
 
-<!--============new customer popup start here=================-->
+          if( input.length ) {
+              input.val(log);
+          } else {
+              if( log ) alert(log);
+          }
 
+      });
+  });  
+});
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // bind form using ajaxForm
+        $('#product_form').ajaxForm({
+            // dataType identifies the expected content type of the server response
+            dataType:  'json',
 
+            // success identifies the function to invoke when the server response
+            // has been received
+            success:   function(data){
+                if(data.status){
+
+                    noty({text: 'Product Added', type: 'success', timeout: 1000 });
+                    window.location = "<?php echo base_url();?>Ads";
+                } else {
+                    noty({text: data.reason, type: 'error', timeout: 1000 });
+                }
+
+            }
+        });
+         //Add module service
+        var v = jQuery("#ad_form").validate({
+            rules: {
+                ad_type: {
+                    required: true
+                },
+                ad_image: {
+                    required: true
+                }
+
+            },
+            messages: {
+                ad_type: {
+                    required: "Please provide a module"
+                },
+                ad_image: {
+                    required: "Please provide an image"
+                }
+            },
+            errorElement: "span",
+            errorClass: "help-inline-error",
+        });
+
+        var datas = { 
+            dataType : "json",
+            success:   function(data){
+              $('.body_blur').hide();
+              if(data.status){
+                var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">Service Ads Added Successfully </div></div>';
+                var effect='zoomIn';
+                $("#notifications").append(center);
+                $("#notifications-full").addClass('animated ' + effect);
+                refresh_close();
+                setTimeout(function(){
+                   location.reload()
+                  }, 1500);
+              } else{
+                var center = '<div id="notifications-full"><div id="notifications-full-close" class="close"><span class="iconb" data-icon="&#xe20e;"></span></div><div id="notifications-full-icon"><span class="icon-thumbs-up" data-icon="&#xe261;"></span></div><div id="notifications-full-text">'+data.reason+'</div></div>';
+                var effect='fadeInRight';
+                $("#notifications").append(center);
+                $("#notifications-full").addClass('animated ' + effect);
+                refresh_close();
+              }
+          }
+        };
+        $('#ad_form').submit(function(e){     
+          e.preventDefault();
+          if (v.form()) {
+            $('.body_blur').show();
+            $(this).ajaxSubmit(datas);  
+          }          
+        });
+        //End 
+    });
+</script>
 </body>
 </html>

@@ -35,7 +35,7 @@
                     </div>
                     <div class="x_content">
                         <div class="">
-                            <table id="example" class="display" cellspacing="0" width="100%">
+                            <table id="example" class="display table table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr class="tablbg">
                                     <th>Name</th>
@@ -75,10 +75,7 @@
                                                 <div class="modal-body">
                                                     <div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
                                                         <div class="panel">
-                                                            <!--                            <a class="panel-heading collapsed" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">-->
-                                                            <!--                                <h4 class="panel-title"></h4>-->
-                                                            <!--                            </a>-->
-
+                                                          
                                                         </div>
                                                         <form method="post" id="otp_forms" class="otp_forms" name="otp_forms">
                                                             <div class="col-md-10 col-sm-12 col-xs-12">

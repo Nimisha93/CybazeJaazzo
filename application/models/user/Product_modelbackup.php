@@ -47,7 +47,7 @@ class Product_model extends CI_Model
        where dt.is_del = 0 and dt.id ='$id'
         group by img.id";
         $result=$this->db->query($qry);
-     //   echo $this->db->last_query();
+        echo $this->db->last_query();exit();
        // var_dump($result); exit;
         if($result->num_rows()>0)
         {

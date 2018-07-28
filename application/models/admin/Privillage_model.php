@@ -119,6 +119,7 @@ Class Privillage_model extends CI_Model{
     function get_groupname(){
         $session_data=$this->session->userdata('logged_in_admin');
         $loginuser=$session_data['id'];
+        //echo $loginuser;
         $qry="select grop.id,grop.group from gp_privillage_groupname grop where grop.created_by='$loginuser' and is_del!='1'order by grop.id asc";
         $query=$this->db->query($qry);
         if($query->num_rows()>0){
@@ -154,45 +155,34 @@ Class Privillage_model extends CI_Model{
     }
 
     function set_modulle_privillage(){
+
         $this->db->trans_begin();
-        $this->load->helper('string');
-        $autopass= random_string('alnum',5);
         $cur_date=date('Y-m-d H:i:s');
-        $email=$this->input->post('email');
         $session_data=$this->session->userdata('logged_in_admin');
         $loginuser=$session_data['id'];
         $header_module=$this->input->post('header_module') == '' ? 0:1;
         $module_content=$this->input->post('module_content') == '' ? 0:1;
+
         $data=array(
             'module_name'=>$this->input->post('module'),
             'description'=>$this->input->post('module_descp'),
             'header_module'=>$header_module,
             'module_content_div'=>$module_content,
-            'privillage_group'=>$this->input->post('group_name'),
-            'image'=>$this->input->post('images'),
-            'email'=>$this->input->post('email'),
+            'image'=>$this->input->post('images'), 
             'created_on'=>$cur_date,
             'created_by'=>$loginuser
+            //'module_image'=>$image_file
         );
         $this->db->insert('gp_permission_module',$data);
-        $insert_id=$this->db->insert_id();
-        $logindata=array(
-            'password'=>$autopass,
-            'email'=>$this->input->post('email'),
-            'type'=>"module",
-            'user_id'=>$insert_id
-        );
-        $this->db->insert('gp_login_table',$logindata);
+       
         $this->db->trans_complete();
         if($this->db->trans_status()===false){
             $this->db->trans_rollback();
+            $data = false;
         }
         else{
             $this->db->trans_commit();
-            $loggn = array('username' => $email,
-                'password' => $autopass
-            );
-            $data['log_data'] = $loggn;
+            $data = true;
         }
         return $data;
 
@@ -556,7 +546,55 @@ Class Privillage_model extends CI_Model{
             return true;
         }
     }
+    function get_all_module_count($search)
+        {
+            $session_data=$this->session->userdata('logged_in_admin');
+            $loginuser=$session_data['id'];
+            $type=$session_data['type'];
+            if(!empty($search)){
+                $keyword = "%{$search}%";
+                $where = "and (modu.module_name LIKE '%$keyword%')";
+            }else{
+                $where = '';
+            }
+            $qry="select modu.id from  gp_permission_module modu
+                 left join gp_privillage_groupname  grp on grp.id=modu.privillage_group
+                 where modu.created_by='$loginuser' and modu.is_del='0' ".$where;
+            $result=$this->db->query($qry);
+            //echo $this->db->last_query();exit();
+            if($result->num_rows()>0)
+            {
+                return $result->num_rows();
+            }else {
+                return false;
+            }
+        }
+        function get_all_module($search,$limit, $start)
+        {
+            $session_data=$this->session->userdata('logged_in_admin');
+            $loginuser=$session_data['id'];
+            $type=$session_data['type'];
+            if(!empty($search)){
+                $keyword = "%{$search}%";
+                $where = "and (modu.module_name LIKE '%$keyword%')";
+            }else{
+                $where = '';
+            }
+            $qry="select modu.*,modu.id modid,grp.id grpid,grp.`group` grpname from  gp_permission_module modu
 
+                 left join gp_privillage_groupname  grp on grp.id=modu.privillage_group
+
+                 where modu.created_by='$loginuser' and modu.is_del='0' ".$where." ORDER BY modu.id DESC LIMIT $start, $limit";
+            $result=$this->db->query($qry);
+
+            if($result->num_rows()>0)
+            {
+                return $result->result_array();
+
+            }else {
+                return array();
+            }
+        }
     function get_module_by_admin(){
         $session_data=$this->session->userdata('logged_in_admin');
         $loginuser=$session_data['id'];
@@ -596,20 +634,24 @@ Class Privillage_model extends CI_Model{
         }
         return $data;
     }
-    function edit_module_byid($id){
+    function edit_module_byid(){
+        $id = $this->input->post('hiddenid');
         $cur_date=date('Y-m-d H:i:s');
+        $header_module=$this->input->post('header_module') == '' ? 0:1;
+        $module_content=$this->input->post('module_content') == '' ? 0:1;
+        $img = $this->input->post('images');$old_image = $this->input->post('old_image');
+        $image = (empty($img))? $old_image : $img;
         $data=array(
             'module_name'=>$this->input->post('module'),
             'description'=>$this->input->post('module_descp'),
-            'header_module'=>$this->input->post('header_module'),
-            'module_content_div'=>$this->input->post('module_content'),
-            'privillage_group'=>$this->input->post('group_name'),
-            'email'=>$this->input->post('email'),
-            'image'=>$this->input->post('images'),
+            'header_module'=>$header_module,
+            'module_content_div'=>$module_content,
+            'image'=>$image,
             'updated_on'=>$cur_date
         );
         $this->db->where('id',$id);
         $this->db->update('gp_permission_module',$data);
+      //  echo $this->db->last_query();
         $date = date("Y-m-d h:i:sa") ;
                    $action = "update module ";
                    $loginsession = $this->session->userdata('logged_in_admin');
@@ -624,24 +666,31 @@ Class Privillage_model extends CI_Model{
  }
  
 
-    function delete_modulebyid($modid){
-        $data=array(
-            'is_del'=>"1"
+    function delete_modulebyid($datas){
+       $data=array(
+            'is_del'=>"1",
 
         );
-        $this->db->where ('id',$modid);
-        $this->db->update('gp_permission_module',$data);
-                 $date = date("Y-m-d h:i:sa") ;
-                   $action = "delete module ";
-                   $loginsession = $this->session->userdata('logged_in_admin');
-
-                  $userid=$loginsession['user_id'];
-                  $status = 0;
-
-               activity_log($action,$userid,$status,$date);
-
+       $this->db->trans_begin();
+        $ca_ids = $datas['chck_item_id'];
+        foreach ($ca_ids as $key => $ca_id) {
+          $this->db->where ('id',$ca_id);
+          $this->db->update('gp_permission_module',$data);
+           $date = date("Y-m-d h:i:sa") ;
+           $action = "deleted module ";
+           $loginsession = $this->session->userdata('logged_in_admin');
+           $userid=$loginsession['user_id'];
+           $status = 0;
+           activity_log($action,$userid,$status,$date);          
+        }
         
-        return true;
+        if ($this->db->trans_status() === TRUE) {
+            $this->db->trans_commit();
+            return true;
+        } else {
+            $this->db->trans_rollback();
+            return false;
+        }
 
     }
     function check_group_exisits($group)

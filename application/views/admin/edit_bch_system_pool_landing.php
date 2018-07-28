@@ -2,21 +2,7 @@
 <?php echo $sidebar; ?>
 <div class="right_col" role="main" xmlns="http://www.w3.org/1999/html">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
         <div class="clearfix"></div>
 
         <form class="" id='new_pool' method="post" enctype="multipart/form-data>"
@@ -26,7 +12,7 @@
                     <div class="x_title">
                         <h2>System Pool Settings<small></small></h2>
                         <ul class="nav navbar-right panel_toolbox">
-                            <h2 style="color:red ">You Have split <label id="split" name="split"><?php $bal= 100- $total_group_persantage['total_persantage'] ; echo $bal ?>%</label> to Any Pool group<small></small></h2>
+                            <h2 style="color:red ">You can split <label id="split" name="split"><?php $bal= 100- $total_group_persantage['total_persantage'] ; echo $bal ?>%</label> to Any Pool group<small></small></h2>
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
                         </ul>
                         <div class="clearfix"></div>
@@ -84,8 +70,8 @@ if( $pesantage_limit=='over_flow')
     $(document).ready(function()
     {
 
-        alert("System Pooling Persatage Limit Exceeded")
-        window.location="<?php echo base_url(); ?>view_pooling"
+        alert("System Pooling Percentage Limit Exceeded")
+        window.location="<?php echo base_url(); ?>view_bch_pooling"
 
     });
 </script>

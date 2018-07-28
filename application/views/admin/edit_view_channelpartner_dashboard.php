@@ -1,15 +1,9 @@
 <?php echo $default_assets; ?>
-
-
 <?php echo $sidebar; ?>
-
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/highcharts-more.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
-
-
-
 
 <div class="right_col" role="main">
 <div class="">
@@ -192,7 +186,7 @@
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">X</button>
-    <h4 class="modal-title">New Cutomer</h4>
+    <h4 class="modal-title">New Customer</h4>
 </div>
 <div class="modal-body">
 <div id="testmodal" style="padding: 5px 20px;">

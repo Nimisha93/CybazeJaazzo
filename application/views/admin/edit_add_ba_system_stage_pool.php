@@ -3,31 +3,18 @@
 <?php echo $sidebar; ?>
 <div class="right_col" role="main" xmlns="http://www.w3.org/1999/html">
     <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <div type="button" class="btn" data-toggle="popover" data-placement="right" title="" data-content="This is the name that will be shown on invoices, bills created for this contact."><i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                </h3>
-            </div>
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
-                </span> </div>
-                </div>
-            </div>
-        </div>
+        
         <div class="clearfix"></div>
 
-        <form class="" id='new_pool' method="post" enctype="multipart/form-data>"
+        <form class="" id='new_pool' method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>System Pool Settings<small></small></h2>
                         <ul class="nav navbar-right panel_toolbox">
-                            <h2 style="color:red ">You Have split <label id="split" name="split"><?php $bal= 100- $total_group_persantage['total_persantage'] ; echo $bal ?>%</label> to Any Pool group<small></small></h2>
+                            <h2 style="color:red ">You can split <label id="split" name="split"><?php $bal= 100- $total_group_persantage['total_persantage'] ; echo $bal ?>%</label> to Any Pool group<small></small></h2>
+                            <input type="hidden" name="check_bal" id="check_bal" value="<?php echo $bal; ?>">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
                         </ul>
                         <div class="clearfix"></div>
@@ -45,11 +32,11 @@
                                     </div>
 
                                     <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                        <label>Allowed Persantage(%)</label>
-                                        <input type="text" placeholder="Allowed Persantage(%)" name="allow_persantage" id="allow_persantage" class="form-control validate[required]">
+                                        <label>Allowed Percentage(%)</label>
+                                        <input type="text" placeholder="Allowed Percentage(%)" name="allow_persantage" id="allow_persantage" class="form-control validate[required]">
                                     </div>
                                     <div class="col-md-4 col-sm-6 col-xs-12 form-group">
-                                        <label>No Of Levels</label>
+                                        <label>No of Levels</label>
                                         <input type="text" placeholder="No Of Levels" id="no_of_levels" name="no_of_levels" class="form-control validate[required]">
                                     </div>
 
@@ -91,7 +78,7 @@
 
 
         alert("System Pooling Persatage Limit Exceeded")
-        window.location="<?php echo base_url(); ?>view_pooling"
+        window.location="<?php echo base_url(); ?>view_ba_pooling"
 
     });
 </script>
@@ -128,8 +115,8 @@
                         '</select>'+
                         '</div>'+
                         '<div class="col-md-6 col-sm-12 col-xs-12 form-group">'+
-                        '<label>Allowed Persantage</label>'+
-                        '<input class="form-control validate[required]" rows="3" name="design_allwed_persantage[]" placeholder="Allowed Persantage">'+
+                        '<label>Allowed Percentage</label>'+
+                        '<input class="form-control validate[required]" rows="3" name="design_allwed_persantage[]" placeholder="Allowed Percentage">'+
                         '<i class="fa fa-trash remove_persantage" ></i></div></div>';
             }
             new_row+='</div>';
@@ -150,7 +137,7 @@
             var data= $("#new_pool").serializeArray();
             $.post('<?= base_url(); ?>/admin/pooling/add_new_ba_stage_pool_data',data,function(data)
             {
-                alert(data);
+               // alert(data);
                 if(data.status)
                 {
                     noty({text:"Successfully created",type: 'success',layout: 'top', timeout: 3000});
@@ -177,6 +164,35 @@
 
 
         })
+        function findSum()
+        {
+            var sum=0;
+            var alp1 = $(document).find('#allow_persantage').val();
+
+            var check = $(document).find('#check_bal').val();
+
+            sum = parseInt(check)-parseInt (alp1);
+            if(sum<0)
+            {
+                noty({text: 'Allowed Percentage has Exceeded the limit', type: 'error',timeout:4000});
+                $("#add_pool").prop('disabled',true);
+                $(".allow").prop('disabled',true);
+
+            }
+            else
+            {
+
+                $("#add_pool").prop('disabled',false);
+                $(".allow").prop('disabled',false);
+            }
+        }
+
+        $(document).on('keyup','#allow_persantage',function()
+        {
+
+            var sum=0;
+            var sum = findSum();
+        });
     });
 
 </script>

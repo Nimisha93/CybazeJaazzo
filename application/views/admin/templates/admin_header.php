@@ -1,44 +1,19 @@
 <div class="top_nav">
 <div class="nav_menu">
-
-
-
-
-
-
-
 <nav>
-
-
-
-    <ul class="nav navbar-nav navbar-right">
-
-
+<ul class="nav navbar-nav navbar-right">
         <li class="">
-
-            <img src="<?php echo base_url(); ?>assets/admin/images/online-portal-logo.png" style="height:50px;">
-
-
+           
         </li>
-
-
-        <li class="help"><a href="#" > <i class="fa fa-question-circle" aria-hidden="true"></i></a> </li>
-
         <li class="profl1 dropdown">
-            <a href="#" class="dropdown-toggle" ><i class="fa fa-user-plus"></i><span class=""> </span></a>
-
+            <a href="#" class="dropdown-toggle" ><i class="fa fa-user"></i><span class=""> </span></a>
             <ul class="dropdown-menu ">
                 <h4>System Administration</h4>
-               <li> <a href="<?php echo base_url();?>profile"><i class="fa fa-user" style="margin-right:6px;"></i>My Profile</a></li>
+              
                 <li> <a href="<?php echo base_url();?>cpw"><i class="fa fa-cog" style="margin-right:6px;"></i>Account Settings</a></li>
                 <li> <a href="<?php echo base_url();?>logout"><i class="fa fa-sign-out" style="margin-right:6px;"></i>Sign Out</a></li>
-
-
-
             </ul>
         </li>
-
-
     </ul>
 </nav>
 
@@ -51,10 +26,11 @@
 <ul class="add-mdulebtton">
 
     <li role="presentation" class="dropdown" style="margin-top:15px;">
-        <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-            <span class="addmdlbtn"> + </span>
-
-        </a>
+        <!--  + symbol  -->
+<!--        <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">-->
+<!--            <span class="addmdlbtn"> + </span>-->
+<!---->
+<!--        </a>-->
         <ul id="menu1" class="dropdown-menu mnu-itms" role="menu">
             <div class="col-sm-6">
                 <h2 class="sales">Sales</h2>
@@ -104,7 +80,7 @@
                   if($loginsession['type'] == 'super_admin'){ ?>
 
                 <li >
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-home"></i><span class="mnulist">Home</span></a>
+                    <a href="<?php echo base_url() ?>index.php/admin/dashboard/main_admin" class="dropdown-toggle" ><i class="fa fa-home"></i><span class="mnulist">Home</span></a>
 
                 </li>
 
@@ -115,18 +91,19 @@
 
 
                 <li class="dropdown">
-                    <a href="add-ledger.html" class="dropdown-toggle" ><i class="fa fa-cog"></i><span class="mnulist">Organization</span></a>
+                    <a href="add-ledger.html" class="dropdown-toggle" ><i class="fa fa-cog"></i><span class="mnulist"></span></a>
                     <ul class="dropdown-menu accntsubmnuhide">
-                        <h4>Organization</h4>
+                        <h4></h4>
 
-                        <li><a href="<?php echo base_url() ?>admin/new_designation"><i class="fa fa-plane" style="margin-right:6px;"></i>Add Designation</a></li>
-                        <li><a href="<?php echo base_url() ?>admin/new_pool"><i class="fa fa-building" style="margin-right:6px;"></i>Add New Pool</a></li>
+                        <li><a href="<?php echo base_url() ?>new_designation/0"><i class="fa fa-plane" style="margin-right:6px;"></i>Add Designation</a></li>
+                        <li><a href="<?php echo base_url() ?>new_pool"><i class="fa fa-building" style="margin-right:6px;"></i>Add New Pool</a></li>
                         <li><a href="<?php echo base_url();?>partner_type"><i class="fa fa-sitemap" style="margin-right:6px;"></i>Add channel partner type</a></li>
-                        <li><a href="<?php echo base_url();?>channel_partner"><i class="fa fa-sitemap" style="margin-right:6px;"></i>Add channel partner</a></li>
-                        <li><a href="<?php echo base_url();?>set_pooling"><i class="fa fa-sitemap" style="margin-right:6px;"></i>Add Commision</a></li>
+                        <li><a href="<?php echo base_url();?>partner"><i class="fa fa-sitemap" style="margin-right:6px;"></i>Add channel partner</a></li>
+                        <li><a href="<?php echo base_url();?>set_pooling_ratio"><i class="fa fa-sitemap" style="margin-right:6px;"></i>Add Commision</a></li>
                         <li><a href="<?php echo base_url();?>product"><i class="fa fa-product-hunt" style="margin-right:6px;"></i>Add Products</a></li>
                         <li><a href="<?php echo base_url();?>exe-add"><i class="fa fa-briefcase" style="margin-right:6px;"></i>Add Executives</a></li>
-                        <li><a href="<?php echo base_url();?>add_ba"><i class="fa fa-briefcase" style="margin-right:6px;"></i>Add  BA</a></li>
+                        <li><a href="<?php echo base_url();?>add_ba"><i class="fa fa-briefcase" style="margin-right:6px;"></i>Add Jaazzo Store
+</a></li>
 
 
 
@@ -137,16 +114,16 @@
 
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" ><i class="fa fa-address-card"></i><span class="mnulist">Recruitment</span></a>
+                    <a href="#" class="dropdown-toggle" ><i class="fa fa-address-card"></i><span class="mnulist"></span></a>
                     <ul class="dropdown-menu accntsubmnuhide">
-                        <h4>Recruitment</h4>
+                        <h4></h4>
                         <li><a href="<?php echo base_url() ?>view_pooling"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View New Pool</a></li>
                         <li><a href="<?php echo base_url();?>get_partner_type"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Channel Partner Type</a></li>
                         <li><a href="<?php echo base_url();?>get_channel_partner"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Channel Partner</a></li>
-                        <li><a href="<?php echo base_url();?>channel_pooling"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Commision</a></li>
+                        <li><a href="<?php echo base_url();?>commission_approval"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Commision</a></li>
                          <li><a href="<?php echo base_url();?>product_list"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Products</a></li>
-                         <li><a href="<?php echo base_url();?>exe-view"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Executives</a></li>
-                          <li><a href="<?php echo base_url();?>privillege_list"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Privillage</a></li>
+                         <li><a href="<?php echo base_url();?>exe-view/0"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Executives</a></li>
+                          <li><a href="<?php echo base_url();?>privilleges/0"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Privillage</a></li>
                            <li><a href="<?php echo base_url();?>module_list"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View Modules</a></li>
                             <li><a href="<?php echo base_url();?>view_ba"><i class="fa fa-id-badge" style="margin-right:6px;"></i>View BA</a></li>
 
@@ -216,13 +193,13 @@
                     <a href="#" class="dropdown-toggle" ><i class="fa fa-pie-chart"></i> <span class="mnulist"> Reports</span></a>
                     <ul class="dropdown-menu accntsubmnuhide">
                         <h4>Reports</h4>
-                        <li> <a href="<?php echo base_url();?>report"><i class="fa fa-globe" style="margin-right:6px;"></i>Designation Reports</a></li>
+                        <li> <a href="<?php echo base_url();?>designation_report/0"><i class="fa fa-globe" style="margin-right:6px;"></i>Designation Reports</a></li>
                         <li> <a href="<?php echo base_url();?>channel"><i class="fa fa-file-archive-o" style="margin-right:6px;"></i>Channel Partner Reports</a></li>
-                        <li> <a href="<?php echo base_url();?>clubtype"><i class="fa fa-file-text-o" style="margin-right:6px;"></i>Club Type Reports    </a></li>
-                        <li> <a href="<?php echo base_url();?>customer"><i class="fa fa-file-text" style="margin-right:6px;"></i>Customer Reports</a></li>
-                        <li><a href="<?php echo base_url();?>members"><i class="fa fa-file-text" style="margin-right:6px;"></i>Club Members Reports</a></li>
-               <li><a href="<?php echo base_url();?>executives"><i class="fa fa-file-text" style="margin-right:6px;"></i>Executives Reports</a></li>
-<li><a href="<?php echo base_url();?>module"><i class="fa fa-file-text" style="margin-right:6px;"></i> Module Reports</a></li>
+                        <li> <a href="<?php echo base_url();?>clubtype_report/0"><i class="fa fa-file-text-o" style="margin-right:6px;"></i>Club Type Reports    </a></li>
+                        <li> <a href="<?php echo base_url();?>customers_report/0"><i class="fa fa-file-text" style="margin-right:6px;"></i>Customer Reports</a></li>
+                        <li><a href="<?php echo base_url();?>club_members_by_type/0"><i class="fa fa-file-text" style="margin-right:6px;"></i>Club Members Reports</a></li>
+               <li><a href="<?php echo base_url();?>executives/0"><i class="fa fa-file-text" style="margin-right:6px;"></i>Executives Reports</a></li>
+
                     </ul>
 
 
@@ -243,12 +220,12 @@
 
 
                 <li class="dropdown">
-                    <a href="<?php echo base_url();?>Notification" class="dropdown-toggle"  ><i class="fa fa-bell-o"></i><span class="mnulist"> Notification</span></a>
-                    <ul class="dropdown-menu notictn accntsubmnuhide">
+                    <a href="<?php echo base_url();?>All_notifications/0" class="dropdown-toggle"  ><i class="fa fa-bell-o"></i><span class="mnulist"> Notification</span></a>
+                    <!-- <ul class="dropdown-menu notictn accntsubmnuhide">
 
 
                         <h4>Notification</h4>
-                        <li> <a href="<?php echo base_url();?>Notification" style="color:#039"><i class="fa fa-check" style="margin-right:6px;"></i> marked all as read</a></li>
+                        <li> <a href="<?php echo base_url();?>Notifications" style="color:#039"><i class="fa fa-check" style="margin-right:6px;"></i> marked all as read</a></li>
                         <li style="float:left;"> <a href="#" style="color:#039"> <i class="fa fa-globe" style="margin-right:6px;"></i> All notification</a></li>
 
 
@@ -258,7 +235,7 @@
 
                         </div>
 
-                    </ul>
+                    </ul> -->
                 </li>
 
 

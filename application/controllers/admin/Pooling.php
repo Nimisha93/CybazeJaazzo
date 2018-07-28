@@ -9,10 +9,11 @@ Class Pooling extends CI_Controller
     function __Construct(){
 
         parent:: __construct();
-        $this->load->library(array('session','form_validation'));
-        $this->load->model(array('admin/Pooling_model','admin/Channelpartner_model', 'admin/privillage_model','admin/Profile_model'));
+        $this->load->library(array('session','form_validation','pagination'));
+        $this->load->model(array('admin/Pooling_model','admin/Channelpartner_model', 'admin/privillage_model','admin/Profile_model','admin/Executives_model'));
         $this->load->helper(array('url','form','my_common_helper'));
         $session_array = $this->session->userdata('logged_in_admin');
+
         if(!isset($session_array)){
             redirect('admin/Login');
         }
@@ -24,52 +25,373 @@ Class Pooling extends CI_Controller
         //var_dump($loginsession);exit;
         if($loginsession['type'] == 'super_admin'){
              $data['sidebar'] = $this->load->view('admin/templates/admin_sidebar', '', true);
-        }else{
+        }
+        else if($loginsession['type'] == 'Employee'){
+             $data['sidebar'] = $this->load->view('admin/templates/admin_sidebar', '', true);
+        }
+        else{
              $data['sidebar'] = $this->load->view('admin/templates/cp_sidebar', '', true);
         }
         $data['footer'] = $this->load->view('admin/templates/admin_footer', '', true);
         return $data;
     }
+    
+    //add new designation  form
+    function new_designation()
+    {
+if (has_priv('add_designation')) {
 
-      //pranav starts
+        $data =$this->set_menu();
+        $data['group']=$this->privillage_model->get_groupname();
+        // $data['designation']=$this->Pooling_model->get_all_desiginations();
+        if ($this->input->post('search')) {
+            $param = $this->input->post('search');
+        }else{
+            $param = '';
+        }
+        $config = array();
+        $config["base_url"] = base_url() . "all_club_members/";
+        $result_count = $this->Pooling_model->get_all_desiginations_count($param);
+        $config["total_rows"] =  $result_count;
+        $config["per_page"] = 5;
+        //pagination customization using bootstrap styles
+        $config['full_tag_open'] = '<div class="pagination pagination-centered"><ul class="page_test  pagination">'; // I added class name 'page_test' to used later for jQuery
+        $config['full_tag_close'] = '</ul></div><!--pagination-->';
+        $config['first_link'] = '&laquo; First';
+        $config['first_tag_open'] = '<li class="prev page">';
+        $config['first_tag_close'] = '</li>';
+        $config['last_link'] = 'Last &raquo;';
+        $config['last_tag_open'] = '<li class="next page">';
+        $config['last_tag_close'] = '</li>';
+        $config['next_link'] = 'Next &rarr;';
+        $config['next_tag_open'] = '<li class="next page">';
+        $config['next_tag_close'] = '</li>';
+        $config['prev_link'] = '&larr; Previous';
+        $config['prev_tag_open'] = '<li class="prev page">';
+        $config['prev_tag_close'] = '</li>';
+        $config['cur_tag_open'] = "<li class='disabled'><li class='active'><a href='#'>";
+        $config['cur_tag_close'] = "<span class='sr-only'></span></a></li>";
+        $config['num_tag_open'] = '<li class="page">';
+        $config['num_tag_close'] = '</li>';
+        $this->pagination->initialize($config);
+        $page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
+        $data['page'] = $page;
 
+        $data["data"] = $this->Pooling_model->get_all_desiginations($param,$config["per_page"], $page);
+        
+        if ($this->input->post('ajax', FALSE)) {
 
-    // system pooling add form
+            exit(json_encode(array(
+                'data' => $data["data"],
+                'search'=>$param,
+                'status' => 1,
+                'pagination' => $this->pagination->create_links()
+            )));
+        }
+        $this->load->view('admin/edit_add_designation',$data);
+    }
+    }
+    //add new designation
+    function  add_designation()
+    {
+        if($this->input->is_ajax_request())
+        {
+            $this->form_validation->set_rules("designation", "Designation ", "trim|required|htmlspecialchars");
 
+            $this->form_validation->set_rules("sortorder", "Sort order", "numeric|trim|required|htmlspecialchars");
+            
+            if($this->form_validation->run()== TRUE){
+                $result=$this->Pooling_model->add_designation();           
+                if($result){
+                    exit(json_encode(array("status"=>TRUE)));
+                }
+                else{
+                    exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
+                }
+            }else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }
+        }
+    }
+    //update designation
+    function  update_designation($id)
+    {
+        if($this->input->is_ajax_request())
+        {
+            
+            $this->form_validation->set_rules("designation", "Designation ", "trim|required|htmlspecialchars");
+           
+            $this->form_validation->set_rules("sortorder", "Sort order", "numeric|trim|required|htmlspecialchars");
+
+            if($this->form_validation->run()== TRUE){
+                $designation = $this->input->post('designation');
+                $type = $this->input->post('type');
+                $decription = $this->input->post('description');
+                $Sortorder = $this->input->post('sortorder');
+                $priv_group = $this->input->post('priv_group');
+                $bde_count=$this->input->post('bde_count');
+                $add=$this->input->post('add_exec1');
+
+                if($add !='' ){
+                $add1 ='1';
+                }
+                else{                
+                    $add1='0';
+                }
+                if($bde_count!=''){
+                    $bde =$bde_count;
+                }
+                else{
+                    $bde ='0';
+                }
+                $data2 = array( 
+                    'designation' => $designation,
+                    'type' => $type,
+                    'description' => $decription,
+                    'sort_order' => $Sortorder+3,
+                    'add_exec'=>$add1,
+                    'type'=>'executive',
+                    //'group_id' => $priv_group,
+                    'bde_count'=>$bde
+                );
+               
+                $result=$this->Pooling_model->update_designation($data2,$id);
+              
+                if($result){
+                    exit(json_encode(array("status"=>TRUE)));
+                }else{
+                    exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
+                }
+            }else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }
+        }
+    }
+    //delete designation
+    function delete_designaton()
+    {
+        if($this->input->is_ajax_request())
+        {
+            $qry = $this->Pooling_model->delete_designaton($this->input->post());
+            if($qry)
+            {
+                exit(json_encode(array('status'=>TRUE)));
+            }else{
+                exit(json_encode(array('status'=>FALSE, 'reason'=>'Please try again later..!')));
+            }
+        }else{
+            show_error("Unable to process the request in this way");
+        }
+    }
+    // pooling add form
     function new_pool_landing()
     {
-       
 
-        $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
-        $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
-        $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['designations']= $this->Pooling_model->get_all_desiginations();
-        $data['total_group_persantage']=$this->Pooling_model->get_total_group_persantage();
-//        $data['bal_group_persantage']=100-$data['total_group_persantage'];
-        // echo json_encode($data['total_group_persantage']);
-        if($data['total_group_persantage']['total_persantage']==100)
+        if (has_priv('new_pool')) {
+        $data = $this->set_menu();
+        $data['designations']= get_all_desigination();
+        $data['stages']= $this->Pooling_model->get_all_stages();
+        $data['total_persantage']=$this->Pooling_model->get_total_pool_persantage();
+        $this->load->view('admin/edit_pool_landing',$data);
+    }
+     }
+    //add  pool settings
+    function add_new_pool_data()
+    {
+        if($this->input->is_ajax_request())
         {
-            $data['pesantage_limit']='over_flow';
-             $this->load->view('admin/edit_system_pool_landing',$data);
-            //$this->load->view('admin/edit_add_system_pool',$data);
+            $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("allow_persantage", "Group Allow percentage", "trim|required|htmlspecialchars|numeric");
+            $this->form_validation->set_rules("no_of_levels", "No of Levels ", "trim|required|htmlspecialchars|numeric");
+            if($this->form_validation->run()== TRUE){
+                $result=$this->Pooling_model->add_new_pool_data();
+                if($result)
+                {
+                    exit(json_encode(array("status"=>TRUE)));
+                }else{
+                    exit(json_encode(array("status"=>FALSE,"reason"=>'Database Error')));
+                }
+            } else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }
+        } else{
+            show_error("We are unable to process this request on this way!");
+        }
+    }
+    //view edit pool  data form
+    function  view_pool_settings()
+    {
+        if (has_priv('view_pool')) {
+            $data =$this->set_menu();
+            $data['poolings']= $this->Pooling_model->get_all_pooings();
+            $this->load->view('admin/edit_view_pool_settings',$data);
+        }
+     }
+    //delete  pool settings
+    function delete_pool_settings($id)
+    {
+        if(has_priv('delete_pool')){
+            $result=$this->Pooling_model->delete_pool_settings($id);
+            if($result)
+            {
+                exit(json_encode(array("status"=>TRUE)));
+            } else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
+            }
+        }
+    }
+    //view pool members
+    function view_pool_members($id)
+    {
+        if (has_priv('view_pool')||has_priv('update_pool')) {
+            $data =$this->set_menu();
+            $data['total_persantage']=$this->Pooling_model->get_total_pool_persantage();
+            $data['id']=$id;
+            $data['pooling_details']= $this->Pooling_model->get_all_members_by_id($id);
+            $data['designations']= get_all_desigination();
+            // echo json_encode($data['pooling_details']);exit;
+            $this->load->view('admin/edit_view_full_pool_setting',$data);
+        }
+    }
+    function delete_pooling_member($id)
+    {
+        $result=$this->Pooling_model->delete_pooling_member($id);
+        if($result)
+        {
+            exit(json_encode(array("status"=>TRUE)));
         }
         else
         {
-            $data['pesantage_limit']='succes';
-            $this->load->view('admin/edit_system_pool_landing',$data);
-//            $this->load->view('admin/edit_add_system_pool',$data);
+            exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
         }
-
-
     }
-    // system Ba pooling add form
+    //update pooling data
+    function  update_pool_data()
+    {
+        if($this->input->is_ajax_request())
+        {
+            $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
+            $new_designation_persantage = $this->input->post('new_designation_persantage');
+            $this->form_validation->set_rules("allow_persantage", "Group Allow Percentage", "numeric|trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("no_of_levels", "No of Levels ", "numeric|trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed percentage  ", "numeric|trim|required|htmlspecialchars|callback_percentagecheck1[new_designation_persantage]");
+        
+            if($this->form_validation->run()==TRUE)
+            {
+                $result=$this->Pooling_model->update_pool_data();
+                if($result)
+                {
+                    exit(json_encode(array("status"=>TRUE)));
+                }
+                else
+                {
+                    exit(json_encode(array("status"=>FALSE)));
+                }
+            }
+            else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }
+        }
+    }
+    public function percentagecheck1($str,$str1)
+    {
+        $percentage =$this->input->post('design_allwed_persantage');
+        $percentage1 =$this->input->post('new_designation_persantage');
+        $sum = 0;
+        foreach ($percentage as $key => $value) {
+            $sum = $value + $sum;
+        }
+        if (!empty($percentage1))
+        {
+            foreach ($percentage1 as $key => $value) {
+                $sum = $value + $sum;
+            } 
+        }
+        if ($sum=="100")
+        {
+            return TRUE;
+        }
+        else
+        {
+            $this->form_validation->set_message('percentagecheck1', 'Sum of Designation allowed percentage should be hundred');
+            return FALSE;
+        }
+    }
+    function new_commision(){
+        $data =$this->set_menu();
+        $loginsession = $this->session->userdata('logged_in_admin');
+        $userid=$loginsession['user_id'];
+        $lgid=$loginsession['id'];
+        $data['user']=$this->Profile_model->get_all_partnertype($userid);
+        $data['partner_type']=$this->Pooling_model->get_partner_type();
+        $this->load->view('admin/edit_add_commmission',$data);
+    }
+    function set_commission(){
+
+if (has_priv('add_commision')) { 
+
+        $data =$this->set_menu();
+        $loginsession = $this->session->userdata('logged_in_admin');
+        $userid=$loginsession['user_id'];
+        $lgid=$loginsession['id'];
+        $data['user']=$this->Profile_model->get_all_partnertype($userid);
+        $data['commission'] = $this->Pooling_model->get_commission();   
+        $this->load->view('admin/edit_add_set_commmission',$data);
+
+     }   
+    }
+    function set_new_commission(){
+
+        if($this->input->is_ajax_request()){
+          
+          $this->form_validation->set_rules("company_commission", "Company Commission ", "trim|required|htmlspecialchars");
+          $this->form_validation->set_rules("customer_commission", "Customer Commission ", "trim|required|htmlspecialchars");
+           
+            if($this->form_validation->run()== TRUE){  
+
+            $result = $this->Pooling_model->set_new_commission();
+                if($result){
+                    exit(json_encode(array("status"=>TRUE)));
+                }
+                else{
+                    exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
+                }
+            }
+            else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }
+        }
+    }
+    function update_commission(){
+
+        if($this->input->is_ajax_request()){
+          
+          $this->form_validation->set_rules("company_commission", "Company Commission ", "trim|required|htmlspecialchars");
+          $this->form_validation->set_rules("customer_commission", "Customer Commission ", "trim|required|htmlspecialchars");
+           
+            if($this->form_validation->run()== TRUE){  
+
+            $result = $this->Pooling_model->update_commission();
+                if($result){
+                    exit(json_encode(array("status"=>TRUE)));
+                }
+                else{
+                    exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
+                }
+            }
+            else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }
+        }
+    }
+    /*// system Ba pooling add form
     function new_ba_pool_landing()
     {
 
         $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
         $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
         $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['designations']= $this->Pooling_model->get_all_desiginations();
+        $data['designations']= get_all_desigination();
         $data['total_group_persantage']=$this->Pooling_model->get_total_ba_group_persantage();
 //        $data['bal_group_persantage']=100-$data['total_group_persantage'];
         //echo json_encode($data['total_group_persantage']);
@@ -94,7 +416,7 @@ Class Pooling extends CI_Controller
         $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
         $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
         $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['designations']= $this->Pooling_model->get_all_desiginations();
+        $data['designations']= get_all_desigination();
         $data['total_group_persantage']=$this->Pooling_model->get_total_bch_group_persantage();
         // $data['bal_group_persantage']=100-$data['total_group_persantage'];
         // echo json_encode($data['total_group_persantage']);
@@ -116,10 +438,8 @@ Class Pooling extends CI_Controller
     //add new group  pool form
     function new_pool()
     {
-        $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
-        $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
-        $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['designations']= $this->Pooling_model->get_all_desiginations();
+        $data = $this->set_menu();
+        $data['designations']= get_all_desigination();
         $data['total_group_persantage']=$this->Pooling_model->get_total_group_persantage();
         // $data['bal_group_persantage']=100-$data['total_group_persantage'];
         // echo json_encode($data['total_group_persantage']);
@@ -144,7 +464,7 @@ Class Pooling extends CI_Controller
         $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
         $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
         $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['designations']= $this->Pooling_model->get_all_desiginations();
+        $data['designations']= get_all_desigination();
         $data['total_group_persantage']=$this->Pooling_model->get_total_ba_group_persantage();
         // $data['bal_group_persantage']=100-$data['total_group_persantage'];
         // echo json_encode($data['total_group_persantage']);
@@ -167,7 +487,7 @@ Class Pooling extends CI_Controller
         $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
         $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
         $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['designations']= $this->Pooling_model->get_all_desiginations();
+        $data['designations']= get_all_desigination();
         $data['total_group_persantage']=$this->Pooling_model->get_total_bch_group_persantage();
 //        $data['bal_group_new_stage_pool$data['total_group_persantage']);
         if($data['total_group_persantage']['total_persantage']==100)
@@ -270,10 +590,10 @@ Class Pooling extends CI_Controller
     {
         if($this->input->is_ajax_request())
         {
-            $this->form_validation->set_rules("pool_name", "Pool Group Name", "numeric|trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
             $this->form_validation->set_rules("allow_persantage", "Group Allowed Percentage", "numeric|trim|required|htmlspecialchars");
             $this->form_validation->set_rules("no_of_levels", "No of Levels ", "numeric|trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed percentage  ", "trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed percentage  ", "trim|required|htmlspecialchars|callback_percentagecheck");
 
             if($this->form_validation->run()== TRUE){
                 $result=$this->Pooling_model->add_new_pool_data();
@@ -307,7 +627,7 @@ Class Pooling extends CI_Controller
             $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
             $this->form_validation->set_rules("allow_persantage", "Group Allow Persantage", "numeric|trim|required|htmlspecialchars");
             $this->form_validation->set_rules("no_of_levels", "No of Levels ", "numeric|trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars|callback_percentagecheck");
 
             if($this->form_validation->run()== TRUE){
                 $result=$this->Pooling_model->add_new_ba_pool_data();
@@ -341,7 +661,7 @@ Class Pooling extends CI_Controller
             $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
             $this->form_validation->set_rules("allow_persantage", "Group Allow Persantage", "numeric|trim|required|htmlspecialchars");
             $this->form_validation->set_rules("no_of_levels", "No of Levels ", "numeric|trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed percentage  ", "numeric|trim|required|htmlspecialchars|callback_percentagecheck");
 
             if($this->form_validation->run()== TRUE){
                 $result=$this->Pooling_model->add_new_bch_pool_data();
@@ -371,19 +691,51 @@ Class Pooling extends CI_Controller
      public function percentagecheck($str)
             {
                  $percentage =$this->input->post('design_allwed_persantage');
-                // var_dump($percentage);
+               //  var_dump($percentage);exit();
+                 $sum = 0;
+                 foreach ($percentage as $key => $value) {
+                     $sum = $value + $sum;
+                 }
+                
+                if ($sum=="100")
+                {
+                    //var_dump("success");
+                    return TRUE;
+                }
+                else
+                {
+                   // var_dump("failure");
+                     $this->form_validation->set_message('percentagecheck', 'Sum of Designation allowed percentage should be hundred');
+                    return FALSE;
+                   
+                }
+            }
+             public function percentagecheck1($str,$str1)
+            {
+                 $percentage =$this->input->post('design_allwed_persantage');
+                 $percentage1 =$this->input->post('new_designation_persantage');
+                //var_dump($percentage1);
                  //exit();
                  $sum = 0;
                  foreach ($percentage as $key => $value) {
                      $sum = $value + $sum;
                  }
+                if (!empty($percentage1))
+                    {
+                        foreach ($percentage1 as $key => $value) {
+                             $sum = $value + $sum;
+                         } 
+                    }
+                   // var_dump($sum);
                 if ($sum=="100")
                 {
+                  //  var_dump("success");
                     return TRUE;
                 }
                 else
                 {
-                     $this->form_validation->set_message('percentagecheck', 'Sum of Designation allowed percentage should be hundred');
+                   // var_dump("failure");
+                     $this->form_validation->set_message('percentagecheck1', 'Sum of Designation allowed percentage should be hundred');
                     return FALSE;
                    
                 }
@@ -429,7 +781,7 @@ Class Pooling extends CI_Controller
             $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
             $this->form_validation->set_rules("allow_persantage", "Group Allow Persantage", "numeric|trim|required|htmlspecialchars");
             $this->form_validation->set_rules("no_of_levels", "No of Levels ", "numeric|trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars|callback_percentagecheck");
 
             if($this->form_validation->run()== TRUE){
                 $result=$this->Pooling_model->add_new_ba_stage_pool_data();
@@ -463,7 +815,7 @@ Class Pooling extends CI_Controller
             $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
             $this->form_validation->set_rules("allow_persantage", "Group Allow Persantage", "numeric|trim|required|htmlspecialchars");
             $this->form_validation->set_rules("no_of_levels", "No of Levels ", "numeric|trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars|callback_percentagecheck");
 
             if($this->form_validation->run()== TRUE){
                 $result=$this->Pooling_model->add_new_bch_stage_pool_data();
@@ -474,9 +826,6 @@ Class Pooling extends CI_Controller
                 else{
                     exit(json_encode(array("status"=>FALSE,"reason"=>'Database Error')));
                 }
-
-
-
             }
             else
             {
@@ -535,9 +884,9 @@ Class Pooling extends CI_Controller
         {
             $data['type']=$type;
             $data['pooling_details']= $this->Pooling_model->get_all_system_pooing_by_id($id);
-            $data['designations']= $this->Pooling_model->get_all_desiginations();
+            $data['designations']= get_all_desigination();
         }
-        elseif($type=='stage')
+        else if($type=='stage')
         {
 
             $data['pooling_details']= $this->Pooling_model->get_all_system_stage_pooing_by_id($id);
@@ -549,21 +898,8 @@ Class Pooling extends CI_Controller
 
 
         }
-        // if($data['total_group_persantage']['total_persantage']==100)
-        // {
-        //     $data['pesantage_limit']='over_flow';
-
-        //     $this->load->view('admin/edit_view_full_pool_settings',$data);
-        // }
-        // else
-        // {
-           // $data['pesantage_limit']='succes';
-            // $this->load->view('admin/edit_system_pool_landing',$data);
+       
             $this->load->view('admin/edit_view_full_pool_settings',$data);
-       // }
-
-
-
     }
 
 
@@ -711,44 +1047,9 @@ Class Pooling extends CI_Controller
             exit(json_encode(array("status"=>TRUE,"vals"=>$result['percentage'])));
         }
     }
-   //pranav ends
-    //add new designation  form
-    function new_designation()
-    {
-        $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
-        $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
-        $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['group']=$this->privillage_model->get_groupname();
-        $this->load->view('admin/edit_add_designation',$data);
+    //pranav ends
 
-    }
-    //add new designation
-    function  add_designation()
-    {
-        if($this->input->is_ajax_request())
-        {
 
-            $this->form_validation->set_rules("Desigination", "Desigination ", "trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("Sortorder", "Sort order", "numeric|trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("discription", "Description ", "trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("priv_group", "Privillege Group ", "trim|required|htmlspecialchars");
-
-            if($this->form_validation->run()== TRUE){
-                $result=$this->Pooling_model->add_designation();
-
-                if($result){
-                    exit(json_encode(array("status"=>TRUE)));
-                }
-                else{
-
-                    exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
-                }
-            }
-            else{
-                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
-            }
-        }
-    }
 
     //check sort order of desiginations
     function  check_sort_order()
@@ -772,7 +1073,7 @@ Class Pooling extends CI_Controller
     //view  all  designation
     function get_all_desiginations()
     {
-        $result=$this->pooling_model->get_all_desiginations();
+        $result=get_all_desigination();
 
     }
 
@@ -781,15 +1082,18 @@ Class Pooling extends CI_Controller
         $userid=$loginsession['user_id'];
         $lgid=$loginsession['id'];
         $data['user']=$this->Profile_model->get_all_partnertype($userid);
-         $data['default_assets'] = $this->load->view('admin/templates/default_assets', '', true);
-        $data['sidebar'] = $this->load->view('admin/templates/cp_sidebar',$data, true);
-        $data['footer'] = $this->load->view('admin/templates/admin_footer', '', true);
+
+        $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
+        $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
+        $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
         $data['partner_type']=$this->Pooling_model->get_partner_type();
+       // echo json_encode($data['partner_type']);exit();
         $this->load->view('admin/edit_add_commmission',$data);
     }
     function new_commision_add(){
 
         if($this->input->is_ajax_request()){
+            //exit();
             //$this->form_validation->set_rules("main_commission", "Main Commision ", "numeric|trim|required|htmlspecialchars");
             $this->form_validation->set_rules("channel_type", "Partner Bussiness Type ", "trim|required|htmlspecialchars");
             $this->form_validation->set_rules("company_commission", "Company Commission ", "numeric|trim|required|htmlspecialchars|greater_than[4]");
@@ -848,6 +1152,7 @@ Class Pooling extends CI_Controller
         }
     }
 
+
     function get_commision_all(){
 
         $data=$this->set_menu();
@@ -856,13 +1161,11 @@ Class Pooling extends CI_Controller
          $lgid=$loginsession['id'];
          $data['user']=$this->Profile_model->get_all_partnertype($userid);
          $data['default_assets'] = $this->load->view('admin/templates/default_assets', '', true);
-        $data['sidebar'] = $this->load->view('admin/templates/cp_sidebar',$data, true);
+        $data['sidebar'] = $this->load->view('admin/templates/admin_sidebar', true);
         $data['footer'] = $this->load->view('admin/templates/admin_footer', '', true);
         $data['partner_type']=$this->Pooling_model->get_partner_type();
-
         $data['commission']=$this->Pooling_model->get_all_commision();
         $this->load->view('admin/edit_view_pooling',$data);
-
     }
 
     function delete_commissionbyid($id)
@@ -904,7 +1207,7 @@ Class Pooling extends CI_Controller
     }
     function edit_pooling_byid(){
         if($this->input->is_ajax_request()){
-
+           // exit;
             $this->form_validation->set_rules("channel_type", "Channel Partner Type ", "trim|required|htmlspecialchars");
             $this->form_validation->set_rules("direct_commi", "Direct Commission", "trim|required|htmlspecialchars");
             $this->form_validation->set_rules("company_commi", "Pooling Commission ", "trim|required|htmlspecialchars");
@@ -943,7 +1246,7 @@ function effect_customer($purch_id)
 
 
     }
-	
+    
 }
 
  function pooling_designs()
@@ -955,7 +1258,7 @@ function effect_customer($purch_id)
         $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
         $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
         $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['designations']= $this->Pooling_model->get_all_desiginations();
+        $data['designations']= get_all_desigination();
         $data['total_group_persantage']=$this->Pooling_model->get_total_ba_group_persantage();
 //        $data['bal_group_persantage']=100-$data['total_group_persantage'];
         $this->load->view('admin/pooling_design',$data);
@@ -993,14 +1296,17 @@ function effect_customer($purch_id)
 
     function  update_pool_data()
     {
-
+       
         if($this->input->is_ajax_request())
         {
+            $this->load->library(array('session','form_validation'));
+            $this->load->helper(array('form', 'url'));
             $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("allow_persantage", "Group Allow Persantage", "numeric|trim|required|htmlspecialchars");
+            $new_designation_persantage = $this->input->post('new_designation_persantage');
+            $this->form_validation->set_rules("allow_persantage", "Group Allow Percentage", "numeric|trim|required|htmlspecialchars");
             $this->form_validation->set_rules("no_of_levels", "No of Levels ", "numeric|trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars");
-
+            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed percentage  ", "numeric|trim|required|htmlspecialchars|callback_percentagecheck1[new_designation_persantage]");
+        
             if($this->form_validation->run()==TRUE)
             {
                 $result=$this->Pooling_model->update_pool_data();
@@ -1012,6 +1318,9 @@ function effect_customer($purch_id)
                 {
                     exit(json_encode(array("status"=>FALSE)));
                 }
+            }
+            else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
             }
         }
 
@@ -1026,25 +1335,23 @@ function effect_customer($purch_id)
         $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
         $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
         $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['total_group_persantage']=$this->Pooling_model->get_total_group_persantage();
+        $data['total_group_persantage']=$this->Pooling_model->get_total_bch_group_persantage();
         $data['id']=$id;
         if($type=='group')
         {
+
             $data['type']=$type;
             $data['pooling_details']= $this->Pooling_model->get_all_system_bch_pooing_by_id($id);
 
-            $data['designations']= $this->Pooling_model->get_all_desiginations();
+            $data['designations']= get_all_desigination();
         }
         elseif($type=='stage')
         {
 
             $data['pooling_details']= $this->Pooling_model->get_all_system_bch_stage_pooing_by_id($id);
+            //var_dump($data['pooling_details']);exit;
             $data['type']=$type;
-
             $data['designations']= $this->Pooling_model->get_all_stages_custom();
-
-
-
         }
         if($data['total_group_persantage']['total_persantage']==100)
         {
@@ -1066,7 +1373,7 @@ function effect_customer($purch_id)
 //update pool bch
     function  update_pool_bch_data()
     {
-
+       //var_dump("dd");exit;
         if($this->input->is_ajax_request())
         {
             $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
@@ -1086,6 +1393,9 @@ function effect_customer($purch_id)
                     exit(json_encode(array("status"=>FALSE)));
                 }
             }
+            else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+            }
         }
 
         echo json_encode($this->input->post());
@@ -1101,26 +1411,20 @@ function effect_customer($purch_id)
         $data['default_assets']=$this->load->view('admin/templates/default_assets','',true);
         $data['sidebar']=$this->load->view('admin/templates/admin_sidebar','',true);
         $data['footer']=$this->load->view('admin/templates/admin_footer','',true);
-        $data['total_group_persantage']=$this->Pooling_model->get_total_group_persantage();
+        $data['total_group_persantage']=$this->Pooling_model->get_total_ba_group_persantage();
         $data['id']=$id;
         if($type=='group')
         {
             $data['type']=$type;
             $data['pooling_details']= $this->Pooling_model->get_all_system_ba_pooing_by_id($id);
 
-
-            //echo json_encode( $data['pooling_details']);
-
-
-            $data['designations']= $this->Pooling_model->get_all_desiginations();
+            $data['designations']= get_all_desigination();
         }
         elseif($type=='stage')
         {
             $data['pooling_details']= $this->Pooling_model->get_all_system_ba_stage_pooing_by_id($id);
             $data['type']=$type;
             $data['designations']= $this->Pooling_model->get_all_stages_custom();
-
-            //echo json_encode($data['designations']);
 
         }
         if($data['total_group_persantage']['total_persantage']==100)
@@ -1148,9 +1452,10 @@ function effect_customer($purch_id)
         if($this->input->is_ajax_request())
         {
             $this->form_validation->set_rules("pool_name", "Pool Group Name", "trim|required|htmlspecialchars");
+            $new_designation_persantage = $this->input->post('new_designation_persantage');
             $this->form_validation->set_rules("allow_persantage", "Group Allow Persantage", "numeric|trim|required|htmlspecialchars");
             $this->form_validation->set_rules("no_of_levels", "No of Levels ", "numeric|trim|required|htmlspecialchars");
-            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed persantage  ", "numeric|trim|required|htmlspecialchars");
+            $this->form_validation->set_rules("design_allwed_persantage[]", "Designation allowed percentage  ", "numeric|trim|required|htmlspecialchars|callback_percentagecheck1[new_designation_persantage]");
 
             if($this->form_validation->run()==TRUE)
             {
@@ -1161,12 +1466,15 @@ function effect_customer($purch_id)
                 }
                 else
                 {
-                    exit(json_encode(array("status"=>FALSE)));
+                    exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
                 }
+            }
+             else{
+                exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
             }
         }
 
-        echo json_encode($this->input->post());
+        show_error("We are unable to process this request on this way!");
     }
 
 
@@ -1208,7 +1516,7 @@ function effect_customer($purch_id)
         {
             exit(json_encode(array("status"=>FALSE,"reason"=>"Database Error")));
         }
-    }
+    }*/
 
 
 

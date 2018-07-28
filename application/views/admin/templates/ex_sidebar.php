@@ -5,9 +5,9 @@
       <div class="main_container">
           <div class="col-md-3 left_col ">
               <div class="left_col scroll-view">
-                  <div class="navbar nav_title" style="border: 0;background-color:#84868b">
+                  <div class="navbar nav_title" style="border: 0;background-color:#313854">
 
-                      <a href="index.html" class="site_title whiteclr">Green India</a>
+                      <a href="index.html" class="site_title whiteclr">Jaazzo</a>
 
 
                   </div>

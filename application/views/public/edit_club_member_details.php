@@ -1,375 +1,466 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta mame="description" content=" " />
-<META content="ALL" name="ROBOTS"/>
-<META content="FOLLOW" name="ROBOTS"/>
-<META content="" name="copyright"/>
-<meta name="distribution" content="Global" />
-<title>Greenindia</title>
-<link rel="shortcut icon" href="<?= base_url();?>assets/public/favicon/favicon.png">
 <?= $default_assets;?>
-
- <link rel="stylesheet" type="text/css" href="<?= base_url();?>assets/public/css/slick.css">
-  <link rel="stylesheet" type="text/css" href="<?= base_url();?>assets/public/css/slick-theme.css">
-
-
-  
-   
 <style type="text/css">
+    .req{
+        font-size: x-large;
+        color: red;
+    }
+    .row{margin:0;}
+    .goToTop{position:fixed;border-bottom:1px solid #ccc;z-index: 17;    background-color: #000;}
 
-.row{margin:0;}
-.goToTop{position:fixed;background-color:#1268b3;border-bottom:1px solid #000;z-index: 17;}
+    @media (max-width:1030px){
+
+        .goToTop{height:auto;position:relative;}
 
 
+    }
+    @media (max-width:767px){
 
-
-@media (max-width:1000px){
-  
-.goToTop{height:auto;position:relative;background-color:#fff;}
-  
-  
-}
-@media (max-width:767px){
-  
-  .goToTop {
-  position: static;
-  top: 0;
-  left: 0;
-  height: 210px;
-  z-index: 10;
-}
-.row{margin:0;}
-}
+        .goToTop {
+            position: static;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            background-color: #1a4794;z-index: 17;
+        }
+    }
+    
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    .plan li{
+        display: inline-flex;
+        padding: 4px;
+    }
 </style>
-
-
-
-
-
-    
-
 </head>
-
 <body>
-
 <!--===========header end here ========================-->
-
-
-  <?= $header;?>
-   
-   
-     
-
-
- 
-    
-   
-  
-
- <header>
-  <div id="hero-wrapper">
-    <div class="carousel-wrapper" style="max-height:540px;overflow:hidden;">
-      <div class="container-fluid" >
-          <?php// include('index-nav.php'); ?>
-      </div>
-      
-            <div class="item active"> <img src="<?= base_url();?>assets/public/images/clubmember-manner.jpg"> </div>
-           
-          
-      </div>
+<?= $header;?>
+<header>
+    <div class="container-fluid" >
     </div>
-  </div>
+    </div>
+    </div>
+    </div>
 </header>
 <!--===========header end here ========================-->
+<div class="clear"></div>
+</div>
 
+<div class="slidbg_clubmbr">
+    <div class="clbmnmberadd">
+        <div id="slctpackage" class="">
+            <?php
+            $session_array1 = $this->session->userdata('logged_in_user');
+            $session_array2 = $this->session->userdata('logged_in_club_member');
+            if($session_array1){ ?>
+                <form id="club_registration" action="<?= base_url();?>register/be_club_member" method="POST">
+                    <h3>Be a Club Member</h3>
+                    <label>Type</label>
+                    <input name="type" type="checkbox" class="type"  value="UNLIMITED">&nbsp;Unlimited
+                    <!-- <input name="type" type="checkbox" class="type" value="FIXED">&nbsp;Fixed                     -->
+                    <br><br>
+                    <ul class="plan">
+
+                    </ul>
+                    <div class="login_ckbx">
+                        <input type="checkbox" name="agree" id="clbmembrshp2">
+                        <label for="clbmembrshp2"><span class="checkbox">I Agree to the <a href="<?= base_url();?>Term_condition" target="_blank">T &amp; C</a></span></label>
+                    </div>
+                    <button type="submit" class="clu_sbmit club_submit">Submit</button>
+                </form>
+            <?php } else{ ?>
+                <form id="become_club" action="<?= base_url();?>register/upgrade_clubmembership" method="post">
+                    <h3 class="text-left bm_mar10">Select a Package & Upgrade Club Membership </h3>
+                    <!--<div class="underline2"></div>-->
+                    <label>Type</label>
+                    <input name="ctype" type="checkbox" class="type"  value="UNLIMITED" <?php $ctype = isset($ctype)?$ctype:'';
+                    echo ($ctype=='UNLIMITED')?'checked':''?>>&nbsp;Unlimited
+                    <!-- <input name="ctype" type="checkbox" class="type" value="FIXED" <?php echo ($ctype=='FIXED')?'checked':(($session_array2['fixed_club_type_id']!=0)?'checked':'');?>>&nbsp;Fixed   -->                  
+                    <br><br>
+                    <input type="hidden" name="cplan" id="cplan" value="<?php echo $session_array2['club_type_id'];?>">
+                    <input type="hidden" name="fixed_plan" id="fixed_plan" value="<?php echo $session_array2['fixed_club_type_id'];?>">
+                    <ul class="cplan">
+                        <?php 
+                        if($session_array2['club_type_id']!=0){
+                            echo "<div>Unlimited</div>";
+                            $cur_pakage = $ctype_data['amount'];
+                                foreach ($club_types as $key => $club) { 
+                                    if($club['amount']>=$cur_pakage){
+                        ?>
+                        <li class="lst1">
+                            <input type="radio"  value="<?php echo $club['id'];?>" <?php echo ($session_array2['club_type_id']==$club['id'])?'checked':''?> name="club_plan"><a href="#<?php echo strtolower($club['title']);?>">
+                            <label for="f-option"><?php echo ucwords($club['title']);?><span class="slvr">( <span class="rupee">RS</span> <?php echo $club['amount'];?> )</span></label>
+                            <div class="check">
+                                <div class="inside"></div>
+                            </div> </a>
+                        </li>
+                        <?php 
+                                    }
+                                }
+                        } 
+                        ?>
+                    </ul>
+
+                    <button type="submit" class="clu_sbmit club_pay_now">Pay Now</button>
+                </form>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+<!--===========main end here ========================-->
+<main class="bgclr6">
+<section>
+    <div class="bgclr3">
+        <div class="container clubwraper  cr" style="border-top:none">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="carousel fdi-Carousel slide" id="myCarousel">
+              <div class="carousel fdi-Carousel slide" id="eventCarousel" data-interval="0">
+                    <div class="carousel-inner onebyone-carosel">
+                        <?php  foreach($ul_club_types as $key=>$typ){?>
+                        <div class="item <?php echo($key==0)?'active':''?> ">
+                           <div class="pckge_clbmbr_sub">    
+                                    <div class="clbmbrimgbx">
+                                        <img src="<?php echo base_url();?>assets/public/images/bronze.png">
+                                    </div>
+                                    <h3><?php echo $typ['title'];?></h3>
+                                    <a data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#<?php echo strtolower($typ['title']);?>"><?php echo implode(' ', array_slice(explode(' ',htmlspecialchars_decode(stripslashes($typ['description']))), 0, 50)).'...';?> </a>
+                            </div>
+                        </div>
+                        <?php } ?>
+
+                                <!-- <div class="item  ">
+                                    <div class="pckge_clbmbr_sub">
+                                    <div class="clbmbrimgbx">
+                                        <img src="<?php echo base_url();?>assets/public/images/silver.png">
+                                    </div>
+                                    <h3>silver</h3>
+                                    <a data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#silver">Below  RS 8000 psum dolor sit amet, consectetur adipiscing elit. Estne, quaeso,  </a>
+                                </div> </div>
+
+                               <div class="item ">
+                                <div class="pckge_clbmbr_sub">
+                                    <div class="clbmbrimgbx">
+                                        <img src="<?php echo base_url();?>assets/public/images/gold.png">
+                                    </div>
+                                    <h3>Gold</h3>
+                                    <a data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#gold">Below  RS 8000 psum dolor sit amet, consectetur adipiscing elit. Estne, quaeso,  </a>
+                               </div> </div>
+
+                                <div class="item  ">
+                                    <div class="pckge_clbmbr_sub">
+                                    <div class="clbmbrimgbx">
+                                        <img src="<?php echo base_url();?>assets/public/images/platnm.png">
+                                    </div>
+                                    <h3>Platinum</h3>
+                                    <a data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#platinum">Below  RS 8000 psum dolor sit amet, consectetur adipiscing elit. Estne, quaeso,  </a>
+                                </div> </div> -->
+                            </ul>
+                        </div>
+                      
+                        </div>
+                    </div>
+                    <ul class="control-box pager">
+                        <li><a data-slide="prev" href="#myCarousel" class="" style="height: 35px;"><i class="glyphicon glyphicon-chevron-left"></i></a></li>
+                        <li><a data-slide="next" href="#myCarousel" class=""  style="height: 35px;"><i class="glyphicon glyphicon-chevron-right"></i></a></li>
+                    </ul>
+                </div> 
+            </div> 
+
+        <div class="clear"></div>
+        <div class="clbline"></div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#myCarousel').carousel({
+                    interval: 10000,
+                    
+                })
+                $('.fdi-Carousel .item').each(function () {
+                    var next = $(this).next();
+                    if (!next.length) {
+                        next = $(this).siblings(':first');
+                    }
+                    next.children(':first-child').clone().appendTo($(this));
+
+                    if (next.next().length > 0) {
+                        next.next().children(':first-child').clone().appendTo($(this));
+                    }
+                    else {
+                        $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
+                    }
+                });
+            });
+        </script>
+
+        <style type="text/css">
+            .carousel-inner.onebyone-carosel { margin: auto; width: 100%; }
+            .onebyone-carosel .active.left { left: -25%; }
+            .onebyone-carosel .active.right { left: 25%; }
+            .onebyone-carosel .next { left: 25%; }
+            .onebyone-carosel .prev { left: -25%; }
+
+        /* Carousel Control */
+        .control-box {
+            text-align: right;
+            width: 100%;
+            height: 50px;
+        }
+        .carousel-control{
+            background: #666;
+            border: 0px;
+            border-radius: 0px;
+            display: inline-block;
+            font-size: 34px;
+            font-weight: 200;
+            line-height: 18px;
+            opacity: 0.5;
+            padding: 4px 10px 0px;
+            position: static;
+            height: 30px;
+            width: 15px;
+        }
+        .cr .nav{display: block;}
+
+        </style>
+
+
+        <div class="container">
+
+            <div class="col-md-12 col-sm-12 col-xs-12 tp_mar20">
+                <?php  foreach($ul_club_types as $key=>$typ){?>
+                <div class="col-md-6 tp_mar20" id="<?php echo strtolower($typ['title']);?>">
+
+                    <h3 class="clbpackghd"><?php echo $key+1;?>, <?php echo $typ['title'];?> ( RS.<?php echo $typ['amount'];?> )</h3>
+                    <?php echo htmlspecialchars_decode($typ['description']);?>
+                </div>
+                <?php } ?>
+                <!-- <div class="col-md-6 tp_mar20" id="silver">
+
+                    <h3 class="clbpackghd">2, Silver ( RS.8000 )</h3>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui
+                    </p>
+                    <ul class="pcg">
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+                        <li>psum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+                        <li>it amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+
+                        <li>ipiscing elit. Estne, quaeso, inquam</li>
+                    </ul>
+                </div>
+
+
+                <div class="clear"></div>
+
+
+                <div class="col-md-6 tp_mar20" id="gold">
+
+                    <h3 class="clbpackghd">3, Gold ( RS.15000  )</h3>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui
+                    </p>
+                    <ul class="pcg">
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+                        <li>psum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+                        <li>it amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+
+                        <li>ipiscing elit. Estne, quaeso, inquam</li>
+                    </ul>
+                </div>
+
+                <div class="col-md-6 tp_mar20" id="platinum">
+
+                    <h3 class="clbpackghd">4, Platinum ( RS.25000 )</h3>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui
+                    </p>
+                    <ul class="pcg">
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+                        <li>psum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+                        <li>it amet, consectetur adipiscing elit. Estne, quaeso, inquam</li>
+
+                        <li>ipiscing elit. Estne, quaeso, inquam</li>
+                    </ul>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
 <div class="clear"></div>
 
-<!--===========main end here ========================-->
-<main>
-  <section>
-    <div class="container clubwraper">
-      
-      
-       <div id="slctpackage" class="col-md-4 col-sm-4 col-xs-12">
-       <?php
- $session_array = $this->session->userdata('logged_in_user');
-        if($session_array == NULL){ ?>
-        <form id="club_registration">
-   <!-- <h4 class="text-left bm_mar10">Select a Package & Be a Club Member </h4> -->
-   <!--<div class="underline2"></div>-->
-          
-<ul>
- <?php foreach ($club_types as $key => $club) { ?>
-                    <li>
-                      
-                      <label for="f-option"><?php echo $club['title'];?><span class="slvr">( <span class="rupee">RS</span><?php echo $club['amount'];?> )</span></label>
-                      <div class="check">
-                        <div class="inside"></div>
-                      </div>
-                    </li>
-                     <?php } ?>
-                 <!--    <li>
-                     
-                      <label for="s-option"> Gold <span class="slvr">( <span class="rupee">RS</span> 10000 )</span> </label>
-                      <div class="check">
-                        <div class="inside"></div>
-                      </div>
-                    </li>
-                    <li>
-                     
-                      <label for="t-option">Platinum<span class="slvr">( <span class="rupee">RS</span> 20000 )</span> </label>
-                      <div class="check">
-                        <div class="inside"></div>
-                      </div>
-                    </li> -->
-                  
-                  </ul>
-                  
-                  
 
-<input type="text" class="clubmbr1 name tp_mar20 validate[required]" name="cl_reg_name" id=""  placeholder="Enter Your Name">
+<!--<section>
+<div class="container tp_mar50 bm_mar50 bgpackage botm_pad40">
+<h1 class="tp_mar20 text-center text-uppercase">Packages</h1>
+<div class="col-md-12">
 
-<input type="email" class="clubmbr1 email validate[required]" id="" name="cl_reg_mail"  placeholder="Enter Your E-mail id">
+<div id="silver" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 tp_mar30 ">
+<div class="bgsilver">
+<h2 class="text-left bgsilver_sub1 text-center">Silver</h2>
+<h3 class="text-left bgsilver_sub2 text-center"><span class="rupee"> RS </span>1000 </h3>
+<div class="su_box90_marauoto">
 
-<input type="text" class="clubmbr1 mobile validate[required]" value="" name="cl_reg_mobile" id="some_class_1" placeholder="Mobile No.">
+<p class="tp_mar20">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui
+</p>
+
+<a class="morspcfcn" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#slctpackage">
+<div class="select_pkg bgsilver_sub2">Select a Package</div></a>
+
+</div>
+</div></div>
 
 
-<input type="password" class="clubmbr1 password validate[required]" id="" name="cl_reg_pass" placeholder="Enter Your Password">
 
-<input type="password" class="clubmbr1 password validate[required,equals[cl_reg_pass]]" id="" name="cl_reg_cpass"  placeholder="Confirm Your Password">
 
-   <div class="login_ckbx">
-      <input type="checkbox" name="agree" id="clbmembrshp2">
-      <label for="clbmembrshp2"><span class="checkbox">I Agree to the T &amp; C</span></label>
-    </div>
-            <button type="submit" class="clu_sbmit club_submit">Submit</button>
-          
-                     
+<div id="gold" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 tp_mar30 ">
+<div class="bggold">
+<h2 class="text-left bggold_sub1 text-center">Gold</h2>
+<h3 class="text-left bggold_sub2 text-center"><span class="rupee"> RS </span>1000 - <span class="rupee"> RS </span>100000 </h3>
+<div class="su_box90_marauoto">
 
-        </form>
-      
-        <form id="club_registration_otp_form"> 
-        <input type="hidden" class="otp_reg_email" name="otp_reg_email">
-        <input type="hidden" class="otp_reg_phone" name="otp_reg_phone">
-        <input type="text" class="clubmbr1 validate[required]" id="" name="otp_reg_confirm" placeholder="Enter Your OTP">
-        <button type="submit" class="clu_sbmit otp_reg_culb">Verify</button>
-        </form>
-        
-     <?php } else{ ?>
-      <form id="become_club"> 
-       
+<p class="tp_mar20">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui
+</p>
 
-         <h4 class="text-left bm_mar10">Select a Package & Be a Club Member </h4>
-   <!--<div class="underline2"></div>-->
-          
-<ul>
-                  <?php foreach ($club_types as $key => $club) { ?>
-                  
+ <a class="morspcfcn" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#slctpackage">
+ <div class="select_pkg select_pkg bggold_sub2">Select a Package</div></a>
 
-                    <li>
-                      <input type="radio"  value="<?php echo $club['id'];?>" name="club_plan">
-                      <label for="f-option"><?php echo $club['title'];?><span class="slvr">( <span class="rupee">RS</span> <?php echo $club['amount'];?> )</span></label>
-                      <div class="check">
-                        <div class="inside"></div>
-                      </div>
-                    </li>
-                    <?php } ?>
-                    <!-- <li>
-                      <input type="radio"  value="2" name="club_plan">
-                      <label for="s-option"> Gold <span class="slvr">( <span class="rupee">RS</span> 10000 )</span> </label>
-                      <div class="check">
-                        <div class="inside"></div>
-                      </div>
-                    </li>
-                    <li>
-                      <input type="radio"  value="3" name="club_plan">
-                      <label for="t-option">Platinum<span class="slvr">( <span class="rupee">RS</span> 20000 )</span> </label>
-                      <div class="check">
-                        <div class="inside"></div>
-                      </div>
-                    </li> -->
-                  
-                  </ul>
-                  
-        
-       <!--  <input type="hidden" class="user_id validate[required]" name="user_id" value="<?= $session_array['user_id'];?>"> -->
-        
-        <button type="submit" class="clu_sbmit club_pay_now">Pay Now</button>
-      </form>
-      <?php } ?> 
-      </div>
-    
-      
-      <div class="col-md-8 col-sm-8 col-xs-12">
-      
-      <div class="silverbx">
-      <h3>Silver</h3>
-      <p class="tp_mar10">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui 
-      </p>
-             <a class="slvrlink" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#silver">Read more</a>
+</div>
+</div></div>
 
-      </div>
-      
-      
-      <div class="silverbx tp_mar20">
-      <h3>Gold</h3>
-      <p class="tp_mar10">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui 
-      </p>      
-      
-       <a class="slvrlink" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#gold">Read more</a>
 
-      </div>
-      
-      
-      <div class="silverbx tp_mar20">
-      <h3>Platinum</h3>
-      <p class="tp_mar10">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui 
-      </p>
-       <a class="slvrlink" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#platinum">Read more</a>
-      </div>
-      
-      </div>
-      
-      
-    </div>
-    
-  </section>
-  <div class="clear"></div>
-  
-  
-      <section>
-      <div class="container tp_mar50 bm_mar50 bgpackage botm_pad40">
-      <h1 class="tp_mar20 text-center text-uppercase">Packages</h1>
-      <div class="col-md-12">
-      
-      <div id="silver" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 tp_mar30 ">
-      <div class="bgsilver">
-      <h2 class="text-left bgsilver_sub1 text-center">Silver</h2>
-      <h3 class="text-left bgsilver_sub2 text-center"><span class="rupee"> RS </span>1000 </h3>
-      <div class="su_box90_marauoto">
-      
-      <p class="tp_mar20">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui 
-      </p>
-      
-      <a class="morspcfcn" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#slctpackage">
-      <div class="select_pkg bgsilver_sub2">Select a Package</div></a>
-      
-      </div>
-      </div></div>
-      
-      
-      
-      
-      <div id="gold" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 tp_mar30 ">
-      <div class="bggold">
-      <h2 class="text-left bggold_sub1 text-center">Gold</h2>
-      <h3 class="text-left bggold_sub2 text-center"><span class="rupee"> RS </span>1000 - <span class="rupee"> RS </span>100000 </h3>
-      <div class="su_box90_marauoto">
-      
-      <p class="tp_mar20">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui 
-      </p>
-      
-       <a class="morspcfcn" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#slctpackage">
-       <div class="select_pkg select_pkg bggold_sub2">Select a Package</div></a>
-      
-      </div>
-      </div></div>
-      
-      
-      
-      
-      <div id="platinum" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 tp_mar30 ">
-      <div class="bgplatinum">
-      <h2 class="text-left platinum_sub1 text-center">Platinum</h2>
-      <h3 class="text-left platinum_sub2 text-center">Abve<span class="rupee"> RS </span>10000 </h3>
-      <div class="su_box90_marauoto">
-      
-      <p class="tp_mar20">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui 
-      </p>
-      
-      <a class="morspcfcn" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#slctpackage"><div class="select_pkg platinum_sub2">Select a Package</div></a>
-      </div>
-      </div></div>
-      
-      </div>
-      </div>
-      
-      </section>  
-     
-        
-  <!--===========section end here ========================-->
-  <div class="clear"></div>
+
+
+<div id="platinum" class="col-lg-4 col-md-4 col-sm-12 col-xs-12 tp_mar30 ">
+<div class="bgplatinum">
+<h2 class="text-left platinum_sub1 text-center">Platinum</h2>
+<h3 class="text-left platinum_sub2 text-center">Abve<span class="rupee"> RS </span>10000 </h3>
+<div class="su_box90_marauoto">
+
+<p class="tp_mar20">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estne, quaeso, inquam, sitienti in bibendo voluptas? Tu autem negas fortem esse quemquam posse, qui
+</p>
+
+<a class="morspcfcn" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInQuad&quot; }" href="#slctpackage"><div class="select_pkg platinum_sub2">Select a Package</div></a>
+</div>
+</div></div>
+
+</div>
+</div>
+
+</section>-->
+
+
+<!--===========section end here ========================-->
+<div class="clear"></div>
 
 </main>
 <?php echo $footer; ?>
 
-      <script type="text/javascript">
-        $(document).ready(function(){
-          $('#club_registration_otp_form').hide();
-          $('.club_submit').click(function(e){
-            e.preventDefault();
-            var data = $('#club_registration').serializeArray();
-            $.post('<?= base_url();?>register/new_club_member', data, function(data){
-              if(data.status){
-                var datas = data.data;
-                 noty({text:"A verification code has been sent to your mobile and email", type: 'success',layout: 'center', timeout: 2000});
-                    $('#club_registration_otp_form').show('slow');
-                    $('#club_registration_otp_form').find('.otp_reg_email').val(datas.email);
-                    $('#club_registration_otp_form').find('.otp_reg_phone').val(datas.phone);
-              }else{
-                noty({text:data.reason, type: 'error',layout: 'top', timeout: 2000});
-              }
+<script type="text/javascript">
+    function isNumberKey(evt){
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+    $(document).ready(function(){
+        var base_url = "<?php echo base_url(); ?>";
+        $('input[name="type"]').click(function(){
+            new_obj = {}
+            $('input[name="type"]:checked').each(function(i,j) {
+                if(this.value=='FIXED'){
+                    new_obj[this.name+'2'] = this.value;  
+                }else{
+                    new_obj[this.name+(i+1)] = this.value;  
+                }  
+            });
+
+            $(".plan").html('');
+            $.post('<?php echo base_url();?>get_club_plans_by_type',new_obj, function(data){
+                if(data.status){
+                    $(".plan").append(data.data);$(".plan").show();
+                }else{
+                    swal("Warning!", "Please try to select a type", "error");
+                }
             },'json');
-
-          });
-
-          $('.otp_reg_culb').click(function(e){
-            e.preventDefault();
-            var data = $('#club_registration_otp_form').serializeArray();
-            $.post('<?= base_url();?>register/validate_otp_club_reg', data, function(data){
-              if(data.status){
-                 noty({text:"A verification code has been sent to your mobile and email", type: 'success',layout: 'center', timeout: 2000});
-                   window.location = '<?= base_url();?>home';
-              }else{
-                noty({text:data.reason, type: 'error',layout: 'top', timeout: 2000});
-              }
-            },'json');
-
-          });
-          $('.club_pay_now').click(function(e){
-            e.preventDefault();
-            var data = $('#become_club').serializeArray();
-             $.post('<?= base_url();?>register/become_clubmember', data, function(data){
-              if(data.status){
-                /// noty({text:"A verification code has been sent to your mobile and email", type: 'success',layout: 'center', timeout: 2000});
-                   window.location = '<?= base_url();?>home';
-              }else{
-                noty({text:data.reason, type: 'error',layout: 'top', timeout: 2000});
-              }
-            },'json');
-
-          });
         });
-      </script>
+        $('input[name="ctype"]').click(function(){
+            new_obj = {}
+            $('input[name="ctype"]:checked').each(function(i,j) {
+                if(this.value=='FIXED'){
+                    new_obj['type2'] = this.value;  
+                }else{
+                    new_obj['type'+(i+1)] = this.value;  
+                }  
+            });
+
+            $(".cplan").html('');
+            var cplan = $('#cplan').val();
+            var fixed_plan = $('#fixed_plan').val();
+            $.post('<?php echo base_url();?>get_club_plans_by_type',new_obj, function(data){
+
+                if(data.status){
+                    $(".cplan").append(data.data);$(".cplan").show();
+                    $('input[name="club_plan"][value="' + cplan.toString() + '"]').prop("checked", true);
+                    $('input[name="club_plan2"][value="' + fixed_plan.toString() + '"]').prop("checked", true);
+                }else{
+                    swal("Warning!", "Please try to select a type", "error");
+                }
+            },'json');
+        });
+        /* $('input:radio[name="type"]').change(
+            function(){
+                if ($(this).val() == 'FIXED') {
+                    var type='FIXED';
+                }else {
+                    var type='UNLIMITED';
+                }
+                $(".plan").html('');
+                $.post('<?php echo base_url();?>get_club_plans_by_type',{type:type}, function(data){
+                    console.log(data);
+                    if(data.status){
+                        $(".plan").append(data.data);$(".plan").show();
+                    }else{
+                        
+                    }
+                },'json');
+            });
+        
+        $('input:radio[name="ctype"]').change(
+            function(){
+                if ($(this).val() == 'FIXED') {
+                    var type='FIXED';
+                }else {
+                    var type='UNLIMITED';
+                }
+                $(".cplan").html('');
+                $.post('<?php echo base_url();?>get_club_plans_by_type',{type:type}, function(data){
+                    console.log(data);
+                    if(data.status){
+                        $(".cplan").append(data.data);$(".cplan").show();
+                        var value = <?php echo isset($session_array2['club_type_id'])?$session_array2['club_type_id']:'0';?>;
+                        if(value!='0'){$('input:radio[name="club_plan"][value="' + value + '"]').attr('checked', 'checked');}
+                    }else{
+                        
+                    }
+                },'json');
+            });*/
+    });
+</script>
 
 <script src="<?= base_url();?>assets/public/js/smooth-scroll.js"></script>
-    <script>
-      smoothScroll.init();
-    </script>
-<!--=======================================slider right==============================================--> 
+<script>
+    smoothScroll.init();
 
-<script src="<?= base_url();?>assets/public/js/slick.js" type="text/javascript" charset="utf-8"></script>
-  
-  
+</script>
+<!--=======================================slider right==============================================-->
+
 
 
 
@@ -380,7 +471,7 @@
             $("html, body").animate({"scrollTop": "0px"});
         });
     });
-</script> 
+</script>
 
 </body>
 </html>

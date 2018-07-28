@@ -5,18 +5,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 class Forgot_psw extends CI_Controller
 {
-	
-	function __construct()
-	{
-		parent::__construct();
-		$this->load->library(array('session','form_validation'));
-		$this->load->helper(array('url','form','string'));
-		$this->load->model('admin/Forgot_model');
-    $session_array = $this->session->userdata('logged_in_admin');
-        if(!isset($session_array)){
-            redirect('admin/Login');
-        }
-	}
+  
+  function __construct()
+  {
+    parent::__construct();
+    $this->load->library(array('session','form_validation'));
+    $this->load->helper(array('url','form','string'));
+    $this->load->model('admin/Forgot_model');
+    // $session_array = $this->session->userdata('logged_in_admin');
+    //     if(!isset($session_array)){
+    //         redirect('admin/Login');
+    //     }
+  }
 
 
 
@@ -33,19 +33,120 @@ class Forgot_psw extends CI_Controller
         $this->load->view('admin/forgot',$data);
 
     }
-    function forgot_password()
-	{
-			
-			$username = $this->input->post('email');
-			
 
-				$validate_user = $this->Forgot_model->validate_user($username);
-				
-				if($validate_user){
-					$password = random_string('alnum', 16);
-				
-					$update_password = $this->Forgot_model->update_password($password, $username);
-					if($update_password){
+
+
+
+      function forgot_password_new()
+      {
+
+     
+       $username = $this->input->post('email');
+          $this->load->helper('string');
+          $validate_user = $this->Forgot_model->validate_user($username);
+        //  var_dump($validate_user);exit;
+          if($validate_user){
+              $random = random_string('alnum', 16);
+              $userna = $validate_user['email'];
+             $add_random_string = $this->Forgot_model->add_random_string($random, $userna);
+              if($add_random_string){
+                $data['userna'] =$userna;
+                $data['random'] =$random;
+                $data['message_url'] = base_url().'user/Login/change_your_password/'.encrypt_decrypt('encrypt',$random);
+              //  var_dump($data);exit;
+                $sender_email = $userna;
+                $mail_head = "Jazzo Admin";
+                $mail_status = send_custom_email($sender_email,$mail_head,$userna,'Password Reset Request',$this->load->view('templates/public/mail/forgot_password', $data, TRUE));
+                  if($mail_status){
+                    exit(json_encode(array('status'=>true)));
+                  }else{
+                    exit(json_encode(array('status'=>false, 'reason'=>'Something went wrong')));
+                  }
+              } else
+             {
+                  exit(json_encode(array('status'=>false, 'reason'=>'User does not exist11')));
+              }
+          } else{
+              exit(json_encode(array('status'=>false, 'reason'=>'User does not exist')));
+          }
+      }
+
+    function change_your_password($userna,$random)
+    {
+        $data['username'] = encrypt_decrypt_forgot("decrypt",$userna);
+        $data['random'] = encrypt_decrypt_forgot("decrypt",$random);
+        $this->load->view('admin/edit_change_psw',$data);
+    }
+
+
+        function change_pwd()
+    {
+      if($this->input->is_ajax_request())
+      {
+         
+          $this->form_validation->set_rules('password', 'password', 'trim|required');
+          $this->form_validation->set_rules('c_password', 'Confirm Password', 'trim|required|matches[password]');
+          if($this->form_validation->run() == TRUE)
+          {  
+                $password = $this->input->post('password');
+          //$key="St@ynodes#123456";
+     //  $str = "admin@rel_pr0prty";
+       // $password="admin";
+
+//$password=$this->decrypt($psw,$key);
+//echo $password;exit();
+   $passw=encrypt_decrypt_forgot("encrypt",$password);
+
+                $username = $this->input->post('username');
+                $random = $this->input->post('random');
+                //var_dump($username);
+                //var_dump($random);exit();
+              $validate_user_with_random_key = $this->Forgot_model->validate_user_with_random_key($username,$random);
+              if($validate_user_with_random_key){            
+                  $res = $this->Forgot_model->change_pwd($username,$passw,$random);
+                  if($res)
+                  {
+                  //  $result = $this->login_model->validate_login_email($passw);
+                //     $this->session->unset_userdata('logged_in_admin');
+                //      $session_array = array(
+                //     'username'=> $result['data']['username'],
+                //     'id' => $result['data']['id'],
+                //     'type' => $result['data']['type'],
+                //     'name'=> $result['data']['name'],
+                    
+                //     'login' =>true);
+
+                // $this->session->set_userdata('logged_in_admin', $session_array);
+                // echo json_encode($session_array);exit();
+                      exit(json_encode(array('status' => true)));
+                  } else{
+                      exit(json_encode(array('status' => false, 'reason' => 'Database Error, Please try Again')));
+                  }
+              }else{
+                  exit(json_encode(array('status' => false, 'reason' => 'Incorrect Current Password ')));
+              }
+          }else{
+              exit(json_encode(array("status"=>FALSE,"reason"=>validation_errors())));
+          }
+      }else{
+          show_error("Unable To Process The Request In This Way");
+      }
+    }
+
+
+    function forgot_password()
+  {
+      
+      $username = $this->input->post('email');
+      
+
+        $validate_user = $this->Forgot_model->validate_user($username);
+        
+        if($validate_user){
+          $password = random_string('alnum', 16);
+        
+          $update_password = $this->Forgot_model->update_password($password, $username);
+          if($update_password){
 
             $message = '<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" style="background:url(bg.jpg) repeat;"> <tbody>             
   <tr>
@@ -153,18 +254,18 @@ class Forgot_psw extends CI_Controller
               $this->email->send();
 
 
-					
-						exit(json_encode(array('status'=>TRUE)));
-						
-					} else
-					{
-						exit(json_encode(array('status'=>false, 'reason'=>'User does not exist')));
-					}
-				
-			} else{
-				exit(json_encode(array('status'=>false, 'reason'=>'User does not exist')));
-			}
-		}
+          
+            exit(json_encode(array('status'=>TRUE)));
+            
+          } else
+          {
+            exit(json_encode(array('status'=>false, 'reason'=>'User does not exist')));
+          }
+        
+      } else{
+        exit(json_encode(array('status'=>false, 'reason'=>'User does not exist')));
+      }
+    }
 
    
 }
